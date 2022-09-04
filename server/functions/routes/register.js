@@ -14,7 +14,7 @@ const bucket = admin.storage().bucket()
 async function register(req, res) {
     const {email, password, displayname} = req.body;
     if (!email || !password || !displayname){
-        return res.status(400).json({ "registerSuccess": false,
+        return res.status(400).json({ "success": false,
                                       "message": "empty field"  
                                         })
     }
@@ -37,27 +37,20 @@ async function register(req, res) {
                 .set({ displayname });
         } catch(err){
             res.status(400).json({
+                success: false,
                 error: err
             })
         }
         req.session.uid = credential.user.uid
         req.session.save()
         res.status(200).json({
-            createsuccess: true
+            success: true
         })
         //res.cookie('x_auth', credential._tokenResponse.idToken).status(201).json({ registerSuccess: true })
     } catch (err) {
-        console.log(err)
-        const { code } = err;
-        if (code == 'auth/email-already-in-use'){
-            res.status(400);
-        } else {
-            res.status(500);
-        }
-        res.json({
-            error: {
-                code: code ? code.replace('auth/', '') : undefined
-            }
+        return res.status(400).json({
+            success: false,
+            error: err
         })
     }
 }

@@ -7,11 +7,8 @@ const bucket = admin.storage().bucket()
 global.XMLHttpRequest = require('xhr2')
 
 async function createjournal(req, res) {
-    console.log('whats in the session', req.session.uid)
     const uid = req.session.uid
-    console.log(req.body.image)
     if (req.body.image){
-        console.log('entered upload')
         var temp = await uploadimage(req.body.image, uid)
         console.log(temp)
         temp = JSON.parse(temp)
@@ -24,22 +21,21 @@ async function createjournal(req, res) {
             filename: filename
         }
     } else {
-        console.log('not uploading')
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: req.body.journal
         }
     }
 
-    //console.log('upload complete')
-    //console.log(signedUrl)
+
     await firestore.doc(`users/${uid}`).collection('journal').add({
         fields
     }, err => {
-        console.log(err)
-        res.status(400).json({ createSuccess: false})
+        res.status(400).json({ success: false,
+                               error: err                            
+        })
     })
-    return res.status(200).json({ createSuccess: true})
+    return res.status(200).json({ success: true })
 }
 
 module.exports = createjournal

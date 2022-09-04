@@ -15,11 +15,7 @@ async function editjournal(req, res){
     console.log(req.body.filename)
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
-        //const image = req.body.image
         var filename = req.body.filename
-        //delete existing image from firestore first
-        //filename = toString(filename).replace("%2F", "/")
-        console.log(filename)
         await bucket.file(`post-images/${filename}`).delete((error) => {
             return res.status(400).json({
                 message: 'failed to delete existing image'
@@ -27,7 +23,6 @@ async function editjournal(req, res){
         })
         
         var temp = await uploadimage(req.body.newimage, uid)
-        //console.log(temp)
         temp = JSON.parse(temp)
         const signedUrl = temp.signedUrl
         const newfilename = temp.fileName
@@ -38,15 +33,8 @@ async function editjournal(req, res){
             url: signedUrl,
             filename: newfilename
         }
-        // await firestore.doc(`users/${uid}`).collection('journal').add({
-        //     timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        //     body: req.body.journal,
-        //     url: signedUrl
-        // }, err => {
-        //     console.log(err)
-        //     res.status(400).json({ createSuccess: false})
-        // })
-    }  else { //does not update image
+
+    }  else { //does not update image, journal entry with just the body
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: newbody
@@ -62,13 +50,13 @@ async function editjournal(req, res){
             fields
         })
         res.status(200).json({
-            updatesuccess: true,
+            success: true,
             fields
         })
     } catch(err) {
         res.status(400).json({
-            updatesuccess: false,
-            message: err
+            success: false,
+            error: err
         })
     }
 }

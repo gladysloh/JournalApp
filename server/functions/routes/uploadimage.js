@@ -20,9 +20,9 @@ async function uploadimage(base64EncodedImageString, uid){
         metadata: {contentType: mimeType},
     }, ((error) => {
         if (error) {
-            return res.status(500).json({
-                createSuccess: false,
-                message: 'Failed to upload image'
+            return res.status(400).json({
+                success: false,
+                error: error
             })
         } 
     }))
