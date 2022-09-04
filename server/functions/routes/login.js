@@ -35,7 +35,8 @@ async function login(req, res) {
 
     } catch (error) {
         res.status(401).json({
-            success: false
+            success: false,
+            error: error
         })
     }
 }
