@@ -86,9 +86,82 @@ ion-content {
 }
 
 ion-toolbar {
-  --background-color: transparent;
-  --ion-color-base: transparent !important;
+  --background-color: #FFDBBD;
+  --ion-color-base: #FFDBBD;
+  --background: transparent;
+
 }
+
+ion-title{
+  font-family: 'Raleway-Bold';
+}
+
+/**
+* NotoSans Font
+*/
+@font-face {
+  font-family: "NotoSans";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "NotoSans-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-Bold.ttf");
+}
+
+@font-face {
+  font-family: "NotoSans-BoldItalic";
+  font-style: italic;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-BoldItalic.ttf");
+}
+
+@font-face {
+  font-family: "NotoSans-Italic";
+  font-style: italic;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-Italic.ttf");
+}
+
+/**
+* Raleway Font
+*/
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-BoldItalic";
+  font-style: italic;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Raleway/Raleway-BoldItalic.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-Italic";
+  font-style: italic;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Italic.ttf");
+}
+
+* {
+  font-family: "NotoSans", "Raleway";
+}
+
 
 /* @media (prefers-color-scheme: dark) { */
   /*

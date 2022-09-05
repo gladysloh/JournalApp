@@ -5,14 +5,14 @@ import './signup.css';
 const SignUp: React.FC = () => {
   return (
     <IonPage>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">SignUp</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-      </IonContent>
-    </IonPage>
+    <IonContent fullscreen>
+      <IonHeader collapse="condense" translucent>
+        <IonToolbar className="ion-text-center ion-toolbar-transparent">
+          <IonTitle size="large">Signup</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+    </IonContent>
+  </IonPage>
   );
 };
 
