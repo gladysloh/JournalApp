@@ -30,21 +30,16 @@ async function login(req, res) {
         req.session.save()
         console.log(req.session)
 
-
-        res.cookie('x_auth', idToken).status(200).json({ 'loginsuccess': true });
+        console.log(credential.user.displayName)
+        res.status(200).json({ 
+            success: true,
+            displayname: credential.user.displayname
+        });
 
     } catch (error) {
-        console.log(error)
-        if (
-            error.code == 'auth/wrong-password' || error.code == 'auth/user-not-found'
-        ) {
-            res.status(403)
-        } 
-        else { 
-            res.status(500)
-        }
-        res.json({
-            error: { code: error.code}
+        res.status(401).json({
+            success: false,
+            error: error
         })
     }
 }
