@@ -16,6 +16,7 @@ async function createjournal(req, res) {
         const filename = temp.fileName
         var fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            title: req.body.title,
             body: req.body.journal,
             url: signedUrl,
             filename: filename
@@ -23,6 +24,7 @@ async function createjournal(req, res) {
     } else {
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            title: req.body.title,
             body: req.body.journal
         }
     }
@@ -40,3 +42,6 @@ async function createjournal(req, res) {
 
 module.exports = createjournal
 
+// add title to journal
+// add page feature to the journal query
+// 

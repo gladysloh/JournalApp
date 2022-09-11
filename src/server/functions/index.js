@@ -36,6 +36,7 @@ const getalljournal = require('./routes/getalljournal');
 const getRandomQuestion = require("./routes/getrandomquestion");
 const editjournal = require('./routes/editjournal')
 const logout = require('./routes/logout')
+const sentimentAnalyzer = require('./routes/sentimentAnalyzer')
 const app = express()
 app.use(session({
     store: new FirestoreStore({
@@ -62,6 +63,7 @@ app.get('/getalljournals', firebaseAuth, getalljournal)
 app.post('/editjournal', firebaseAuth, editjournal)
 app.post('/logout', logout)
 app.get('/randomq', getRandomQuestion)
+app.post('/sentimentanalyzer', sentimentAnalyzer)
 
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
