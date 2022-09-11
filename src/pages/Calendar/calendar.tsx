@@ -1,18 +1,18 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonButton, IonIcon, IonMenuButton } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon, IonButtons, IonButton } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
-import './Tab1.css';
+import './calendar.css';
 import { personCircle, search, star, ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
 
-const Tab1: React.FC = () => {
+const Calendar: React.FC = () => {
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar >
-          <IonTitle>Journal</IonTitle>
+          <IonTitle>Calendar</IonTitle>
 
           <IonButtons slot="end">
             <IonButton>
-              <IonIcon icon={ personCircle } color="dark"/>
+              <IonIcon icon={ personCircle }  color="dark"/>
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -24,4 +24,4 @@ const Tab1: React.FC = () => {
   );
 };
 
-export default Tab1;
+export default Calendar;

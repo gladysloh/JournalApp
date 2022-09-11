@@ -1,0 +1,116 @@
+.ioncontent {
+    margin: 0px;
+    padding: 0px;
+}
+
+.row0 {
+    margin: 40px 0px 0px 20px;
+    padding: 0px;
+    width: fit-content;
+    height: 90px;
+    display: inline-block;
+    flex-wrap: nowrap;
+    justify-content: center;
+    justify-content: space-between;
+}
+
+.col {
+    margin: 0px;
+    padding: 0px;
+}
+
+.day {
+    font-size: 50px;
+    padding: 0px;
+    margin: 0px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+.year {
+    font-size: 10px;
+    padding: 0px;
+    margin: 0px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.month {
+    font-size: 30px;
+    padding: 0px;
+    margin: 0px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+
+.questionMark {
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    margin: 0px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+}
+
+.questionMarkIcon {
+    width: 30px;
+    height: 30px;
+    color: #424242;
+}
+
+.journalEntryCard {
+    height: 600px;
+    background: rgba(255, 255, 255, 0.7);
+    background-blend-mode: overlay;
+    margin: 0px 20px 0px 20px;
+    padding: 0px;
+    border-radius: 28px;
+}
+
+.row1 {
+    height: 50px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.titleInput {
+    height: auto;
+    --placeholder-opacity: 50%;
+    font-size: small;
+    color: #424242;
+}
+
+.selectMode {
+    font-size: x-small;
+    color: #424242;
+    border-radius: 20px;
+}
+
+.row2 {
+    height: 200px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.bodyInput {
+    height: 200px; 
+    --placeholder-opacity: 50%;
+    font-size: small;
+    color:#424242;
+}
+
+.row3 {
+    height: 300px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.uploadedImage {
+    margin: 0px;
+    padding: 0px;
+    color: #424242;
+    width: 400px;
+    height: 300px;
+    border-radius: 18px;
+}

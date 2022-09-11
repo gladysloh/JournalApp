@@ -1,0 +1,63 @@
+.ioncontent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    margin: 50px 20px 20px 20px;
+    padding: 0px;
+}
+
+.statusimages {
+    width: 30px;
+    height: 30px;
+}
+
+.statuslabels {
+    font-size: 10px;
+}
+
+.card2 {
+    width: 350px;
+    height: 60px;
+}
+
+.day {
+    width: 50px;
+    height: 30px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.entries {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.entryDate {
+    font-size: 15px;
+}
+
+.entryDay {
+    font-size: 10px;
+}
+
+.entryTitle {
+    font-size: 15px;
+}
+
+.entryTime {
+    font-size: 10px;
+}
+
+.entryText {
+    font-size: 8px;
+}

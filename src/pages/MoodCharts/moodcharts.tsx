@@ -1,9 +1,9 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon, IonButtons, IonButton } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
-import './Tab3.css';
+import './moodcharts.css';
 import { personCircle, search, star, ellipsisHorizontal, ellipsisVertical } from 'ionicons/icons';
 
-const Tab3: React.FC = () => {
+const Moodcharts: React.FC = () => {
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
@@ -24,4 +24,4 @@ const Tab3: React.FC = () => {
   );
 };
 
-export default Tab3;
+export default Moodcharts;

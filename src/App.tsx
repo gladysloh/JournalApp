@@ -17,9 +17,14 @@ import React, { useEffect } from "react";
 import { IonReactRouter } from '@ionic/react-router';
 import { addCircle, addCircleOutline, home, homeOutline, notifications, notificationsOutline, person, personOutline, search, searchOutline } from 'ionicons/icons';
 
-import Tab1 from './pages/Journal/Tab1';
-import Tab2 from './pages/Calendar/Tab2';
-import Tab3 from './pages/MoodCharts/Tab3';
+import JournalOverview from './pages/Journal/journaloverview';
+import JournalText from './pages/Journal/journaltext';
+import JournalImage from './pages/Journal/journalimage';
+import JournalTextView from './components/JournalTextView';
+import JournalImageView from './components/JournalImageView';
+import Calendar from './pages/Calendar/calendar';
+import Moodcharts from './pages/MoodCharts/moodcharts';
+import Loading from './pages/Loading/loading';
 
 import Login from './pages/Login/login';
 import Signup from './pages/SignUp/signup';
@@ -49,6 +54,15 @@ import calendar from './theme/icons/calendar.svg';
 import diary from './theme/icons/diary.svg';
 import chart from './theme/icons/chart.svg'
 
+import CardExamples from './pages/tutorial/CardExamples';
+import InputExamples from './pages/tutorial/InputExamples';
+import SegmentExamples from './pages/tutorial/SegmentExamples';
+import TextAreaExamples from './pages/tutorial/TextAreaExamples';
+import { SlideExample } from './pages/tutorial/Slides';
+import JournalView from './components/JournalView';
+import JournalGenerateMood from './pages/Journal/journalgeneratemood';
+import JournalMood from './pages/Journal/journalmood';
+
 setupIonicReact();
 
 const isAuthenticated = false;
@@ -58,25 +72,25 @@ const App: React.FC = () => {
   const tabs = [
 
     {
-      name: "Journal",
-      url: "/journal",
+      name: "JournalOveview",
+      url: "/journaloverview",
       activeIcon: diary,
       icon: diary,
-      component: Tab1
+      component: JournalOverview
     },
     {
       name: "Calendar",
       url: "/calendar",
       activeIcon: calendar,
       icon: calendar,
-      component: Tab2
+      component: Calendar
     },
     {
       name: "MoodCharts",
       url: "/moodcharts",
       activeIcon: chart,
       icon: chart,
-      component: Tab3
+      component: Moodcharts
     }
   ];
 
@@ -112,7 +126,46 @@ const App: React.FC = () => {
                   </Route>
                 );
               })}
-
+              <Route exact path="/journaltext">
+                <JournalText />
+              </Route>
+              <Route exact path="/journalimage">
+                <JournalImage />
+              </Route>
+              <Route exact path="/journaltextview">
+                <JournalTextView />
+              </Route>
+              <Route exact path="/journalimageview">
+                <JournalImageView />
+              </Route>
+              <Route exact path="/journalview">
+                <JournalView />
+              </Route>
+              <Route exact path="/journalgeneratemood">
+                <JournalGenerateMood />
+              </Route>
+              <Route exact path="/journalmood">
+                <JournalMood />
+              </Route>
+              
+              <Route exact path="/loading">
+                <Loading />
+              </Route>
+              <Route exact path="/cardexamples">
+                <CardExamples />              
+              </Route>
+              <Route exact path="/inputexamples">
+                <InputExamples />              
+              </Route>
+              <Route exact path="/segmentexamples">
+                <SegmentExamples />              
+              </Route>
+              <Route exact path="/textareaexamples">
+                <TextAreaExamples />              
+              </Route>
+              <Route exact path="/slideexamples">
+                <SlideExample />              
+              </Route>
               <Route exact path="/">
                 <Redirect to="/journal" />
               </Route>
