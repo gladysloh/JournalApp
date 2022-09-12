@@ -62,6 +62,7 @@ import { SlideExample } from './pages/tutorial/Slides';
 import JournalView from './components/JournalView';
 import JournalGenerateMood from './pages/Journal/journalgeneratemood';
 import JournalMood from './pages/Journal/journalmood';
+import Question from './pages/Journal/question';
 
 setupIonicReact();
 
@@ -141,6 +142,9 @@ const App: React.FC = () => {
               <Route exact path="/journalview">
                 <JournalView />
               </Route>
+              <Route exact path="/question">
+                <Question />
+              </Route>
               <Route exact path="/journalgeneratemood">
                 <JournalGenerateMood />
               </Route>
@@ -167,7 +171,7 @@ const App: React.FC = () => {
                 <SlideExample />              
               </Route>
               <Route exact path="/">
-                <Redirect to="/journal" />
+                <Redirect to="/journaloverview" />
               </Route>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
