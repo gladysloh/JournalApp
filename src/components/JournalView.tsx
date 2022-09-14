@@ -76,7 +76,7 @@ export const JournalView: React.FC = () => {
                   <IonRow>
                       <IonCard className='journalEntryCard'>
                           <IonCardContent>
-                              <IonGrid>
+                              <IonGrid className="journalEntryGrid">
                                   <IonRow className="titleInputBackground">
                                       <IonCol>
                                           <IonCardSubtitle>
@@ -100,9 +100,9 @@ export const JournalView: React.FC = () => {
                                           </IonSelect>
                                       </IonCol>
                                   </IonRow>
-                                  <IonRow className="bodyInputBackground">
+                                  <IonRow className="bodyViewBackground">
                                       <IonTextarea
-                                          className='bodyInput'
+                                          className='bodyView'
                                           value='Today was a very busy day. But I love busy days like today. It keeps me motivated and productive throughout the day to complete as many tasks as possible. I do not like to waste my time, so I try to keep myself occupied with tasks everyday. I completed 3 school assignments, submitted my project proposal to my supervisor and spent time with my family.'
                                           disabled
                                           readonly

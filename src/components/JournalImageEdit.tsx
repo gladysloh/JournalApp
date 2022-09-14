@@ -78,7 +78,7 @@ export const JournalImageEdit: React.FC = () => {
                     <IonRow>
                         <IonCard className='journalEntryCard'>
                             <IonCardContent>
-                                <IonGrid>
+                                <IonGrid className="journalEntryGrid">
                                     <IonRow className="titleInputBackground">
                                         <IonCol>
                                             <IonCardSubtitle>
