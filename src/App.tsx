@@ -93,7 +93,7 @@ const App: React.FC = () => {
         <Route exact path="/login">
           <Login />
         </Route>
-        {/* <Redirect from="/" to="/login" exact /> */}
+        <Redirect from="/" to="/login" exact />
       </IonReactRouter>
     )
   } else {
