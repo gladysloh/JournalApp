@@ -1,0 +1,73 @@
+.ion-page{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.ion-card{
+   margin-top:0px;
+   background-color:whitesmoke;
+   border-color: black;
+   height: 60%;
+   justify-content:center;
+   align-items:center;
+   display:flex;
+   flex-direction:column;
+   border-radius:20px;
+   margin-bottom:170px;
+   
+}
+
+.ion-row{
+   height:12px
+}
+.ion-row2{
+   height:7px
+}
+.ion-row3{
+   height:12px
+}
+.email-field{
+   border-radius:15px;
+   height:60px;
+}
+.password-field{
+   border-radius:15px;
+   height:60px;
+}
+
+.title{
+   font-size: 35px;
+   opacity: 100%;
+   margin-right:160px;
+   color:bisque
+   
+}
+
+.login-button{
+   border-radius:15px;
+   perspective: 1px;
+   overflow:hidden;
+}
+
+.google-button{
+   border-radius:15px;
+   perspective: 1px;
+   overflow:hidden;
+}
+
+.ion-content{
+   margin-bottom:100px
+}
+
+.mood-logo{
+    margin-bottom:0px;
+    margin-top:30px;
+    height:10%
+    
+  
+    
+}
+.rememberme{
+    font-weight:bold;
+}

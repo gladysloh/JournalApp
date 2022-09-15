@@ -11,15 +11,14 @@ import {
   IonLoading
 } from '@ionic/react';
 
-
 import React, { useEffect } from "react";
 
 import { IonReactRouter } from '@ionic/react-router';
 import { addCircle, addCircleOutline, home, homeOutline, notifications, notificationsOutline, person, personOutline, search, searchOutline } from 'ionicons/icons';
 
 import Tab1 from './pages/Journal/Tab1';
-import Tab2 from './pages/Calendar/Tab2';
-import Tab3 from './pages/MoodCharts/Tab3';
+import Mood_Calendar from './pages/Calendar/Mood_Calendar';
+import MoodChart from './pages/MoodCharts/Moodchart';
 
 import Login from './pages/Login/login';
 import Signup from './pages/SignUp/signup';
@@ -51,7 +50,7 @@ import chart from './theme/icons/chart.svg'
 
 setupIonicReact();
 
-const isAuthenticated = false;
+const isAuthenticated = true;
 
 const App: React.FC = () => {
 
@@ -69,14 +68,14 @@ const App: React.FC = () => {
       url: "/calendar",
       activeIcon: calendar,
       icon: calendar,
-      component: Tab2
+      component: Mood_Calendar
     },
     {
-      name: "MoodCharts",
+      name: "Moodcharts",
       url: "/moodcharts",
       activeIcon: chart,
       icon: chart,
-      component: Tab3
+      component: MoodChart
     }
   ];
 
