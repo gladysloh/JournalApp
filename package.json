@@ -19,9 +19,14 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
+    "date-fns": "^2.29.3",
+    "fusioncharts": "^3.19.0",
     "ionicons": "^6.0.3",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.5.0",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
+    "react-fusioncharts": "^4.0.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.0",
@@ -65,7 +70,9 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "4.1.0"
+    "@capacitor/cli": "4.1.0",
+    "@types/react-big-calendar": "^0.38.1",
+    "@types/react-datepicker": "^4.4.2"
   },
   "description": "An Ionic project"
 }

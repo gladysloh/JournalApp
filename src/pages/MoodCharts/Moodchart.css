@@ -1,0 +1,28 @@
+.chart-card {
+    background-color:pink;
+    margin-top: 150px;
+    height:60%;
+    justify-content:center;
+    align-items:center;
+    display:flex;
+    flex-direction:column;
+    border-radius: 25px;
+    
+
+}
+
+.chart-header{
+    opacity: 30%;
+    font-family:sans-serif;
+    font-size:30px
+
+}
+
+.chart-chart{
+    
+   
+}
+
+.chart-headerbtm{
+    opacity:40%;
+}
