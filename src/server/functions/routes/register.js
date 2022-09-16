@@ -18,7 +18,7 @@ async function register(req, res) {
                                       "message": "empty field"  
                                         })
     }
-
+    console.log(displayname)
 
     try {
         const auth = getAuth()
@@ -43,9 +43,10 @@ async function register(req, res) {
         }
         req.session.uid = credential.user.uid
         req.session.save()
+        console.log(credential.user)
         res.status(200).json({
             success: true,
-            displayname: credential.user.displayName
+            displayname: displayname
         })
         //res.cookie('x_auth', credential._tokenResponse.idToken).status(201).json({ registerSuccess: true })
     } catch (err) {
