@@ -11,23 +11,38 @@ import {
   IonLoading
 } from '@ionic/react';
 
-
 import React, { useEffect } from "react";
 
 import { IonReactRouter } from '@ionic/react-router';
 import { addCircle, addCircleOutline, home, homeOutline, notifications, notificationsOutline, person, personOutline, search, searchOutline } from 'ionicons/icons';
 
+
+/** Pages */
+import CardExamples from './pages/tutorial/CardExamples';
+import InputExamples from './pages/tutorial/InputExamples';
+import SegmentExamples from './pages/tutorial/SegmentExamples';
+import TextAreaExamples from './pages/tutorial/TextAreaExamples';
+import { SlideExample } from './pages/tutorial/Slides';
+
+import JournalTextView from './components/JournalTextView'
+import JournalView from './components/JournalView';
+import JournalImageView from './components/JournalImageView'
+
+import JournalText from './pages/Journal/journaltext'
+import JournalImage from './pages/Journal/journalimage'
 import JournalOverview from './pages/Journal/journaloverview';
-import JournalText from './pages/Journal/journaltext';
-import JournalImage from './pages/Journal/journalimage';
-import JournalTextView from './components/JournalTextView';
-import JournalImageView from './components/JournalImageView';
-import Calendar from './pages/Calendar/calendar';
-import Moodcharts from './pages/MoodCharts/moodcharts';
+import JournalGenerateMood from './pages/Journal/journalgeneratemood';
+import JournalMood from './pages/Journal/journalmood';
+import Question from './pages/Journal/question';
+
 import Loading from './pages/Loading/loading';
 
-import Login from './pages/Login/login';
-import Signup from './pages/SignUp/signup';
+// import Tab1 from './pages/Journal/Tab1';
+import Mood_Calendar from './pages/Calendar/Mood_Calendar';
+import MoodChart from './pages/MoodCharts/Moodchart';
+
+import Login from './pages/Account/Login/login';
+import Signup from './pages/Account/SignUp/signup';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -50,23 +65,15 @@ import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
 
+/** Tab bar icons */
 import calendar from './theme/icons/calendar.svg';
 import diary from './theme/icons/diary.svg';
 import chart from './theme/icons/chart.svg'
 
-import CardExamples from './pages/tutorial/CardExamples';
-import InputExamples from './pages/tutorial/InputExamples';
-import SegmentExamples from './pages/tutorial/SegmentExamples';
-import TextAreaExamples from './pages/tutorial/TextAreaExamples';
-import { SlideExample } from './pages/tutorial/Slides';
-import JournalView from './components/JournalView';
-import JournalGenerateMood from './pages/Journal/journalgeneratemood';
-import JournalMood from './pages/Journal/journalmood';
-import Question from './pages/Journal/question';
 
 setupIonicReact();
 
-const isAuthenticated = false;
+const isAuthenticated = true;
 
 const App: React.FC = () => {
 
@@ -84,14 +91,14 @@ const App: React.FC = () => {
       url: "/calendar",
       activeIcon: calendar,
       icon: calendar,
-      component: Calendar
+      component: Mood_Calendar
     },
     {
-      name: "MoodCharts",
+      name: "Moodcharts",
       url: "/moodcharts",
       activeIcon: chart,
       icon: chart,
-      component: Moodcharts
+      component: MoodChart
     }
   ];
 
@@ -108,6 +115,7 @@ const App: React.FC = () => {
         <Route exact path="/login">
           <Login />
         </Route>
+
         <Redirect from="/" to="/login" exact />
       </IonReactRouter>
     )

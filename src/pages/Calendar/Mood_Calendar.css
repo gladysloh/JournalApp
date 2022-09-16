@@ -1,0 +1,21 @@
+.calendar-card {
+    background-color:#efc9fb;
+    margin-top: 150px;
+    height:60%;
+    justify-content:center;
+    align-items:center;
+    display:flex;
+    flex-direction:column-reverse
+    
+
+}
+
+.calendar-class {
+    background-color:white;
+}
+
+.chart-header{
+    opacity: 30%;
+    font-weight:900;
+    font-family:Arial, Helvetica, sans-serif;
+}
