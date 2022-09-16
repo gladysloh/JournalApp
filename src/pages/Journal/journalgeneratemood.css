@@ -1,0 +1,20 @@
+.title {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.emojiCard {
+    border-radius: 28px;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.emojiImage {
+    width: 100px;
+    height: 100px;
+}

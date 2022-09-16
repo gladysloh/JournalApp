@@ -90,6 +90,68 @@ ion-toolbar {
   --ion-color-base: transparent !important;
 }
 
+/**
+* Raleway Font
+*/
+@font-face {
+  font-family: "Raleway";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-BoldItalic";
+  font-style: italic;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Raleway/Raleway-BoldItalic.ttf");
+}
+
+@font-face {
+  font-family: "Raleway-Italic";
+  font-style: italic;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Raleway/Raleway-Italic.ttf");
+}
+
+/**
+* Convergence Font
+*/
+@font-face {
+  font-family: "Convergence";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Convergence/Convergence-Regular.ttf");
+}
+
+/**
+* Nunito Font
+*/
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Nunito/Nunito-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Nunito-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Nunito/Nunito-Bold.ttf");
+}
+
+* {
+  font-family: "NotoSans", "Raleway", "Convergence", "Nunito";
+}
+
 /* @media (prefers-color-scheme: dark) { */
   /*
    * Dark Colors
