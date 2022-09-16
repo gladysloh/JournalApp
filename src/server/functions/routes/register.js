@@ -46,7 +46,8 @@ async function register(req, res) {
         console.log(credential.user)
         res.status(200).json({
             success: true,
-            displayname: displayname
+            displayname: displayname,
+            uid: credential.user.uid
         })
         //res.cookie('x_auth', credential._tokenResponse.idToken).status(201).json({ registerSuccess: true })
     } catch (err) {

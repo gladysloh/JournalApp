@@ -33,7 +33,8 @@ async function login(req, res) {
         console.log(credential.user.displayName)
         res.status(200).json({ 
             success: true,
-            displayname: credential.user.displayname
+            displayname: credential.user.displayname,
+            uid: credential.user.uid
         });
 
     } catch (error) {
