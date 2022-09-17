@@ -12,12 +12,14 @@ async function editjournal(req, res){
     const uid = req.session.uid
     const journalid = req.body.journalid
     const newbody = req.body.newbody
-    console.log(req.body.filename)
+    const newtitle = req.body.newtitle
+    //console.log(req.body.filename)
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
         var filename = req.body.filename
         await bucket.file(`post-images/${filename}`).delete((error) => {
             return res.status(400).json({
+                success: false,
                 message: 'failed to delete existing image'
             })
         })
@@ -31,13 +33,15 @@ async function editjournal(req, res){
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: newbody,
             url: signedUrl,
-            filename: newfilename
+            filename: newfilename,
+            title: newtitle
         }
 
     }  else { //does not update image, journal entry with just the body
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            body: newbody
+            body: newbody,
+            title: newtitle
         }
     }
     try {
