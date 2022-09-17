@@ -1,5 +1,5 @@
 import { IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
+// import ExploreContainer from '../../components/ExploreContainer';
 import './journalimage.css';
 
 import JournalImageEdit from '../../components/JournalImageEdit';

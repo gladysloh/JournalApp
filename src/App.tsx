@@ -8,10 +8,13 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
-  IonLoading
+  IonLoading,
+  useIonViewWillEnter
 } from '@ionic/react';
 
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+
+import { AuthContext } from './context/auth.context.js';
 
 import { IonReactRouter } from '@ionic/react-router';
 import { addCircle, addCircleOutline, home, homeOutline, notifications, notificationsOutline, person, personOutline, search, searchOutline } from 'ionicons/icons';
@@ -42,7 +45,9 @@ import Mood_Calendar from './pages/Calendar/Mood_Calendar';
 import MoodChart from './pages/MoodCharts/Moodchart';
 
 import Login from './pages/Account/Login/login';
-import Signup from './pages/Account/SignUp/signup';
+import SignUp from './pages/Account/SignUp/signup';
+import WelcomeSlides from './components/WelcomeSlides';
+import TabRoot from './pages/TabRoot';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -65,141 +70,41 @@ import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
 
-/** Tab bar icons */
-import calendar from './theme/icons/calendar.svg';
-import diary from './theme/icons/diary.svg';
-import chart from './theme/icons/chart.svg'
-
-
 setupIonicReact();
-
-const isAuthenticated = true;
 
 const App: React.FC = () => {
 
-  const tabs = [
-
-    {
-      name: "JournalOveview",
-      url: "/journaloverview",
-      activeIcon: diary,
-      icon: diary,
-      component: JournalOverview
-    },
-    {
-      name: "Calendar",
-      url: "/calendar",
-      activeIcon: calendar,
-      icon: calendar,
-      component: Mood_Calendar
-    },
-    {
-      name: "Moodcharts",
-      url: "/moodcharts",
-      activeIcon: chart,
-      icon: chart,
-      component: MoodChart
-    }
-  ];
-
-  const [activeTab, setActiveTab] = useState(tabs[0].name);
-
-  
-  if (isAuthenticated) { //remove ! to view home pages OR add ! to see login/signup
-    return (
-      <IonReactRouter>
-        <Route exact path="/signup">
-          <Signup />
-        </Route>
-
-        <Route exact path="/login">
-          <Login />
-        </Route>
-
-        <Redirect from="/" to="/login" exact />
-      </IonReactRouter>
-    )
-  } else {
+  const { state } = useContext(AuthContext);
+  const [user, setUser] = useState([])
+  if (!state.isLoggedIn) {
     return (
       <IonApp>
         <IonReactRouter>
-          <IonTabs onIonTabsDidChange={e => setActiveTab(e.detail.tab)}>
-            <IonRouterOutlet>
-
-              {tabs.map((tab, index) => {
-
-                return (
-
-                  <Route key={index} exact path={tab.url}>
-                    <tab.component />
-                  </Route>
-                );
-              })}
-              <Route exact path="/journaltext">
-                <JournalText />
-              </Route>
-              <Route exact path="/journalimage">
-                <JournalImage />
-              </Route>
-              <Route exact path="/journaltextview">
-                <JournalTextView />
-              </Route>
-              <Route exact path="/journalimageview">
-                <JournalImageView />
-              </Route>
-              <Route exact path="/journalview">
-                <JournalView />
-              </Route>
-              <Route exact path="/question">
-                <Question />
-              </Route>
-              <Route exact path="/journalgeneratemood">
-                <JournalGenerateMood />
-              </Route>
-              <Route exact path="/journalmood">
-                <JournalMood />
-              </Route>
-              
-              <Route exact path="/loading">
-                <Loading />
-              </Route>
-              <Route exact path="/cardexamples">
-                <CardExamples />              
-              </Route>
-              <Route exact path="/inputexamples">
-                <InputExamples />              
-              </Route>
-              <Route exact path="/segmentexamples">
-                <SegmentExamples />              
-              </Route>
-              <Route exact path="/textareaexamples">
-                <TextAreaExamples />              
-              </Route>
-              <Route exact path="/slideexamples">
-                <SlideExample />              
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/journaloverview" />
-              </Route>
-            </IonRouterOutlet>
-            <IonTabBar slot="bottom">
-              {tabs.map((tab, barIndex) => {
-
-                const active = tab.name === activeTab;
-
-                return (
-
-                  <IonTabButton key={`tab_${barIndex}`} tab={tab.name} href={tab.url}>
-                    <IonIcon icon={active ? tab.activeIcon : tab.icon} />
-                  </IonTabButton>
-                );
-              })}
-            </IonTabBar>
-          </IonTabs>
+          <IonRouterOutlet>
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={SignUp} />
+            <Route exact path="/" render={() => <Redirect to="/login" />} />
+            {/* <Route path="/tabs" component={TabRoot} />
+            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} /> */}
+          </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
+    )
+  }
+  else {
+    console.log(state.isLoggedIn)
+    return (
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
+            <Route path="/tabs" component={TabRoot} />
+            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+
     );
   }
-
 };
 export default App;

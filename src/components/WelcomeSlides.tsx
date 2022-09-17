@@ -1,34 +1,28 @@
-import React from 'react';
-import { IonContent, IonPage } from '@ionic/react';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react.js';
-import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper';
-
-import 'swiper/swiper.min.css';
-import 'swiper/modules/autoplay/autoplay.min.css';
-import 'swiper/modules/keyboard/keyboard.min.css';
-import 'swiper/modules/pagination/pagination.min.css';
-import 'swiper/modules/scrollbar/scrollbar.min.css';
-import 'swiper/modules/zoom/zoom.min.css';
-import '@ionic/react/css/ionic-swiper.css';
+import React, { useContext } from 'react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonPage } from '@ionic/react';
+import './WelcomeSlides.css'
+import moodlogo from "../theme/icons/output-onlinepngtools.png"
+import { AuthContext } from '../context/auth.context';
 
 const WelcomeSlides: React.FC = () => {
-  return (
-    <IonPage>
-      <IonContent>
-        <Swiper
-          modules={[Autoplay, Keyboard, Pagination, Scrollbar, Zoom]}
-          autoplay={true}
-          keyboard={true}
-          pagination={true}
-          scrollbar={true}
-          zoom={true}
-        >
-          <SwiperSlide>Slide 1</SwiperSlide>
-          <SwiperSlide>Slide 2</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-        </Swiper>
-      </IonContent>
-    </IonPage>
-  );
+    const value = useContext(AuthContext);
+
+    const user = localStorage.getItem("oadUser") || '';
+    const displayName = JSON.parse(user).displayname;
+
+    return (
+        <IonPage>
+            <IonContent>
+                <div className="outer-div">
+                    <div className="inner-div">
+                        <img src={moodlogo}/>
+                        <h1 className="welcome"> Welcome, {displayName} </h1>
+                        <IonButton expand="block" color="dark">Start Journaling</IonButton>
+
+                    </div>
+                </div>
+            </IonContent>
+        </IonPage>
+    );
 };
 export default WelcomeSlides;

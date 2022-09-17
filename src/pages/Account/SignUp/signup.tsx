@@ -1,21 +1,40 @@
-import { IonRow, IonContent, IonHeader, IonPage, IonTitle, 
-  IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, 
-  IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, IonCheckbox, 
-  useIonLoading, useIonToast } from '@ionic/react';
-import React, { useState, useRef, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import {
+  IonRow, IonContent, IonHeader, IonPage, IonTitle,
+  IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle,
+  IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, IonCheckbox,
+  useIonLoading, useIonToast
+} from '@ionic/react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { Link, NavLink } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { useForm, Controller } from 'react-hook-form';
+import { useSetState } from 'react-use';
 
 /** Design */
 import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import logo from "../../../theme/icons/google.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import './signup.css';
+import { AuthContext } from '../../../context/auth.context';
 
 
 const SignUp: React.FC = () => {
-  
+
+  const initialState = {
+    email: '',
+    password: '',
+    displayName: ''
+  }
+
+  const { state: ContextState, signUp } = useContext(AuthContext);
+  const {
+    isLoginPending,
+    isLoggedIn,
+    loginError
+  } = ContextState;
+
+  const [state, setState] = useSetState(initialState);
+
 
   const {
     register,
@@ -29,14 +48,13 @@ const SignUp: React.FC = () => {
   const password = useRef({});
   password.current = watch("password", "");
 
-  const[data, setData] = useState(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
-
   const [presentToast] = useIonToast();
 
-  const toaster = (msg, icon) => {
+  const toaster = (msg: any, icon: any) => {
     presentToast({
       message: msg,
       duration: 1500,
@@ -46,14 +64,20 @@ const SignUp: React.FC = () => {
     });
   };
 
-  const onSubmit = async (e) => {
-    const userDetails = JSON.stringify({
-        email: e.email,
-        displayname: e.displayName,
-        password: e.password
-      })
+  const [uid, setUserID] = useState();
 
-      console.log(userDetails)
+  const onSubmit = async (e: any) => {
+
+    const userDetails = {
+      email: e.email,
+      displayname: e.displayName,
+      password: e.password
+    }
+
+    const userjson = JSON.stringify(userDetails)
+    console.log(userjson)
+
+    setState(userDetails);
 
     setLoading(true);
     present({
@@ -63,7 +87,7 @@ const SignUp: React.FC = () => {
     try {
       const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/register', {
         method: 'POST',
-        body: userDetails,
+        body: userjson,
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -80,23 +104,27 @@ const SignUp: React.FC = () => {
       console.log('result is: ', JSON.stringify(result, null, 4));
       toaster("Signed up successfully", checkmarkCircleOutline)
       setData(result);
-      return <Link to="/journaloverview"/>
-    } catch (err) {
 
+      // store the user in localStorage
+      localStorage.setItem('oadUser', JSON.stringify(result))
+      setUserID(result.uid)
+
+      const { email, password, displayName } = state;
+      signUp(email, password, displayName);
+      setState({
+        email: '',
+        password: '',
+        displayName: ''
+      });
+
+    } catch (err) {
       console.log(err.message)
       setError(err.message);
+      
     } finally {
       dismiss();
       setLoading(false);
     }
-  };
-
-  
-
-  const intialValues = {
-    displayName: "",
-    email: "",
-    password: ""
   };
 
   return (
@@ -119,7 +147,7 @@ const SignUp: React.FC = () => {
               <IonItem className="form-field">
                 <IonLabel className="name-label" position="stacked"> Display Name </IonLabel>
                 <IonInput className="name-input"
-                  defaultValue={intialValues.displayName}
+                  defaultValue={initialState.displayName}
                   type="text"
                   {...register("displayName", {
                     required: "This is required",
@@ -133,7 +161,7 @@ const SignUp: React.FC = () => {
               <IonItem className="form-field">
                 <IonLabel className="email-label" position="stacked"> Email </IonLabel>
                 <IonInput className="email-input"
-                  defaultValue={intialValues.email}
+                  defaultValue={initialState.email}
                   type="email"
                   {...register("email", {
                     required: "This is required",
@@ -184,7 +212,7 @@ const SignUp: React.FC = () => {
                   Sign up with <img src={logo} width="30px" />
                 </IonButton>
 
-                <IonFooter>Already have an account? Log In <a href="../login"> here </a>
+                <IonFooter>Already have an account? Log In <NavLink to="/login"> here </NavLink>
                 </IonFooter>
               </div>
             </form>
