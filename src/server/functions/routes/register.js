@@ -1,6 +1,7 @@
 const {
-    getAuth,
-    createUserWithEmailAndPassword
+    //getAuth: getClientAuth,
+    createUserWithEmailAndPassword,
+    getAuth
 } = require('firebase/auth')
 
 const {
@@ -12,41 +13,52 @@ const admin = require('firebase-admin')
 const bucket = admin.storage().bucket()
 
 async function register(req, res) {
-    const {email, password, displayname} = req.body;
-    if (!email || !password || !displayname){
+    const {email, password, displayName} = req.body;
+    if (!email || !password || !displayName){
         return res.status(400).json({ "success": false,
                                       "message": "empty field"  
                                         })
     }
-    console.log(displayname)
+    //console.log(displayname)
 
     try {
         const auth = getAuth()
         const credential = await createUserWithEmailAndPassword(
             auth,
             email,
-            password
+            password,
+            displayName
         );
-        const adminAuth = getAdminAuth()
-        // const token = await adminAuth.createCustomToken(
-        //     credential.user.uid
-        // );
+        console.log(auth)
         try {
-            await firestore 
-                .doc(`users/${credential.user.uid}`)
-                .set({ displayname });
+            await admin.auth().updateUser(credential.user.uid, {
+                displayName: displayName
+            })
         } catch(err){
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 error: err
             })
         }
+        // const token = await adminAuth.createCustomToken(
+        //     credential.user.uid
+        // );
+        // try {
+        //     await firestore 
+        //         .doc(`users/${credential.user.uid}`)
+        //         .set({ displayname });
+        // } catch(err){
+        //     res.status(400).json({
+        //         success: false,
+        //         error: err
+        //     })
+        // }
         req.session.uid = credential.user.uid
         req.session.save()
         console.log(credential.user)
         res.status(200).json({
             success: true,
-            displayname: displayname,
+            displayname: displayName,
             uid: credential.user.uid
         })
         //res.cookie('x_auth', credential._tokenResponse.idToken).status(201).json({ registerSuccess: true })
