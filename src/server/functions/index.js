@@ -48,7 +48,10 @@ app.use(session({
     resave: false,
     secret: 'ilovecat'
 }))
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:8100"
+  }));
 app.use(morgan('dev'))
 app.use(cookieparser())
 app.use(bodyparser.json())
