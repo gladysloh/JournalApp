@@ -47,9 +47,12 @@ app.use(session({
     saveUninitialized: true,
     resave: false,
     secret: 'ilovecat'
-}))
-app.use(cors())
-app.use(morgan('dev'))
+}))//what the fuck
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:8100"
+  }));
+//app.use(morgan('dev'))
 app.use(cookieparser())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: true}))
