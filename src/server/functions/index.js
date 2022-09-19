@@ -52,7 +52,7 @@ app.use(cors({
     credentials: true,
     origin: "http://localhost:8100"
   }));
-app.use(morgan('dev'))
+//app.use(morgan('dev'))
 app.use(cookieparser())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: true}))
