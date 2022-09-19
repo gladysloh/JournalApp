@@ -28,7 +28,7 @@ async function login(req, res) {
         //getAuth().updateUser
         req.session.uid = credential.user.uid
         req.session.save()
-        //console.log(req.session)
+        console.log(req.session.uid)
 
         // console.log(credential.user)
         return res.status(200).json({ 

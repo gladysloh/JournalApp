@@ -76,6 +76,7 @@ const App: React.FC = () => {
 
   const { state } = useContext(AuthContext);
   const [user, setUser] = useState([])
+  console.log(state);
   if (!state.isLoggedIn) {
     return (
       <IonApp>

@@ -1,5 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from "react";
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
 
 /** STYLE */
 import './journaloverview.css';
@@ -33,17 +35,26 @@ const JournalOverview: React.FC = () => {
     const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const user = localStorage.getItem("oadUser") || '';
-    const userString = JSON.parse(user).uid;
+    // const user = localStorage.getItem("oadUser") || '';
+    // const userString = JSON.parse(user).uid;
     const [items, setItems] = useState([]);
+    const [cookies, setCookies] = useCookies(['connect.sid']);
+
 
     useIonViewDidEnter(() => {
-        fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getalljournals')
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json)
-                setItems(json);
-            })
+        axios.get('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser').then((res)=>{
+            console.log(res);
+            setCookies('connect.sid', res.data.token)
+            console.log(res.data.token) 
+        })
+        // fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser', {
+        //     credentials: 'same-origin'
+        //   })
+        //     .then((res) => res.json())
+        //     .then((json) => {
+        //         console.log(json)
+        //         setItems(json);
+        //     })
     });
 
 

@@ -3,8 +3,9 @@ const { getDocs, collection, doc } = require('firebase/firestore')
 async function getalljournal(req, res){
     
     const uid = req.session.uid
-
+    console.log(uid)
     const query = firestore.collection(`users/${uid}/journal`)
+    console.log('within getalljournal')
     const snapshot = await query.onSnapshot(querysnapshot => {
         const journals = []
         querysnapshot.forEach((doc) => {
@@ -22,9 +23,10 @@ async function getalljournal(req, res){
             })
             //console.log(journals)
         })
-
+        console.log('successful')
         res.status(200).json(journals)
     }, err => {
+        console.log('error occurred')
         res.status(400).json({ success: false,
                                error: err                        
         })
