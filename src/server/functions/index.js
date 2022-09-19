@@ -46,7 +46,12 @@ app.use(session({
     }),
     saveUninitialized: true,
     resave: false,
-    secret: 'ilovecat'
+    secret: 'ilovecat',
+    cookie: { 
+        secure: false,            //setting this false for http connections
+        maxAge: 3600000,
+        expires: new Date(Date.now() + 3600000) 
+    }
 }))//what the fuck
 app.use(cors({
     credentials: true,
