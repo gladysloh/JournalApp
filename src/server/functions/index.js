@@ -47,7 +47,7 @@ app.use(session({
     saveUninitialized: true,
     resave: false,
     secret: 'ilovecat'
-}))
+}))//what the fuck
 app.use(cors({
     credentials: true,
     origin: "http://localhost:8100"
