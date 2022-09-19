@@ -1,23 +1,25 @@
-const {
-    GoogleAuthProvider,
-    signInWithPopup,
-    signInWithRedirect
-} = require('firebase/auth')
+const admin = require('firebase-admin')
+const firestore = require('firebase-admin').firestore()
 
-var provider = new GoogleAuthProvider()
 
-const googlesignup = () => {
-    console.log('in googlesignup')
-    signInWithRedirect(provider).then(function(result) {
-        var token = result.credentials.accessToken;
-        var user = result.user
-    }).catch(function(error){
-        var errorCode = error.code
-        var errorMessage = error.message
-        var email = error.email
-        var credential = error.credential
-    })
+async function googlelogin(req, res){
+    if (!req.body.displayName || !req.body.uid){
+        return res.status(400).json({
+            success: false,
+            error: "no displayName"
+        })
+    } 
+
+    try {
+        await admin.auth().updateUser(req.body.uid, {
+            displayName: req.body.displayName
+        })
+    } catch (err){
+        return res.status(400).json({
+            success: false,
+            displayName: req.body.displayName
+        })
+    }
 }
 
-// const googlesignup = () => signInWithRedirect(provider)
-module.exports = googlesignup
+module.exports = googlelogin

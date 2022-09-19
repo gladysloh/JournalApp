@@ -1,8 +1,6 @@
 const {
     getAuth: getClientAuth,
-    signInWithEmailAndPassword,
-    setPersistence,
-    
+    signInWithEmailAndPassword,    
     //currentUser
 } = require('firebase/auth')
 const admin = require('firebase-admin')
