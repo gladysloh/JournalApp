@@ -27,7 +27,14 @@ async function login(req, res) {
         //const idToken = credential._tokenResponse.idToken
         //getAuth().updateUser
         req.session.uid = credential.user.uid
-        req.session.save()
+        req.session.save((err) => {
+            if (err) {
+                return res.json({
+                    success: false,
+                    error: err
+                })
+            } 
+        })
         //console.log(req.session)
 
         console.log(credential.user)
