@@ -37,29 +37,13 @@ const JournalOverview: React.FC = () => {
     const userString = JSON.parse(user).uid;
     const [items, setItems] = useState([]);
 
-    useIonViewDidEnter(async () => {
-        console.log(userString)
-        present({
-            message: 'Retriving journals'
-        })
-        try {
-            const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getalljournals')
-
-            if (!response.ok) {
-                throw new Error(`Error! status: ${response.status}`);
-            }
-
-            const result = await response.json(); 
-
-            console.log('result is: ', JSON.stringify(result, null, 4));
-            setItems(result)
-
-        } catch (err) {
-            console.log(err.message)
-
-        } finally {
-            dismiss();
-        }
+    useIonViewDidEnter(() => {
+        fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getalljournals')
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setItems(json);
+            })
     });
 
 

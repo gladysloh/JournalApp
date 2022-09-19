@@ -32,7 +32,7 @@ async function login(req, res) {
         req.session.save()
         //console.log(req.session)
 
-        console.log(credential.user)
+        // console.log(credential.user)
         return res.status(200).json({ 
             success: true,
             displayname: credential.user.displayName,
