@@ -86,45 +86,8 @@ ion-content {
 }
 
 ion-toolbar {
-  --background-color: #FFDBBD;
-  --ion-color-base: #FFDBBD;
-  --background: transparent;
-
-}
-
-ion-title{
-  font-family: 'Raleway-Bold';
-}
-
-/**
-* NotoSans Font
-*/
-@font-face {
-  font-family: "NotoSans";
-  font-style: normal;
-  font-weight: normal;
-  src: url("../../public/assets/fonts/NotoSans/NotoSans-Regular.ttf");
-}
-
-@font-face {
-  font-family: "NotoSans-Bold";
-  font-style: normal;
-  font-weight: bold;
-  src: url("../../public/assets/fonts/NotoSans/NotoSans-Bold.ttf");
-}
-
-@font-face {
-  font-family: "NotoSans-BoldItalic";
-  font-style: italic;
-  font-weight: bold;
-  src: url("../../public/assets/fonts/NotoSans/NotoSans-BoldItalic.ttf");
-}
-
-@font-face {
-  font-family: "NotoSans-Italic";
-  font-style: italic;
-  font-weight: normal;
-  src: url("../../public/assets/fonts/NotoSans/NotoSans-Italic.ttf");
+  --background-color: transparent;
+  --ion-color-base: transparent !important;
 }
 
 /**
@@ -158,10 +121,36 @@ ion-title{
   src: url("../../public/assets/fonts/Raleway/Raleway-Italic.ttf");
 }
 
-* {
-  font-family: "NotoSans", "Raleway";
+/**
+* Convergence Font
+*/
+@font-face {
+  font-family: "Convergence";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Convergence/Convergence-Regular.ttf");
 }
 
+/**
+* Nunito Font
+*/
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Nunito/Nunito-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Nunito-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Nunito/Nunito-Bold.ttf");
+}
+
+* {
+  font-family: "NotoSans", "Raleway", "Convergence", "Nunito";
+}
 
 /* @media (prefers-color-scheme: dark) { */
   /*

@@ -1,0 +1,77 @@
+.ion-page-account {
+   justify-content: flex-start
+}
+
+ion-card{
+   /* margin-top:0px; */
+   background-color:whitesmoke;
+}
+
+ion-card-header{
+   width:100%;
+}
+
+ion-card-title{
+   text-align: left;
+}
+
+.acc-title{
+   font-size: 30px;
+   font-weight: bold;
+   opacity: 100%;
+   color:black;
+}
+
+.ion-row{
+   height:12px
+}
+.ion-row2{
+   height:7px
+}
+.ion-row3{
+   height:4px
+}
+
+ion-item{
+   margin-bottom: 15px;
+}
+
+.email-field{
+   border-radius:15px;
+   /* height:60px; */
+}
+.password-field{
+   border-radius:15px;
+   /* height:60px; */
+}
+
+
+.login-button{
+   border-radius:15px;
+   perspective: 1px;
+   overflow:hidden;
+}
+
+.google-button{
+   border-radius:15px;
+   perspective: 1px;
+   overflow:hidden;
+}
+
+.ion-content{
+   margin-bottom:100px
+}
+
+.logo-div{
+   display:flex;
+   align-items: center;
+   justify-content: center;
+}
+.mood-logo{
+    width:60%;
+    
+}
+
+.rememberme{
+    font-weight:bold;
+}

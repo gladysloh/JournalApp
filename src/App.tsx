@@ -8,21 +8,46 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
-  IonLoading
+  IonLoading,
+  useIonViewWillEnter
 } from '@ionic/react';
 
+import React, { useEffect, useContext } from "react";
 
-import React, { useEffect } from "react";
+import { AuthContext } from './context/auth.context.js';
 
 import { IonReactRouter } from '@ionic/react-router';
 import { addCircle, addCircleOutline, home, homeOutline, notifications, notificationsOutline, person, personOutline, search, searchOutline } from 'ionicons/icons';
 
-import Tab1 from './pages/Journal/Tab1';
-import Tab2 from './pages/Calendar/Tab2';
-import Tab3 from './pages/MoodCharts/Tab3';
 
-import Login from './pages/Login/login';
-import Signup from './pages/SignUp/signup';
+/** Pages */
+import CardExamples from './pages/tutorial/CardExamples';
+import InputExamples from './pages/tutorial/InputExamples';
+import SegmentExamples from './pages/tutorial/SegmentExamples';
+import TextAreaExamples from './pages/tutorial/TextAreaExamples';
+import { SlideExample } from './pages/tutorial/Slides';
+
+import JournalTextView from './components/JournalTextView'
+import JournalView from './components/JournalView';
+import JournalImageView from './components/JournalImageView'
+
+import JournalText from './pages/Journal/journaltext'
+import JournalImage from './pages/Journal/journalimage'
+import JournalOverview from './pages/Journal/journaloverview';
+import JournalGenerateMood from './pages/Journal/journalgeneratemood';
+import JournalMood from './pages/Journal/journalmood';
+import Question from './pages/Journal/question';
+
+import Loading from './pages/Loading/loading';
+
+// import Tab1 from './pages/Journal/Tab1';
+import Mood_Calendar from './pages/Calendar/Mood_Calendar';
+import MoodChart from './pages/MoodCharts/Moodchart';
+
+import Login from './pages/Account/Login/login';
+import SignUp from './pages/Account/SignUp/signup';
+import WelcomeSlides from './components/WelcomeSlides';
+import TabRoot from './pages/TabRoot';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -45,96 +70,42 @@ import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
 
-import calendar from './theme/icons/calendar.svg';
-import diary from './theme/icons/diary.svg';
-import chart from './theme/icons/chart.svg'
-
 setupIonicReact();
-
-const isAuthenticated = false;
 
 const App: React.FC = () => {
 
-  const tabs = [
-
-    {
-      name: "Journal",
-      url: "/journal",
-      activeIcon: diary,
-      icon: diary,
-      component: Tab1
-    },
-    {
-      name: "Calendar",
-      url: "/calendar",
-      activeIcon: calendar,
-      icon: calendar,
-      component: Tab2
-    },
-    {
-      name: "MoodCharts",
-      url: "/moodcharts",
-      activeIcon: chart,
-      icon: chart,
-      component: Tab3
-    }
-  ];
-
-  const [activeTab, setActiveTab] = useState(tabs[0].name);
-
-  
-  if (isAuthenticated) { //remove ! to view home pages OR add ! to see login/signup
-    return (
-      <IonReactRouter>
-        <Route exact path="/signup">
-          <Signup />
-        </Route>
-
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        {/* <Redirect from="/" to="/login" exact /> */}
-      </IonReactRouter>
-    )
-  } else {
+  const { state } = useContext(AuthContext);
+  const [user, setUser] = useState([])
+  console.log(state);
+  if (!state.isLoggedIn) {
     return (
       <IonApp>
         <IonReactRouter>
-          <IonTabs onIonTabsDidChange={e => setActiveTab(e.detail.tab)}>
-            <IonRouterOutlet>
-
-              {tabs.map((tab, index) => {
-
-                return (
-
-                  <Route key={index} exact path={tab.url}>
-                    <tab.component />
-                  </Route>
-                );
-              })}
-
-              <Route exact path="/">
-                <Redirect to="/journal" />
-              </Route>
-            </IonRouterOutlet>
-            <IonTabBar slot="bottom">
-              {tabs.map((tab, barIndex) => {
-
-                const active = tab.name === activeTab;
-
-                return (
-
-                  <IonTabButton key={`tab_${barIndex}`} tab={tab.name} href={tab.url}>
-                    <IonIcon icon={active ? tab.activeIcon : tab.icon} />
-                  </IonTabButton>
-                );
-              })}
-            </IonTabBar>
-          </IonTabs>
+          <IonRouterOutlet>
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={SignUp} />
+            <Route exact path="/" render={() => <Redirect to="/login" />} />
+            {/* <Route path="/tabs" component={TabRoot} />
+            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} /> */}
+          </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
+    )
+  }
+  else {
+    console.log(state.isLoggedIn)
+    return (
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
+            <Route path="/tabs" component={TabRoot} />
+            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+
     );
   }
-
 };
 export default App;

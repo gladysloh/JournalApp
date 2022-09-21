@@ -1,0 +1,19 @@
+.outer-div{
+    height:90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inner-div{
+    width:60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1.welcome{
+    font-weight:bold;
+
+}
