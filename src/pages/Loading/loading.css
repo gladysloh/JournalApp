@@ -1,0 +1,8 @@
+.logo {
+    position: absolute;
+    width: 345px;
+    height: 358px;
+    left: 15px;
+    top: 140px;
+    background-blend-mode: multiply;
+}
