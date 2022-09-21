@@ -1,14 +1,19 @@
 const {getAuth} = require('firebase-admin/auth');
-
+const admin = require('firebase-admin')
 
 async function checkauthenticated(req, res, next){
-   console.log("FIREBASE AUTH: ", req.session.uid)
-    if (!req.session.uid){
-        return res.status(400).json({
-            error: "unauthenticated"
+    let token = req.cookies['auth_token']
+    console.log(token)
+    admin.auth().verifyIdToken(token).then((decodedtoken) => {
+        const uid = decodedtoken.uid
+        req.body.uid = uid
+        next()
+    }).catch((error) => {
+        return res.status(401).json({
+            success: false,
+            error: 'unauthenticated'
         })
-    }
-    next()
+    })
 }
 
 module.exports = checkauthenticated

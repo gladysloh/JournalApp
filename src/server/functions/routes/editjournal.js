@@ -9,7 +9,7 @@ const { refFromURL } = require('firebase/storage')
 
 
 async function editjournal(req, res){
-    const uid = req.session.uid
+    const uid = req.body.uid
     const journalid = req.body.journalid
     const newbody = req.body.newbody
     const newtitle = req.body.newtitle
