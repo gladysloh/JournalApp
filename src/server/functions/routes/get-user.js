@@ -2,7 +2,7 @@ const firestore = require('firebase-admin').firestore()
 
 async function getUser(req, res){
 
-    const userID = req.session.uid
+    const userID = req.body.uid
     if (!userID){
         res.status(400).json({ error: {code: 'no-user-id'}})
         return
