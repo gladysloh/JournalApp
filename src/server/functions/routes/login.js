@@ -17,36 +17,24 @@ const firestore = require('firebase-admin').firestore()
 async function login(req, res) {
     const {email, password} = req.body;
     try {
-        //console.log(admin.auth().createSessionCookie(credential))
         const credential = await signInWithEmailAndPassword(
             getClientAuth(),
             email,
             password
         );
-        //console.log(credential)
-        //const idToken = credential._tokenResponse.idToken
-        //getAuth().updateUser
-        req.session.uid = credential.user.uid
-   
-        // await req.session.save((err) => {
-        //     if (err) {
-        //         return res.json({
-        //             success: false,
-        //             error: err
-        //         })
-        //     } 
-        // })
         
-        console.log("====== LOGIN JS: ", req.session.uid)
+        await credential.user.getIdToken().then((token) => {
+            console.log(token)
+            res.cookie('auth_token', token).status(201).json({
+                success: true,
+                displayName: credential.user.displayName,
+                uid: credential.user.uid
+            })
+        })
 
-        // console.log(credential.user)
-        return res.status(200).json({ 
-            success: true,
-            displayname: credential.user.displayName,
-            uid: credential.user.uid
-        });
 
     } catch (error) {
+        console.log(error)
         res.status(401).json({
             success: false,
             error: error

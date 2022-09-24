@@ -7,9 +7,9 @@ const bucket = admin.storage().bucket()
 global.XMLHttpRequest = require('xhr2')
 
 async function createjournal(req, res) {
-    const uid = req.session.uid
+    const uid = req.body.uid
     if (!req.body.title || !req.body.journal){
-        return res.status(400).json({
+            return res.status(400).json({
             success: false,
             error: "empty field(s)"
         })

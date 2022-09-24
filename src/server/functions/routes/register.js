@@ -40,28 +40,14 @@ async function register(req, res) {
                 error: err
             })
         }
-        // const token = await adminAuth.createCustomToken(
-        //     credential.user.uid
-        // );
-        // try {
-        //     await firestore 
-        //         .doc(`users/${credential.user.uid}`)
-        //         .set({ displayname });
-        // } catch(err){
-        //     res.status(400).json({
-        //         success: false,
-        //         error: err
-        //     })
-        // }
-        req.session.uid = credential.user.uid
-        req.session.save()
-        console.log(credential.user)
-        res.status(200).json({
-            success: true,
-            displayname: displayName,
-            uid: credential.user.uid
+        await credential.user.getIdToken().then((token) => {
+            console.log(token)
+            res.cookie('auth_token', token).status(201).json({
+                success: true,
+                displayname: displayName,
+                uid: credential.user.uid
+            })
         })
-        //res.cookie('x_auth', credential._tokenResponse.idToken).status(201).json({ registerSuccess: true })
     } catch (err) {
         return res.status(400).json({
             success: false,

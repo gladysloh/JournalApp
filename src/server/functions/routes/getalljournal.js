@@ -2,8 +2,8 @@ const firestore = require('firebase-admin').firestore()
 const { getDocs, collection, doc } = require('firebase/firestore')
 async function getalljournal(req, res){
     
-    const uid = req.session.uid
-    console.log(uid)
+    const uid = req.body.uid
+
     const query = firestore.collection(`users/${uid}/journal`)
     console.log('within getalljournal')
     const snapshot = await query.onSnapshot(querysnapshot => {

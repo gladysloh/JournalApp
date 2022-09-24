@@ -3,7 +3,7 @@ const firestore = require('firebase-admin').firestore()
 
 async function editprofile(req, res){
 
-    const uid = req.session.uid
+    const uid = req.body.uid
 
     if (!req.body.new_displayname){
         return res.status(400).json({
