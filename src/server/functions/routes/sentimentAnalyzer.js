@@ -1,8 +1,9 @@
-const vader = require('vader-sentiment')
+const Sentiment = require('sentiment')
 const natural = require('natural')
 const aposToLexForm = require('apos-to-lex-form')
 const SpellCorrector = require('spelling-corrector')
 const SW = require('stopword')
+const vader = require('vader-sentiment')
 
 const spellCorrector = new SpellCorrector()
 spellCorrector.loadDictionary()
@@ -10,21 +11,30 @@ spellCorrector.loadDictionary()
 //WIP
 function sentimentAnalyzer(req,res){
     var raw = req.body.journal
+    raw = raw + '.'
+    const { WordTokenizer, SentenceTokenizer } = natural
     const lexedJounral = aposToLexForm(raw)
     const lowerJournal = lexedJounral.toLowerCase()
-
-    const alphaOnlyJournal = lowerJournal.replace(/[^a-zA-Z\s]+/g, '')
-    return res.status(200).json({ alphaOnlyJournal })
-
-    const { WordTokenizer } = natural
+  
+    sentTokenizer = new SentenceTokenizer()
+    var sentences = sentTokenizer.tokenize(lowerJournal)
     const tokenizer = new WordTokenizer()
-    const tokenizedReview = tokenizer.tokenize(alphaOnlyJournal)
+    //console.log(sentences)
+    sentences.forEach((sentence, index) => {
+        var alphaOnlySentence = sentence.replace(/[^a-zA-Z\s]+/g, '')
+        var tokenizedSentence = tokenizer.tokenize(alphaOnlySentence)
+        var filteredSentence = SW.removeStopwords(tokenizedSentence)
+        var joinedSentence = filteredSentence.join(' ')
+        sentences[index] = joinedSentence
+    })
+    joinedList = sentences.join('. ')
+    var sentiment = new Sentiment()
+    var result = vader.SentimentIntensityAnalyzer.polarity_scores(joinedList)
+    return res.json(result)
+    
+    
 
-    // tokenizedReview.forEach((word, index) => {
-    //     tokenizedReview[index] = spellCorrector.correct(word)
-    // })
 
-    const filteredJournal = SW.removeStopwords(tokenizedReview)
     //return res.status(200).json({ tokenized: filteredJournal })
 }
 
