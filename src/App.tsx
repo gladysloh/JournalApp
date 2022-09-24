@@ -77,35 +77,50 @@ const App: React.FC = () => {
   const { state } = useContext(AuthContext);
   const [user, setUser] = useState([])
   console.log(state);
-  if (!state.isLoggedIn) {
-    return (
-      <IonApp>
+  return (
+    <IonApp>
         <IonReactRouter>
           <IonRouterOutlet>
             <Route path="/login" component={Login} />
             <Route path="/signup" component={SignUp} />
             <Route exact path="/" render={() => <Redirect to="/login" />} />
-            {/* <Route path="/tabs" component={TabRoot} />
-            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} /> */}
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
-    )
-  }
-  else {
-    console.log(state.isLoggedIn)
-    return (
-      <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
             <Route path="/tabs" component={TabRoot} />
             <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
+  )
 
-    );
-  }
+
+  // if (!state.isLoggedIn) {
+  //   return (
+  //     <IonApp>
+  //       <IonReactRouter>
+  //         <IonRouterOutlet>
+  //           <Route path="/login" component={Login} />
+  //           <Route path="/signup" component={SignUp} />
+  //           <Route exact path="/" render={() => <Redirect to="/login" />} />
+  //           {/* <Route path="/tabs" component={TabRoot} />
+  //           <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} /> */}
+  //         </IonRouterOutlet>
+  //       </IonReactRouter>
+  //     </IonApp>
+  //   )
+  // }
+  // else {
+  //   console.log(state.isLoggedIn)
+  //   return (
+  //     <IonApp>
+  //       <IonReactRouter>
+  //         <IonRouterOutlet>
+  //           {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
+  //           <Route path="/tabs" component={TabRoot} />
+  //           <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
+  //         </IonRouterOutlet>
+  //       </IonReactRouter>
+  //     </IonApp>
+
+  //   );
+  // }
 };
 export default App;

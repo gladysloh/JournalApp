@@ -22,6 +22,7 @@ const Login: React.FC = () => {
   }
   
   const { state: ContextState, login } = useContext(AuthContext);
+  
   const {
     isLoginPending,
     isLoggedIn,
@@ -103,7 +104,7 @@ const Login: React.FC = () => {
         password: ''
       });
 
-    } catch (err) {
+    } catch (err: any) {
       console.log(err.message)
       setError(err.message);
     } finally {
