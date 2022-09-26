@@ -35,19 +35,10 @@ async function monthlymood(req, res){
         res.status(400).json({
             success: false,
             error: err.message
-        })//wthman
+        })
     })
 
-        // if (!snapshot.exists){
-        //     return res.status(400).json({
-        //         success: false,
-        //         error: 'journals not found in that month'
-        //     })
-        // }
-        // const moods = snapshot.data()
-        // return res.status(400).json({
-        //     moods
-        // })
+
     
 
 
