@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter} from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -39,13 +39,22 @@ const JournalOverview: React.FC = () => {
     // const userString = JSON.parse(user).uid;
     const [items, setItems] = useState([]);
     const [cookies, setCookies] = useCookies(['connect.sid']);
+    
 
 
     useIonViewDidEnter(() => {
-        axios.get('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser').then((res)=>{
+        
+        const instance = axios.create({
+            withCredentials: true,
+            baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+         })
+
+        instance.get('/getuser').then((res)=>{
             console.log(res);
-            setCookies('connect.sid', res.data.token)
-            console.log(res.data.token) 
+            setCookies('connect.sid', res.data.token);
+            console.log(res.data.token);
+        }).catch((err)=>{
+            console.error("ERROR: ", err); 
         })
         // fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser', {
         //     credentials: 'same-origin'

@@ -11,7 +11,9 @@ import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
 import { AuthContext } from '../../../context/auth.context';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, Redirect } from 'react-router-dom';
+
+// import JournalOverview from '../../Journal/journaloverview';
 
 
 const Login: React.FC = () => {
@@ -22,7 +24,7 @@ const Login: React.FC = () => {
   }
   
   const { state: ContextState, login } = useContext(AuthContext);
-  
+
   const {
     isLoginPending,
     isLoggedIn,
@@ -94,7 +96,7 @@ const Login: React.FC = () => {
       setData(result);
 
       // store the user in localStorage
-      localStorage.setItem('uid', result.uid)
+      localStorage.setItem('user', JSON.stringify(result))
       setUserID(result.uid)
 
       const { email, password } = state;
@@ -104,6 +106,8 @@ const Login: React.FC = () => {
         password: ''
       });
 
+      goToJournals()
+
     } catch (err: any) {
       console.log(err.message)
       setError(err.message);
@@ -112,6 +116,11 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  function goToJournals(){
+    console.log("going journals")
+    return  <Redirect to="/tabs/journaloverview" />;
+  }
 
   return (
     <IonPage>

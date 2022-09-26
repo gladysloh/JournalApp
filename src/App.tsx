@@ -47,7 +47,6 @@ import MoodChart from './pages/MoodCharts/Moodchart';
 import Login from './pages/Account/Login/login';
 import SignUp from './pages/Account/SignUp/signup';
 import WelcomeSlides from './components/WelcomeSlides';
-import TabRoot from './pages/TabRoot';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -69,6 +68,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
+import TabRoot from './pages/TabRoot';
+
 
 setupIonicReact();
 
@@ -76,51 +77,45 @@ const App: React.FC = () => {
 
   const { state } = useContext(AuthContext);
   const [user, setUser] = useState([])
-  console.log(state);
+  // console.log(state)
+  // if (!state.isLoggedIn)
+  let userDetails = JSON.parse(localStorage.getItem("user"))
+  console.log(userDetails)
+  // if (userDetails) {
+  //   <IonApp>
+  //     <IonReactRouter>
+  //       <IonRouterOutlet>
+  //         <Route path="/tabs" component={TabRoot} />
+  //       </IonRouterOutlet>
+  //     </IonReactRouter>
+  //   </IonApp>
+  // }
+
   return (
     <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={SignUp} />
-            <Route exact path="/" render={() => <Redirect to="/login" />} />
-            <Route path="/tabs" component={TabRoot} />
-            <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="/tabs" render={() => { return userDetails.success ? <TabRoot/> : <Login/> }} />
+          <Route path="/" render={() => { return userDetails.success ? <TabRoot/> : <Login/> }} exact={true} />
+        
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
   )
-
-
-  // if (!state.isLoggedIn) {
-  //   return (
-  //     <IonApp>
-  //       <IonReactRouter>
-  //         <IonRouterOutlet>
-  //           <Route path="/login" component={Login} />
-  //           <Route path="/signup" component={SignUp} />
-  //           <Route exact path="/" render={() => <Redirect to="/login" />} />
-  //           {/* <Route path="/tabs" component={TabRoot} />
-  //           <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} /> */}
-  //         </IonRouterOutlet>
-  //       </IonReactRouter>
-  //     </IonApp>
-  //   )
-  // }
-  // else {
-  //   console.log(state.isLoggedIn)
-  //   return (
-  //     <IonApp>
-  //       <IonReactRouter>
-  //         <IonRouterOutlet>
+  // else return (
+  //   <IonApp>
+  //     <IonReactRouter>
+  //       <IonRouterOutlet>
   //           {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
-  //           <Route path="/tabs" component={TabRoot} />
-  //           <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
-  //         </IonRouterOutlet>
-  //       </IonReactRouter>
-  //     </IonApp>
+  //         <Route path="/tabs" component={TabRoot} />
+  //         <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
+  //       </IonRouterOutlet>
+  //     </IonReactRouter>
+  //   </IonApp>
 
-  //   );
-  // }
-};
+  // );
+  // };
+}
 export default App;
