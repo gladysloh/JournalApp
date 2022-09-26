@@ -13,7 +13,7 @@ async function checkauthenticated(req, res, next){
             success: false,
             error: 'unauthenticated'
         })
-    })
+    })//test
 }
 
 module.exports = checkauthenticated
