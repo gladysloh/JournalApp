@@ -35,7 +35,7 @@ async function monthlymood(req, res){
         res.status(400).json({
             success: false,
             error: err.message
-        })
+        })//wth
     })
 
         // if (!snapshot.exists){
