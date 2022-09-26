@@ -26,13 +26,15 @@ async function createjournal(req, res) {
                 title: req.body.title,
                 body: req.body.journal,
                 url: signedUrl,
-                filename: filename
+                filename: filename,
+                sentiment: req.body.sentiment
             }
         } else {
             fields = {
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
                 title: req.body.title,
-                body: req.body.journal
+                body: req.body.journal,
+                sentiment: req.body.sentiment
             }
         }
     } catch (err){
