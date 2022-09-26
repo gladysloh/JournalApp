@@ -8,7 +8,7 @@ async function getUser(req, res){
         return
     }
 
-    if (userID != req.token.uid){
+    if (userID != req.body.uid){
         res.status(403).json({ error: {code: 'unauthorized'}})
         return
     }

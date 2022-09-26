@@ -1,5 +1,5 @@
 import React from 'react';       
-import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter } from '@ionic/react';
+import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonViewDidEnter } from '@ionic/react';
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
@@ -11,6 +11,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Mood_Calendar.css";
 import logo from "../google.png"
+import axios from 'axios';
 
 
 function Mood_Calendar(){
@@ -71,6 +72,20 @@ function Mood_Calendar(){
                       },
 
 ]    
+
+useIonViewDidEnter(() => {
+  const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+   })
+
+  instance.get('/getalljournals').then((res)=>{
+      console.log(res);
+      
+  }).catch((err)=>{
+      console.error("ERROR: ", err); 
+  })
+});
 
 
 

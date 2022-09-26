@@ -39,31 +39,20 @@ const JournalOverview: React.FC = () => {
     // const userString = JSON.parse(user).uid;
     const [items, setItems] = useState([]);
     const [cookies, setCookies] = useCookies(['connect.sid']);
-    
-
 
     useIonViewDidEnter(() => {
-        
         const instance = axios.create({
             withCredentials: true,
             baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
          })
 
-        instance.get('/getuser').then((res)=>{
+        instance.get('/getalljournals').then((res)=>{
             console.log(res);
             setCookies('connect.sid', res.data.token);
             console.log(res.data.token);
         }).catch((err)=>{
             console.error("ERROR: ", err); 
         })
-        // fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser', {
-        //     credentials: 'same-origin'
-        //   })
-        //     .then((res) => res.json())
-        //     .then((json) => {
-        //         console.log(json)
-        //         setItems(json);
-        //     })
     });
 
 
@@ -77,14 +66,15 @@ const JournalOverview: React.FC = () => {
         />
     }
 
-    const handleAddEntry = (userid) => {
-        return <Redirect
-            to={{
-                pathname: "/journal",
-                //   foo: userid
+    const handleAddEntry = (userid: any) => {
+        
+        // return <Redirect
+        //     to={{
+        //         pathname: "/journal",
+        //         //   foo: userid
 
-            }}
-        />
+        //     }}
+        // />
     }
     return (
         <IonPage>
