@@ -14,7 +14,7 @@ async function createjournal(req, res) {
             error: "empty field(s)"
         })
     }
-    try {
+    try { //if there is an image attached, else no image attached
         if (req.body.image){
             var temp = await uploadimage(req.body.image, uid)
             console.log(temp)

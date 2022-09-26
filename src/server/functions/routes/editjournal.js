@@ -13,6 +13,8 @@ async function editjournal(req, res){
     const journalid = req.body.journalid
     const newbody = req.body.newbody
     const newtitle = req.body.newtitle
+    const sentiment = req.body.semtiment
+
     //console.log(req.body.filename)
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
@@ -34,14 +36,16 @@ async function editjournal(req, res){
             body: newbody,
             url: signedUrl,
             filename: newfilename,
-            title: newtitle
+            title: newtitle,
+            sentiment: sentiment
         }
 
     }  else { //does not update image, journal entry with just the body
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: newbody,
-            title: newtitle
+            title: newtitle,
+            sentiment: sentiment
         }
     }
     try {
