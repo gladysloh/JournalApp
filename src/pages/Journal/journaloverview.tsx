@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter} from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -17,65 +17,79 @@ import clock from '../../theme/icons/clock.png';
 
 /** SERVER */
 import getalljournal from '../../server/functions/routes/getalljournal'
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
+import { useParams, useHistory } from "react-router";
 import { getMonth } from 'date-fns';
 
 const JournalOverview: React.FC = () => {
-    // const loadJournal = () => {
-    //     getalljournal();
-    // }
-
-    // // This function will called only once
-    // useEffect(() => {
-    //     loadJournal();
-    // }, [])
+    const history = useHistory();
     const [present, dismiss] = useIonLoading();
 
     const current = new Date();
     const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // const user = localStorage.getItem("oadUser") || '';
-    // const userString = JSON.parse(user).uid;
-    const [items, setItems] = useState([]);
-    const [cookies, setCookies] = useCookies(['connect.sid']);
+    const [journals, setJournals] = useState([]);
 
-    useIonViewDidEnter(() => {
+    useIonViewWillEnter(() => {
         const instance = axios.create({
             withCredentials: true,
             baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-         })
+        })
 
-        instance.get('/getalljournals').then((res)=>{
+        instance.get('/getalljournals').then((res) => {
             console.log(res);
-            setCookies('connect.sid', res.data.token);
-            console.log(res.data.token);
-        }).catch((err)=>{
-            console.error("ERROR: ", err); 
+            setJournals(res.data);
+
+        }).catch((err) => {
+            console.error("ERROR: ", err);
+            if(err.response.status == 401) history.replace("/login")
+
         })
     });
 
-
-    const handleEditJournal = (userid) => {
-        return <Redirect
-            to={{
-                pathname: "/journal",
-                //   foo: userid
-
-            }}
-        />
+    const getJournalTime = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const result = new Date(seconds * 1000).toISOString().slice(11, 16);
+        return result;
     }
 
-    const handleAddEntry = (userid: any) => {
-        
-        // return <Redirect
-        //     to={{
-        //         pathname: "/journal",
-        //         //   foo: userid
-
-        //     }}
-        // />
+    const getJournalDate = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const date = new Date(seconds * 1000).getDate()
+        const month = new Date(seconds * 1000).getMonth()
+        return date + " " + monthNames[month];
     }
+
+    const getJournalDay = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const day = new Date(seconds * 1000).getDay()
+        return dayNames[day]
+    }
+
+
+    const handleViewJournal = (journal: any) => {
+        console.log("view")
+        let jsonJournal = JSON.stringify(journal)
+        localStorage.setItem("journalEntry", jsonJournal)
+
+        history.push({
+            pathname: '/tabs/journalview',
+            search: '?mode=view&id='+journal.id,
+            state: { detail: 'edit' }
+        });
+    }
+
+    const handleCreateJournal = () => {
+        console.log("create")
+        history.push({
+            pathname: '/tabs/journaltextedit',
+            search: '?mode=create',
+            state: { detail: 'create' }
+        });
+    }
+
+
     return (
         <IonPage>
             <IonContent className="ioncontent" fullscreen>
@@ -175,9 +189,10 @@ const JournalOverview: React.FC = () => {
                         </IonCol>
                     </IonRow>
 
-                    <IonRow className="entries" onClick={handleEditJournal}>
+
+                    <IonRow className="entries">
                         <IonCol>
-                            <IonRow>
+                            <IonRow onClick={handleCreateJournal}>
                                 <IonCol className="entryDateDay" size='2'>
                                     <p className="entryDate">{current.getDate()} {monthNames[current.getMonth()]}</p>
                                     <p className="entryDay">{dayNames[current.getDay()]}</p>
@@ -186,26 +201,26 @@ const JournalOverview: React.FC = () => {
                                     <IonCard className="entryListCard">
                                         <IonCardContent>
                                             <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
-                                            <p className="entryTime">00:00</p>
+
                                             <p className="entryText">Begin your day here...</p>
                                         </IonCardContent>
                                     </IonCard>
                                 </IonCol>
                             </IonRow>
 
-                            {items.map(item => {
+                            {journals.map(item => {
                                 return (
-                                    <IonRow>
+                                    <IonRow onClick={() => handleViewJournal(item)}>
                                         <IonCol className="entryDateDay" size='2'>
-                                            <p className="entryDate">21 JAN</p>
-                                            <p className="entryDay">MONDAY</p>
+                                            <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
+                                            <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
                                         </IonCol>
                                         <IonCol className="entryList" size='10'>
                                             <IonCard className="entryListCard">
                                                 <IonCardContent>
-                                                    <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
-                                                    <p className="entryTime">00:00</p>
-                                                    <p className="entryText">Begin your day here...</p>
+                                                    <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                    <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
+                                                    <p className="entryText">{item['body']}</p>
                                                 </IonCardContent>
                                             </IonCard>
                                         </IonCol>
@@ -215,6 +230,7 @@ const JournalOverview: React.FC = () => {
                         </IonCol>
                     </IonRow>
                 </IonGrid>
+                <div className="spacer"></div>
             </IonContent>
         </IonPage>
     );

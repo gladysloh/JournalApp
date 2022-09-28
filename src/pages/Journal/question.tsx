@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
-import { 
-  IonButton, 
-  IonCard, 
-  IonCardContent, 
-  IonCardSubtitle, 
-  IonCardTitle, 
-  IonCol, 
-  IonContent, 
-  IonGrid, 
-  IonHeader, 
-  IonImg, 
-  IonPage, 
-  IonRow, 
-  IonTitle, 
-  IonToolbar 
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonImg,
+  IonPage,
+  IonRow,
+  IonTitle,
+  IonToolbar,
+  useIonViewDidEnter
 } from '@ionic/react';
 import './question.css';
 
 import question from '../../theme/icons/question.png';
+import axios from 'axios';
 
 const Question: React.FC = () => {
+
+  useIonViewDidEnter(() => {
+    const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
+
+    instance.get('/getrandomquestion').then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.error("ERROR: ", err);
+    })
+  });
+
   return (
     <IonPage>
       <IonContent className="ioncontent">

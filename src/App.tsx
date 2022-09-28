@@ -75,21 +75,8 @@ setupIonicReact();
 
 const App: React.FC = () => {
 
-  const { state } = useContext(AuthContext);
-  const [user, setUser] = useState([])
-  // console.log(state)
-  // if (!state.isLoggedIn)
   let userDetails = JSON.parse(localStorage.getItem("user"))
   console.log(userDetails)
-  // if (userDetails) {
-  //   <IonApp>
-  //     <IonReactRouter>
-  //       <IonRouterOutlet>
-  //         <Route path="/tabs" component={TabRoot} />
-  //       </IonRouterOutlet>
-  //     </IonReactRouter>
-  //   </IonApp>
-  // }
 
   return (
     <IonApp>
@@ -104,18 +91,5 @@ const App: React.FC = () => {
       </IonReactRouter>
     </IonApp>
   )
-  // else return (
-  //   <IonApp>
-  //     <IonReactRouter>
-  //       <IonRouterOutlet>
-  //           {/* <Route exact path="/welcome" component={WelcomeSlides} /> */}
-  //         <Route path="/tabs" component={TabRoot} />
-  //         <Route path="/" render={() => <Redirect to="/tabs" />} exact={true} />
-  //       </IonRouterOutlet>
-  //     </IonReactRouter>
-  //   </IonApp>
-
-  // );
-  // };
 }
 export default App;

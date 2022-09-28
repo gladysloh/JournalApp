@@ -90,6 +90,10 @@ ion-toolbar {
   --ion-color-base: transparent !important;
 }
 
+.spacer{
+  margin:50px;
+}
+
 /**
 * Raleway Font
 */
