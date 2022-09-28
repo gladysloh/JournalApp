@@ -14,10 +14,9 @@ async function createjournal(req, res) {
             error: "empty field(s)"
         })
     }
-    try {
+    try { //if there is an image attached, else no image attached
         if (req.body.image){
             var temp = await uploadimage(req.body.image, uid)
-            console.log(temp)
             temp = JSON.parse(temp)
             const signedUrl = temp.signedUrl
             const filename = temp.fileName
@@ -40,7 +39,7 @@ async function createjournal(req, res) {
     } catch (err){
         return res.status(400).json({
             success: false,
-            error: err
+            error: err.message
         })
     }
 

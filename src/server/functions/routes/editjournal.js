@@ -4,8 +4,6 @@ const admin = require('firebase-admin')
 const uploadimage = require('./uploadimage')
 const bucket = admin.storage().bucket()
 const storage = admin.storage()
-const { refFromURL } = require('firebase/storage')
-
 
 
 async function editjournal(req, res){
@@ -13,7 +11,8 @@ async function editjournal(req, res){
     const journalid = req.body.journalid
     const newbody = req.body.newbody
     const newtitle = req.body.newtitle
-    //console.log(req.body.filename)
+    const sentiment = req.body.semtiment
+
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
         var filename = req.body.filename
@@ -34,14 +33,16 @@ async function editjournal(req, res){
             body: newbody,
             url: signedUrl,
             filename: newfilename,
-            title: newtitle
+            title: newtitle,
+            sentiment: sentiment
         }
 
     }  else { //does not update image, journal entry with just the body
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: newbody,
-            title: newtitle
+            title: newtitle,
+            sentiment: sentiment
         }
     }
     try {
@@ -60,7 +61,7 @@ async function editjournal(req, res){
     } catch(err) {
         res.status(400).json({
             success: false,
-            error: err
+            error: err.message
         })
     }
 }
