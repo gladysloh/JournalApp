@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import {
     IonContent,
     IonHeader,
@@ -27,7 +27,8 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-    IonImg
+    IonImg,
+    useIonAlert
 } from '@ionic/react';
 import { textSharp, imageSharp, help } from 'ionicons/icons';
 
@@ -41,11 +42,13 @@ export const JournalTextEdit: React.FC = () => {
 
     const [title, setTitle] = useState<string>();
     const [body, setBody] = useState<string>();
-
     const [logs, setLogs] = useState<string[]>([]);
     const pushLog = (msg: string) => {
         setLogs([msg, ...logs]);
     };
+    const [presentAlert] = useIonAlert();
+    const [handlerMessage, setHandlerMessage] = useState('');
+    const [roleMessage, setRoleMessage] = useState('');
 
     return (
         <IonPage>
@@ -68,12 +71,16 @@ export const JournalTextEdit: React.FC = () => {
                                     </IonRow>
                                 </IonCol>
                                 <IonCol className="questionMarkBackground" size='2'>
-                                    <IonButton className="questionMark" size="small" color="light">
+                                    <IonButton className="questionMark" size="small" color="light"
+                                    onClick={() => setHandlerMessage('If you could relieve any day of your life and change nothing, what day would you choose?')}>
                                         <IonImg className="questionMarkImg" src={question} />
                                     </IonButton>
                                 </IonCol>
                             </IonRow>
                         </IonGrid>
+                    </IonRow>
+                    <IonRow>
+                        <p>{handlerMessage}</p>
                     </IonRow>
                     <IonRow>
                         <IonCard className='journalEntryCard'>

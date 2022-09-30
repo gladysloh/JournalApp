@@ -175,6 +175,9 @@
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
 }
+
 .inputTypes {
     width: 10px;
+    margin: 0px !important;
+    border-radius: 20px !important;
 }

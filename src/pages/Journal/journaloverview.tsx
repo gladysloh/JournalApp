@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import './journaloverview.css';
 
@@ -13,16 +13,23 @@ import clock from '../../theme/icons/clock.png';
 const JournalOverview: React.FC = () => {
     return (
         <IonPage>
+            <IonHeader class="ion-no-border">
+                <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonMenuButton></IonMenuButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
             <IonContent className="ioncontent" fullscreen>
                 <IonGrid>
                     <IonRow>
                         <IonCol>
                             <IonCard className='card1'>
-                                <IonCardContent>
-                                    <IonGrid>
+                                <IonCardContent className='statusCardContent'>
+                                    <IonGrid className='statusGrid'>
                                         <IonRow>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>22</p>
                                                     <p className='statuslabels'>STREAKS</p>
@@ -33,7 +40,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>150</p>
                                                     <p className='statuslabels'>ENTRIES</p>
@@ -44,7 +51,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>55</p>
                                                     <p className='statuslabels'>IMAGES</p>
@@ -55,7 +62,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>76%</p>
                                                     <p className='statuslabels'>HAPPY</p>

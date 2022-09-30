@@ -8,7 +8,15 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
-  IonLoading
+  IonLoading,
+  IonMenu,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonPage,
+  IonButtons,
+  IonMenuButton
 } from '@ionic/react';
 
 
@@ -63,6 +71,8 @@ import JournalView from './components/JournalView';
 import JournalGenerateMood from './pages/Journal/journalgeneratemood';
 import JournalMood from './pages/Journal/journalmood';
 import Question from './pages/Journal/question';
+import { SideMenu } from './pages/SideMenu/sidemenu';
+import Settings from './pages/Settings/settings';
 
 setupIonicReact();
 
@@ -115,8 +125,9 @@ const App: React.FC = () => {
     return (
       <IonApp>
         <IonReactRouter>
+          <SideMenu />
           <IonTabs onIonTabsDidChange={e => setActiveTab(e.detail.tab)}>
-            <IonRouterOutlet>
+            <IonRouterOutlet id='main'>
 
               {tabs.map((tab, index) => {
 
@@ -127,6 +138,16 @@ const App: React.FC = () => {
                   </Route>
                 );
               })}
+
+              <Route path="/sidemenu">
+                <SideMenu />
+              </Route>
+              <Route exact path ="/sidemenu/settings">
+                <Settings />
+              </Route>
+              <Route exact path="/journaloverview">
+                <JournalOverview />
+              </Route>
               <Route exact path="/journaltext">
                 <JournalText />
               </Route>
