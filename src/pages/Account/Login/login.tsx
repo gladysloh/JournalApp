@@ -15,13 +15,14 @@ import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
 import { AuthContext } from '../../../context/auth.context';
-import { Link, NavLink, Redirect, Route, RouteComponentProps } from 'react-router-dom';
+import { Link, NavLink, Redirect, Route, RouteComponentProps, useHistory } from 'react-router-dom';
 
 import JournalOverview from '../../Journal/journaloverview';
 
 
-const Login: React.FC<RouteComponentProps> = ({ history }) => {
-
+const Login: React.FC = () => {
+  const history = useHistory();
+  
   const initialState = {
     email: '',
     password: ''

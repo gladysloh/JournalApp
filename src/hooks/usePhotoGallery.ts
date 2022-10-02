@@ -12,6 +12,11 @@ export function usePhotoGallery() {
 
     const [photos, setPhotos] = useState<UserPhoto>();
 
+    const initialPhoto: UserPhoto = {
+        filepath: '',
+        webviewPath: ''
+    }
+
     useEffect(() => {
         const loadSaved = async () => {
             const { value } = await Preferences.get({ key: PHOTO_STORAGE });
@@ -85,7 +90,7 @@ export function usePhotoGallery() {
 
     const deletePhoto = async (photo: UserPhoto) => {
         // Remove this photo from the Photos reference data array
-        const newPhotos = ''
+        const newPhotos = initialPhoto
 
         // Update photos array cache by overwriting the existing photo array
         Preferences.set({ key: PHOTO_STORAGE, value: JSON.stringify(newPhotos) });

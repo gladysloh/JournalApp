@@ -87,14 +87,14 @@ export const JournalTextEdit: React.FC = () => {
 
     useEffect(() => {
         console.log(location.pathname); // result: '/secondpage'
-        console.log(location.search); 
+        console.log(location.search);
 
         let params = new URLSearchParams(location.search)
         let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
-        if(params.get("mode")=="edit"){
+        if (params.get("mode") == "edit") {
             setEdit(userJournal)
         }
-        
+
     }, [location]);
 
     const [presentToast] = useIonToast();
@@ -182,24 +182,36 @@ export const JournalTextEdit: React.FC = () => {
         });
     }
 
+    const instance = axios.create({
+        withCredentials: true,
+        baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
+
+    // You can use async/await or any function that returns a Promise
+    const sentiment = async (journalBody: any) => {
+        const res = await instance.post('/sentimentanalyzer', journalBody)
+        console.log(res.data.compound)
+        if(res.status == 200){
+            return res.data.compound
+        }else{
+            // throw new Error(res.statusText)
+            return 0
+        }
+        
+        
+    }
+
     /**
    *
    * @param data
    */
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
         console.log(editJournal)
-        console.log(photos.webviewPath)
 
         setLoading(true);
 
         present({
             message: 'Saving Journal'
-        })
-
-
-        const instance = axios.create({
-            withCredentials: true,
-            baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
         })
 
         if (params.get('mode') == 'edit') {
@@ -208,7 +220,8 @@ export const JournalTextEdit: React.FC = () => {
                 uid: uid,
                 journalid: editJournal.id,
                 newbody: editJournal.body,
-                newtitle: editJournal.title
+                newtitle: editJournal.title,
+                sentiment: await sentiment(editJournal.body)
             }
 
             console.log(editBody)
@@ -216,26 +229,33 @@ export const JournalTextEdit: React.FC = () => {
             instance.post('/editjournal', editBody).then((res) => {
                 console.log(res);
             }).catch((err) => {
-                console.error("ERROR: ", err);
+                console.error("ERROR: ", err.response.data.error);
                 dismiss();
-            setLoading(false);
+                setLoading(false);
             })
-            
+
 
         } else if (params.get('mode') == 'create') {
-            instance.post('/createjournal', {
+
+            let createBody = {
+                uid: uid,
                 title: editJournal.title,
                 journal: editJournal.body,
-                image: photos.webviewPath
-            }).then((res) => {
-                console.log(res);
-            }).catch((err) => {
-                console.error("ERROR: ", err);
-                dismiss();
-            setLoading(false);
-            })
+                image: photos ? photos.webviewPath : false,
+                sentiment: await sentiment(editJournal.body)
+            }
 
-            
+            console.log(createBody)
+
+            instance.post('/createjournal', createBody).then((res) => {
+                console.log(res);
+                dismiss();
+                setLoading(false);
+            }).catch((err) => {
+                console.error("ERROR: ", err.response.data.error);
+                dismiss();
+                setLoading(false);
+            })
 
         }
 
@@ -249,8 +269,16 @@ export const JournalTextEdit: React.FC = () => {
         console.log('ionViewWillEnter event fired');
         deletePhoto(photos);
         setPhotoToDelete(undefined)
-        
-      });
+        setEdit(initialJournal)
+
+    });
+
+    const goToOverview = () => {
+       
+        history.push({
+            pathname: '/tabs/journaloverview'
+        });
+    }
 
 
 
@@ -353,10 +381,8 @@ export const JournalTextEdit: React.FC = () => {
                             :
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
-                                        <IonImg 
-                                        // onClick={() => setPhotoToDelete(photo)}
-                                         src={photos.webviewPath} />
-                                    </IonCol>
+                                    <IonImg src={photos ? photos.webviewPath : ''} />
+                                </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">
                                         <IonCardContent>

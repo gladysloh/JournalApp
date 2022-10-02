@@ -39,11 +39,14 @@ const JournalOverview: React.FC = () => {
 
         instance.get('/getalljournals').then((res) => {
             console.log(res);
-            setJournals(res.data);
+            let j:[] = res.data 
+            j.sort((a,b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
+        
+            setJournals(j);
 
         }).catch((err) => {
             console.error("ERROR: ", err);
-            if(err.response.status == 401) history.replace("/login")
+            if (err.response.status == 401) history.replace("/login")
 
         })
     });
@@ -75,7 +78,7 @@ const JournalOverview: React.FC = () => {
 
         history.push({
             pathname: '/tabs/journalview',
-            search: '?mode=view&id='+journal.id,
+            search: '?mode=view&id=' + journal.id,
             state: { detail: 'edit' }
         });
     }
@@ -87,6 +90,47 @@ const JournalOverview: React.FC = () => {
             search: '?mode=create',
             state: { detail: 'create' }
         });
+    }
+
+    /**
+     * Streaks
+     */
+    const calculateStreaks = () => {
+        let count = 0
+        journals.reverse().forEach((el, i) => {
+            if ((new Date().setUTCHours(0,0,0,0) - new Date(el['timestamp']['_seconds']*1000).setUTCHours(0,0,0,0)) === i * 86400000) count++
+        })
+        return count;
+    }
+
+    /** 
+     * Get total number of journal entries
+    */
+    const getNoOfEntries = () => {
+        return journals.length;
+    }
+
+    /**
+     * Get total number of images
+     */
+    const getNoOfImg = () => {
+        let count = 0
+        journals.forEach((el, i) => {
+            if(el['url']) count++
+        })
+        return count;
+    }
+
+    /**
+     * Get emotion
+     */
+    const getEmotion = () => {
+        let count = 0
+        journals.forEach((el, i) => {
+            if(el['sentiment']) count+=el['sentiment']*100
+        })
+        return count + "%";
+
     }
 
 
@@ -104,7 +148,7 @@ const JournalOverview: React.FC = () => {
                                             <IonCol size='3'>
                                                 <IonRow>
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>22</p>
+                                                        <p className='statusvalues'>{calculateStreaks()}</p>
                                                         <p className='statuslabels'>STREAKS</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -115,7 +159,7 @@ const JournalOverview: React.FC = () => {
                                             <IonCol size='3'>
                                                 <IonRow>
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>150</p>
+                                                        <p className='statusvalues'>{getNoOfEntries()}</p>
                                                         <p className='statuslabels'>ENTRIES</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -126,7 +170,7 @@ const JournalOverview: React.FC = () => {
                                             <IonCol size='3'>
                                                 <IonRow>
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>55</p>
+                                                        <p className='statusvalues'>{getNoOfImg()}</p>
                                                         <p className='statuslabels'>IMAGES</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -137,7 +181,7 @@ const JournalOverview: React.FC = () => {
                                             <IonCol size='3'>
                                                 <IonRow>
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>76%</p>
+                                                        <p className='statusvalues'>{getEmotion()}</p>
                                                         <p className='statuslabels'>HAPPY</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -173,7 +217,8 @@ const JournalOverview: React.FC = () => {
                                 <IonCardSubtitle>ENTRY</IonCardSubtitle>
                             </IonCard>
                         </IonCol>
-                        <IonCol className="inputTypeBackground" size='6'>
+                        { /* I removed this bc i think its unncessary */}
+                        {/* <IonCol className="inputTypeBackground" size='6'>
                             <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
                                 <IonSegmentButton className='inputTypes' value="text">
                                     <IonLabel>
@@ -186,7 +231,7 @@ const JournalOverview: React.FC = () => {
                                     </IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
-                        </IonCol>
+                        </IonCol> */}
                     </IonRow>
 
 
@@ -221,6 +266,10 @@ const JournalOverview: React.FC = () => {
                                                     <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
                                                     <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
                                                     <p className="entryText">{item['body']}</p>
+                                                    {item['url'] ?
+                                                        <div > <img src={item['url']} /> </div> :
+                                                        <div></div>}
+
                                                 </IonCardContent>
                                             </IonCard>
                                         </IonCol>
@@ -229,9 +278,11 @@ const JournalOverview: React.FC = () => {
                             })}
                         </IonCol>
                     </IonRow>
+                    <div className="spacer"></div>
                 </IonGrid>
-                <div className="spacer"></div>
+
             </IonContent>
+
         </IonPage>
     );
 };

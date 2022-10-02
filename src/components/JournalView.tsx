@@ -59,7 +59,7 @@ export const JournalView: React.FC = () => {
         id: '',
         body: '',
         title: '',
-        img: ''
+        url: ''
     }
 
     const [viewJournal, setView] = useState(initialJournal);
@@ -73,6 +73,7 @@ export const JournalView: React.FC = () => {
 
         let params = new URLSearchParams(location.search)
         let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
+        console.log(userJournal)
         setView(userJournal);
 
     }, [location]);
@@ -199,7 +200,7 @@ export const JournalView: React.FC = () => {
                                         <span className='bodyInput'> {viewJournal.body} </span>
                                     </IonRow>
                                     <IonRow className="row3">
-                                        <IonImg className="uploadedImage" src={viewJournal.img}></IonImg>
+                                        <IonImg className="uploadedImage" src={viewJournal.url}></IonImg>
                                     </IonRow>
                                 </IonGrid>
                             </IonCardContent>

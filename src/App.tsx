@@ -69,6 +69,7 @@ import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
 import TabRoot from './pages/TabRoot';
+import axios from 'axios';
 
 
 setupIonicReact();
@@ -78,15 +79,34 @@ const App: React.FC = () => {
   let userDetails = JSON.parse(localStorage.getItem("user"))
   console.log(userDetails)
 
+  const [userStatus, setUserStatus]= useState(false);
+
+  const instance = axios.create({
+    withCredentials: true,
+    baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+  })
+
+  instance.get('/getuser').then((res) => {
+    console.log(res);
+    setUserStatus(true)
+
+   
+  }).catch((err) => {
+    console.error("ERROR: ", err);
+    setUserStatus(false)
+    
+  })
+
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={SignUp} />
-          <Route path="/tabs" render={() => { return userDetails.success ? <TabRoot/> : <Login/> }} />
-          <Route path="/" render={() => { return userDetails.success ? <TabRoot/> : <Login/> }} exact={true} />
-        
+          <Route path="/login" component={Login} exact={true}/>
+          <Route path="/signup" component={SignUp} exact={true}/>
+          <Route path="/tabs" component={TabRoot} exact={true}/>
+          <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
+          <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
+
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
