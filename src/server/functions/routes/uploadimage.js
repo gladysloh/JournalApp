@@ -30,7 +30,7 @@ async function uploadimage(base64EncodedImageString, uid){
 
     const signedUrl = await file.getSignedUrl({
         action: 'read',
-        expires: new Date(date.getTime() + 60 * 60 * 1000)
+        expires: new Date(date.getTime() + 60 * 60 * 1000 * 60 * 60 * 2)
     }).then(signedUrls => {
         return signedUrls[0]
     })
