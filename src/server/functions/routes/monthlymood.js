@@ -4,18 +4,26 @@ const moment = require('moment')
 
 async function monthlymood(req, res){
     const uid = req.body.uid
-    const currentDate = moment().format("DD-MM-YYYY").split("-")
-    const next = moment().add(1, 'month').format("DD-MM-YYYY").split("-")
-    const nextMonthYear = next[2]
-    const nextMonth = next[1]
-    const currentMonth = currentDate[1]
-    const currentYear = currentDate[2]
-
+    
+    // const currentDate = moment().format("DD-MM-YYYY").split("-")
+    // const next = moment().add(1, 'month').format("DD-MM-YYYY").split("-")
+    // const nextMonthYear = next[2]
+    // const nextMonth = next[1]
+    // const currentMonth = currentDate[1]
+    // const currentYear = currentDate[2]
+    const target = moment().set({'year': req.body.year, 'month': req.body.month - 1}).format("MM-YYYY").split("-")
+    const targetplusone = moment().add(1, 'month').format("MM-YYYY").split("-")
+    const targetMonth = target[0]
+    const targetYear = target[1]
+    const nextMonth = targetplusone[0]
+    const nextMonthYear = targetplusone[1]
+    console.log('Target: ', target)
+    console.log('Targetplusone: ', targetplusone)
 
     const query = firestore.collection(`users/${uid}/journal`)
                     .where('fields.timestamp',
                             '>=',
-                            new Date(`${currentYear}-${currentMonth}-01`))
+                            new Date(`${targetYear}-${targetMonth}-01`))
                     .where('fields.timestamp',
                             '<',
                             new Date(`${nextMonthYear}-${nextMonth}`))
