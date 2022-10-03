@@ -51,7 +51,10 @@ async function createjournal(req, res) {
                                error: err                            
         })
     })
-    return res.status(200).json({ success: true })
+    return res.status(200).json({ 
+        success: true,
+        fields
+     })
 }
 
 module.exports = createjournal
