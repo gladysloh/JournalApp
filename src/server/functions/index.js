@@ -89,3 +89,4 @@ app.post('/monthlymood', firebaseAuth, monthlymood)
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
 
+//i am not dumb
