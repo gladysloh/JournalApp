@@ -122,7 +122,7 @@ const TabRoot: React.FC = () => (
             <IonTabButton tab="calendar" href="/tabs/calendar">
                 <IonIcon icon={calendar} />
             </IonTabButton>
-            <IonTabButton tab="moodchart" href="/tabs/moodchart">
+            <IonTabButton tab="moodchart" href="/tabs/moodcharts">
                 <IonIcon icon={chart} />
             </IonTabButton>
         </IonTabBar>

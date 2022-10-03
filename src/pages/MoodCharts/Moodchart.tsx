@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IonApp, useIonViewWillEnter } from "@ionic/react";
 import FusionCharts from "fusioncharts";
 import Charts from "fusioncharts/fusioncharts.charts";
@@ -8,6 +8,7 @@ import './Moodchart.css';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter } from '@ionic/react';
 import axios from "axios";
 import { useHistory } from "react-router";
+import { MONTH_NAMES } from "../../SharedVariables";
 
 // Adding the chart and theme as dependency to the core fusioncharts
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -38,30 +39,39 @@ const chartConfigs = {
   dataSource: dataSource
 };
 
-// const [moods, setMoods] = useState([]);
-
-
 const Moodchart: React.FC = () => {
   const history = useHistory();
+  const [moods, setMoods] = useState([]);
 
   useIonViewWillEnter(() => {
-
     const instance = axios.create({
       withCredentials: true,
       baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
     })
 
     instance.get('/monthlymood').then((res) => {
-      console.log(res);
-
+      console.log(res.data);
+      setMoods(res.data.moods)
     }).catch((err) => {
       console.error("ERROR: ", err);
       if (err.response.status == 401) history.replace("/login")
 
     })
   });
+
+  useEffect(() => {
+    console.log(moods)
+    
+
+  }, [moods])
+
+  const getJournalMonth = () => {
+    // return MONTH_NAMES[new Date(moods[0]['timestamp']['_seconds'] * 1000).getMonth()]
+
+  }
+
   return (
-    <IonPage>
+    <IonPage> 
       <IonCard className="chart-card">
         <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
         <ReactFC className="chart-chart" {...chartConfigs} />

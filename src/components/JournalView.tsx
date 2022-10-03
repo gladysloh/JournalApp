@@ -37,6 +37,7 @@ import google from '../theme/google.jpg';
 import question from '../theme/icons/question.png';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
+import { MONTH_NAMES } from '../SharedVariables';
 
 export const JournalView: React.FC = () => {
 
@@ -98,7 +99,7 @@ export const JournalView: React.FC = () => {
     }
 
     const getJournalMonth = () => {
-        return monthNames[new Date(viewJournal.timestamp._seconds * 1000).getMonth()]
+        return MONTH_NAMES[new Date(viewJournal.timestamp._seconds * 1000).getMonth()]
 
     }
 

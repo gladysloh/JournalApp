@@ -42,11 +42,11 @@ import axios from 'axios';
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import { useSetState } from 'react-use';
 
-import { usePhotoGallery, UserPhoto } from '../hooks/usePhotoGallery';
+import { base64FromPath, usePhotoGallery, UserPhoto } from '../hooks/usePhotoGallery';
+import { MONTH_NAMES } from '../SharedVariables';
 
 
 export const JournalTextEdit: React.FC = () => {
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
     const [title, setTitle] = useState<string>();
     const [body, setBody] = useState<string>();
@@ -134,9 +134,9 @@ export const JournalTextEdit: React.FC = () => {
 
     const getJournalMonth = () => {
         if (params.get('mode') == 'edit')
-            return monthNames[new Date(editJournal.timestamp._seconds * 1000).getMonth()]
+            return MONTH_NAMES[new Date(editJournal.timestamp._seconds * 1000).getMonth()]
         else if (params.get('mode') == 'create')
-            return monthNames[new Date().getMonth()];
+            return MONTH_NAMES[new Date().getMonth()];
     }
 
     const getJournalYear = () => {
@@ -200,6 +200,7 @@ export const JournalTextEdit: React.FC = () => {
         
         
     }
+    
 
     /**
    *
@@ -229,19 +230,24 @@ export const JournalTextEdit: React.FC = () => {
             instance.post('/editjournal', editBody).then((res) => {
                 console.log(res);
             }).catch((err) => {
-                console.error("ERROR: ", err.response.data.error);
                 dismiss();
                 setLoading(false);
+                console.error("ERROR: ", err.response.data.error);
             })
 
 
         } else if (params.get('mode') == 'create') {
 
+            // console.log(await base64FromPath(photos.webviewPath))
+            let tempImg = photos ? await base64FromPath(photos.webviewPath) : ''
+            if(tempImg) tempImg.split(",").pop();
+
+
             let createBody = {
                 uid: uid,
                 title: editJournal.title,
                 journal: editJournal.body,
-                image: photos ? photos.webviewPath : false,
+                image: tempImg!= '' ? tempImg.split(",").pop() : false,
                 sentiment: await sentiment(editJournal.body)
             }
 
@@ -251,19 +257,19 @@ export const JournalTextEdit: React.FC = () => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
+                goToOverview()
             }).catch((err) => {
-                console.error("ERROR: ", err.response.data.error);
+                toaster("Error! Something went wrong", closeCircleOutline)
                 dismiss();
                 setLoading(false);
+                // console.error("ERROR: ", err.response.data.error);
             })
 
         }
 
-        dismiss();
-        setLoading(false);
-
 
     };
+
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
@@ -381,7 +387,7 @@ export const JournalTextEdit: React.FC = () => {
                             :
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
-                                    <IonImg src={photos ? photos.webviewPath : ''} />
+                                    {photos ? <IonImg src={photos ? photos.webviewPath : ''} /> : <span></span>} 
                                 </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">

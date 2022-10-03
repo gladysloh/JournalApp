@@ -18,6 +18,7 @@ import { AuthContext } from '../../../context/auth.context';
 import { Link, NavLink, Redirect, Route, RouteComponentProps, useHistory } from 'react-router-dom';
 
 import JournalOverview from '../../Journal/journaloverview';
+import axios from 'axios';
 
 
 const Login: React.FC = () => {
@@ -123,6 +124,22 @@ const Login: React.FC = () => {
     }
   };
 
+  const loginWithGoogle = () => {
+    // const instance = axios.create({
+    //   withCredentials: true,
+    //   baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    // })
+
+    // instance.get('/googlelogin').then((res) => {
+    //   console.log(res);
+
+    // }).catch((err) => {
+    //   console.log("ERROR: ", err);
+    //   if (err.response.status == 401) history.replace("/login")
+
+    // })
+  }
+
   const goToJournals = () => {
     console.log("going journals")
     history.replace("/tabs/journaloverview");
@@ -174,7 +191,7 @@ const Login: React.FC = () => {
                   Login
             </IonButton>
 
-                <IonButton className="google-button" expand="full" type="submit" color="secondary">
+                <IonButton className="google-button" expand="full" color="secondary" onClick={loginWithGoogle()}>
                   Login with <img src={logo} width="30px" />
                 </IonButton>
 

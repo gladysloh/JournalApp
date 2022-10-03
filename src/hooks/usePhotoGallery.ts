@@ -64,6 +64,8 @@ export function usePhotoGallery() {
         } else {
             base64Data = await base64FromPath(photo.webPath!);
         }
+
+        // console.log(base64Data)
         const savedFile = await Filesystem.writeFile({
             path: fileName,
             data: base64Data,

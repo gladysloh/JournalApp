@@ -20,14 +20,13 @@ import getalljournal from '../../server/functions/routes/getalljournal'
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import { useParams, useHistory } from "react-router";
 import { getMonth } from 'date-fns';
+import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
     const [present, dismiss] = useIonLoading();
 
     const current = new Date();
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     const [journals, setJournals] = useState([]);
 
@@ -39,9 +38,9 @@ const JournalOverview: React.FC = () => {
 
         instance.get('/getalljournals').then((res) => {
             console.log(res);
-            let j:[] = res.data 
-            j.sort((a,b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
-        
+            let j: [] = res.data
+            j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
+
             setJournals(j);
 
         }).catch((err) => {
@@ -61,13 +60,13 @@ const JournalOverview: React.FC = () => {
         let seconds = timestamp._seconds;
         const date = new Date(seconds * 1000).getDate()
         const month = new Date(seconds * 1000).getMonth()
-        return date + " " + monthNames[month];
+        return date + " " + MONTH_NAMES[month];
     }
 
     const getJournalDay = (timestamp: any) => {
         let seconds = timestamp._seconds;
         const day = new Date(seconds * 1000).getDay()
-        return dayNames[day]
+        return DAY_NAMES[day]
     }
 
 
@@ -98,7 +97,7 @@ const JournalOverview: React.FC = () => {
     const calculateStreaks = () => {
         let count = 0
         journals.reverse().forEach((el, i) => {
-            if ((new Date().setUTCHours(0,0,0,0) - new Date(el['timestamp']['_seconds']*1000).setUTCHours(0,0,0,0)) === i * 86400000) count++
+            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) count++
         })
         return count;
     }
@@ -116,7 +115,7 @@ const JournalOverview: React.FC = () => {
     const getNoOfImg = () => {
         let count = 0
         journals.forEach((el, i) => {
-            if(el['url']) count++
+            if (el['url']) count++
         })
         return count;
     }
@@ -127,9 +126,11 @@ const JournalOverview: React.FC = () => {
     const getEmotion = () => {
         let count = 0
         journals.forEach((el, i) => {
-            if(el['sentiment']) count+=el['sentiment']*100
+            if (el['sentiment']) {
+                count = el['sentiment'] + count
+            }
         })
-        return count + "%";
+        return count * 100 + "%";
 
     }
 
@@ -239,8 +240,8 @@ const JournalOverview: React.FC = () => {
                         <IonCol>
                             <IonRow onClick={handleCreateJournal}>
                                 <IonCol className="entryDateDay" size='2'>
-                                    <p className="entryDate">{current.getDate()} {monthNames[current.getMonth()]}</p>
-                                    <p className="entryDay">{dayNames[current.getDay()]}</p>
+                                    <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
+                                    <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
                                 </IonCol>
                                 <IonCol className="entryList" size='10'>
                                     <IonCard className="entryListCard">
@@ -266,9 +267,9 @@ const JournalOverview: React.FC = () => {
                                                     <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
                                                     <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
                                                     <p className="entryText">{item['body']}</p>
-                                                    {item['url'] ?
+                                                    { item['url'] ?
                                                         <div > <img src={item['url']} /> </div> :
-                                                        <div></div>}
+                                                        <div> </div>}
 
                                                 </IonCardContent>
                                             </IonCard>
