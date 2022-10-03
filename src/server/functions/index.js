@@ -85,7 +85,7 @@ app.post('/logout', logout)
 app.get('/randomq', getRandomQuestion)
 app.post('/sentimentanalyzer', sentimentAnalyzer)
 app.post('/googlelogin', googlelogin)
-app.get('/monthlymood', firebaseAuth, monthlymood)
+app.post('/monthlymood', firebaseAuth, monthlymood)
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
 

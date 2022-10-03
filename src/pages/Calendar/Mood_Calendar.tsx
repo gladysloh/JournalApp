@@ -95,7 +95,7 @@ function Mood_Calendar() {
 
     }).catch((err) => {
       console.error("ERROR: ", err);
-      if (err.response.status == 401) history.replace("/login")
+      // if (err.response.status == 401) history.replace("/login")
 
     })
   });
