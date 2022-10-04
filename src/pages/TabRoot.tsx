@@ -49,6 +49,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import calendar from '../theme/icons/calendar.svg'
 import diary from '../theme/icons/diary.svg';
 import chart from '../theme/icons/chart.svg'
+import JournalTextEdit from '../components/JournalTextEdit';
 
 const TabRoot: React.FC = () => (
     <IonTabs>
@@ -65,46 +66,49 @@ const TabRoot: React.FC = () => (
             <Route path="/tabs/moodcharts">
                 <MoodChart />
             </Route>
-            <Route path="/journaltext">
+            <Route path="/tabs/journaltext">
                 <JournalText />
             </Route>
-            <Route path="/journalimage">
+            <Route path="/tabs/journaltextedit">
+                <JournalTextEdit />
+            </Route>
+            <Route path="/tabs/journalimage">
                 <JournalImage />
             </Route>
-            <Route path="/journaltextview">
+            <Route path="/tabs/journaltextview">
                 <JournalTextView />
             </Route>
-            <Route exact path="/journalimageview">
+            <Route exact path="/tabs/journalimageview">
                 <JournalImageView />
             </Route>
-            <Route exact path="/journalview">
+            <Route exact path="/tabs/journalview">
                 <JournalView />
             </Route>
-            <Route exact path="/question">
+            <Route exact path="/tabs/question">
                 <Question />
             </Route>
-            <Route exact path="/journalgeneratemood">
+            <Route exact path="/tabs/journalgeneratemood">
                 <JournalGenerateMood />
             </Route>
-            <Route exact path="/journalmood">
+            <Route exact path="/tabs/journalmood">
                 <JournalMood />
             </Route>
-            <Route exact path="/loading">
+            <Route exact path="/tabs/loading">
                 <Loading />
             </Route>
-            <Route exact path="/cardexamples">
+            <Route exact path="/tabs/cardexamples">
                 <CardExamples />
             </Route>
-            <Route exact path="/inputexamples">
+            <Route exact path="/tabs/inputexamples">
                 <InputExamples />
             </Route>
-            <Route exact path="/segmentexamples">
+            <Route exact path="/tabs/segmentexamples">
                 <SegmentExamples />
             </Route>
-            <Route exact path="/textareaexamples">
+            <Route exact path="/tabs/textareaexamples">
                 <TextAreaExamples />
             </Route>
-            <Route exact path="/slideexamples">
+            <Route exact path="/tabs/slideexamples">
                 <SlideExample />
             </Route>
             <Route path="/tabs" render={() => <Redirect to="/tabs/journaloverview" />} exact={true} />
@@ -117,11 +121,9 @@ const TabRoot: React.FC = () => (
             </IonTabButton>
             <IonTabButton tab="calendar" href="/tabs/calendar">
                 <IonIcon icon={calendar} />
-                {/* <IonLabel>Tab 2</IonLabel> */}
             </IonTabButton>
-            <IonTabButton tab="moodchart" href="/tabs/moodchart">
+            <IonTabButton tab="moodchart" href="/tabs/moodcharts">
                 <IonIcon icon={chart} />
-                {/* <IonLabel>Tab 3</IonLabel> */}
             </IonTabButton>
         </IonTabBar>
     </IonTabs>

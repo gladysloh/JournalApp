@@ -1,4 +1,8 @@
-import { IonCheckbox, IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonLoading, useIonToast } from '@ionic/react';
+import {
+  IonCheckbox, IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard,
+  IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel,
+  IonButton, IonInput, IonFooter, useIonLoading, useIonToast, IonRouterOutlet
+} from '@ionic/react';
 // import ExploreContainer from '../../components/ExploreContainer';
 import './login.css';
 import logo from "../../../theme/icons/google.png"
@@ -10,23 +14,21 @@ import React, { useState, useRef, useEffect, createContext, useContext } from 'r
 import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
-import { AuthContext } from '../../../context/auth.context';
-import { Link, NavLink } from 'react-router-dom';
+// import { AuthContext } from '../../../context/auth.context';
+import { Link, NavLink, Redirect, Route, RouteComponentProps, useHistory } from 'react-router-dom';
+
+import JournalOverview from '../../Journal/journaloverview';
+import axios from 'axios';
+
 
 
 const Login: React.FC = () => {
-
+  const history = useHistory();
+  
   const initialState = {
     email: '',
     password: ''
   }
-  
-  const { state: ContextState, login } = useContext(AuthContext);
-  const {
-    isLoginPending,
-    isLoggedIn,
-    loginError
-  } = ContextState;
 
   const [state, setState] = useSetState(initialState);
 
@@ -75,6 +77,7 @@ const Login: React.FC = () => {
       const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/login', {
         method: 'POST',
         body: userjson,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -93,17 +96,18 @@ const Login: React.FC = () => {
       setData(result);
 
       // store the user in localStorage
-      localStorage.setItem('uid', result.uid)
+      localStorage.setItem('user', JSON.stringify(result))
       setUserID(result.uid)
 
       const { email, password } = state;
-      login(email, password);
       setState({
         email: '',
         password: ''
       });
 
-    } catch (err) {
+      goToJournals()
+
+    } catch (err: any) {
       console.log(err.message)
       setError(err.message);
     } finally {
@@ -111,6 +115,11 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const goToJournals = () => {
+    console.log("going journals")
+    history.push("/tabs/journaloverview");
+  }
 
   return (
     <IonPage>
@@ -147,7 +156,7 @@ const Login: React.FC = () => {
                 <IonLabel position="stacked"> Password </IonLabel>
                 <IonInput type="password" {...register("password", {
                   required: "You must specify a password"
-                })} value={state.password} 
+                })} value={state.password}
                 ></IonInput>
                 {errors.password && <span className='err'>Enter your password</span>}
               </IonItem>
@@ -158,7 +167,7 @@ const Login: React.FC = () => {
                   Login
             </IonButton>
 
-                <IonButton className="google-button" expand="full" type="submit" color="secondary">
+                <IonButton className="google-button" expand="full" color="secondary">
                   Login with <img src={logo} width="30px" />
                 </IonButton>
 

@@ -9,7 +9,8 @@
 }
 
 .headingBackground {
-    margin: 0px 20px 0px 20px;
+    width: 340px;
+    margin: 0px 10px 0px 20px;
     padding: 0px;
 }
 
@@ -86,12 +87,17 @@
 
 .journalEntryCard {
     box-sizing: border-box;
-
-    width: 355px;
-    height: 598px;
+    width:100%;
+    /* width: 355px; */
+    /* height: 598px; */
 
     background: linear-gradient(166.68deg, #FFF4EB 1.06%, rgba(255, 255, 255, 0.5) 1.07%, #FFFFFF 39.99%, #FFFFFF 65.31%, #FFF4EB 95.98%, rgba(255, 255, 255, 0.2) 95.98%);
     border-radius: 28px;
+}
+
+.journalEntryGrid {
+    margin: 0px;
+    padding: 5px;
 }
 
 .titleInputBackground {
@@ -169,6 +175,9 @@
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
 }
+
 .inputTypes {
     width: 10px;
+    margin: 0px !important;
+    border-radius: 20px !important;
 }

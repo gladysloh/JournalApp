@@ -1,4 +1,4 @@
-.ioncontent {
+/* .ioncontent {
     margin: 0px;
     padding: 0px;
 }
@@ -58,7 +58,7 @@
 }
 
 .journalEntryCard {
-    height: 600px;
+    /* height: 600px; */
     color: white;
     background: rgba(255, 255, 255, 0.7);
     background-blend-mode: overlay;
@@ -121,4 +121,4 @@
 
 .inputTypes {
     width: 10px;
-}
+} */

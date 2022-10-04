@@ -2,14 +2,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-bottom:30px;
 }
  
 .card1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80px;
-    margin: 50px 20px 15px 20px;
+    width: 350px;
+    height: 55.5px;
+    margin: 20px 10px 10px 10px;
     padding: 0px;
     box-sizing: border-box;
 
@@ -20,11 +22,29 @@
     border-radius: 10px;
 }
 
+.statusCardContent {
+    margin: 0px !important;
+    padding: 5px 10px 5px 10px !important;
+}
+
+.statusGrid {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.statusBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
 .statusvalues {
     font-family: 'Convergence';
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 20px !important;
     line-height: 23px;
     display: flex;
     align-items: center;
@@ -37,7 +57,7 @@
     font-family: 'Convergence';
     font-style: normal;
     font-weight: 400;
-    font-size: 8px;
+    font-size: 8px !important;
     line-height: 9px;
     display: flex;
     align-items: center;
@@ -47,8 +67,9 @@
 }
 
 .statusimages {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
+    margin: 0px 0px 0px 7px;
 }
 
 .card2 {
@@ -63,7 +84,7 @@
 }
 
 .chooseDate {
-    margin: 0px 0px 15px 0px;
+    margin: 0px;
 
     display: flex;
     justify-content: center;
@@ -133,6 +154,8 @@
 
 .inputTypes {
     width: 10px;
+    margin: 0px !important;
+    border-radius: 20px !important;
 }
 
 .entries {
