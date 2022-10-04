@@ -38,7 +38,8 @@ const editjournal = require('./routes/editjournal')
 const logout = require('./routes/logout')
 const sentimentAnalyzer = require('./routes/sentimentAnalyzer');
 const googlelogin = require("./routes/googlesignup");
-const monthlymood = require('./routes/monthlymood')
+const monthlymood = require('./routes/monthlymood');
+const removejournal = require("./routes/removejournal");
 const app = express()
 app.use(session({
     store: new FirestoreStore({
@@ -75,7 +76,9 @@ app.post('/logout', logout)
 app.get('/randomq', getRandomQuestion)
 app.post('/sentimentanalyzer', sentimentAnalyzer)
 app.post('/googlelogin', googlelogin)
-app.get('/monthlymood', firebaseAuth, monthlymood)
+app.post('/monthlymood', firebaseAuth, monthlymood)
+app.post('/removejournal', firebaseAuth, removejournal)
+
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
 
