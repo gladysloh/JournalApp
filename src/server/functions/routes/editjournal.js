@@ -17,10 +17,12 @@ async function editjournal(req, res){
     if (req.body.newimage){ //update image
         var filename = req.body.filename
         await bucket.file(`post-images/${filename}`).delete((error) => {
-            return res.status(400).json({
-                success: false,
-                message: 'failed to delete existing image'
-            })
+            if (error){
+                return res.status(400).json({
+                    success: false,
+                    message: 'failed to delete existing image'
+                })
+            }
         })
         
         var temp = await uploadimage(req.body.newimage, uid)

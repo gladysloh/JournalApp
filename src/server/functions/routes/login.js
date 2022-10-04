@@ -22,7 +22,7 @@ async function login(req, res) {
             email,
             password
         );
-        
+
         await credential.user.getIdToken().then((token) => {
             console.log(token)
             res.cookie('auth_token', token).status(201).json({
