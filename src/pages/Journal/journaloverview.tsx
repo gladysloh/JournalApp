@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 /** STYLE */
+=======
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
+import ExploreContainer from '../../components/ExploreContainer';
+>>>>>>> origin/frontend
 import './journaloverview.css';
 
 /** ICONS */
@@ -137,17 +142,24 @@ const JournalOverview: React.FC = () => {
 
     return (
         <IonPage>
+            <IonHeader class="ion-no-border">
+                <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonMenuButton></IonMenuButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
             <IonContent className="ioncontent" fullscreen>
 
                 <IonGrid>
                     <IonRow>
                         <IonCol>
                             <IonCard className='card1'>
-                                <IonCardContent>
-                                    <IonGrid>
+                                <IonCardContent className='statusCardContent'>
+                                    <IonGrid className='statusGrid'>
                                         <IonRow>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{calculateStreaks()}</p>
                                                         <p className='statuslabels'>STREAKS</p>
@@ -158,7 +170,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{getNoOfEntries()}</p>
                                                         <p className='statuslabels'>ENTRIES</p>
@@ -169,7 +181,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{getNoOfImg()}</p>
                                                         <p className='statuslabels'>IMAGES</p>
@@ -180,7 +192,7 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{getEmotion()}</p>
                                                         <p className='statuslabels'>HAPPY</p>

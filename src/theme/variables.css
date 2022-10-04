@@ -74,7 +74,24 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /** greybutton **/
+  --ion-color-greybutton: #CAC4C5;
+	--ion-color-greybutton-rgb: 202, 196, 197;
+	--ion-color-greybutton-contrast: #FFFFFF;
+	--ion-color-greybutton-contrast-rgb: 255, 255, 255;
+	--ion-color-greybutton-shade: #b2acad;
+	--ion-color-greybutton-tint: #cfcacb;
   
+}
+
+.ion-color-greybutton {
+  --ion-color-base: var(--ion-color-greybutton);
+  --ion-color-base-rgb: var(--ion-color-greybutton-rgb);
+  --ion-color-contrast: var(--ion-color-greybutton-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-greybutton-contrast-rgb);
+  --ion-color-shade: var(--ion-color-greybutton-shade);
+  --ion-color-tint: var(--ion-color-greybutton-tint);
 }
 
 ion-content {
@@ -83,15 +100,50 @@ ion-content {
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+
+  margin: 0px;
+  padding: 0px;
 }
 
 ion-toolbar {
+<<<<<<< HEAD
   --background-color: transparent;
   --ion-color-base: transparent !important;
+=======
+  --background-color: #FFDBBD;
+  --ion-color-base: #FFDBBD;
+  --background: transparent;
+
+}
+
+ion-title{
+  font-family: 'Raleway-Bold';
+}
+
+ion-menu-button {
+  --color: black;
+}
+
+/**
+* NotoSans Font
+*/
+@font-face {
+  font-family: "NotoSans";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-Regular.ttf");
+>>>>>>> origin/frontend
 }
 
 .spacer{
   margin:50px;
+}
+
+@font-face {
+  font-family: "NotoSans-ExtraLightItalic";
+  font-style: italic;
+  font-weight: 100;
+  src: url("../../public/assets/fonts/NotoSans/NotoSans-ExtraLightItalic.ttf");
 }
 
 /**
@@ -152,8 +204,25 @@ ion-toolbar {
   src: url("../../public/assets/fonts/Nunito/Nunito-Bold.ttf");
 }
 
+/**
+* Archivo Font
+*/
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: normal;
+  src: url("../../public/assets/fonts/Archivo/Archivo-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Archivo-Bold";
+  font-style: normal;
+  font-weight: bold;
+  src: url("../../public/assets/fonts/Archivo/Archivo-Bold.ttf");
+}
+
 * {
-  font-family: "NotoSans", "Raleway", "Convergence", "Nunito";
+  font-family: "NotoSans", "Raleway", "Convergence", "Nunito", "Archivo";
 }
 
 /* @media (prefers-color-scheme: dark) { */

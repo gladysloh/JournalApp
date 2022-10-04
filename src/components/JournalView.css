@@ -9,7 +9,8 @@
 }
 
 .headingBackground {
-    margin: 0px 20px 0px 20px;
+    width: 340px;
+    margin: 0px 10px 0px 20px;
     padding: 0px;
 }
 
@@ -94,6 +95,11 @@
     border-radius: 28px;
 }
 
+.journalEntryGrid {
+    margin: 0px;
+    padding: 5px;
+}
+
 .titleInputBackground {
     height: 50px;
     margin: 0px;
@@ -126,13 +132,13 @@
 }
 
 
-.bodyInputBackground {
-    height: 260px;
+.bodyViewBackground {
+    height: 250px;
     margin: 0px;
     padding: 0px;
 }
 
-.bodyInput {
+.bodyView {
     font-family: 'NotoSans';
     font-style: italic;
     font-weight: 300;
