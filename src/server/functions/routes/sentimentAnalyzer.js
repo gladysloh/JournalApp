@@ -28,7 +28,6 @@ function sentimentAnalyzer(req,res){
         sentences[index] = joinedSentence
     })
     joinedList = sentences.join('. ')
-    var sentiment = new Sentiment()
     var result = vader.SentimentIntensityAnalyzer.polarity_scores(joinedList)
     return res.json(result)
     

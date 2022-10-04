@@ -19,7 +19,8 @@ async function getalljournal(req, res){
                 body: doc.data().fields.body,
                 url: doc.data().fields.url,
                 timestamp: doc.data().fields.timestamp,
-                title: doc.data().fields.title, 
+                title: doc.data().fields.title,
+                filename: doc.data().fields.filename
                 sentiment: doc.data().fields.sentiment
             })
             //console.log(journals)
