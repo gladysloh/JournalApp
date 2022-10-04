@@ -56,10 +56,20 @@ app.use(session({
     }
 }))//what the fuck
 app.use(cors({
+    // origin: true,
     credentials: true,
     origin: "http://localhost:8100"
   }));
 //app.use(morgan('dev'))
+// Add Access Control Allow Origin headers
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8100");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
 app.use(cookieparser())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: true}))
@@ -83,4 +93,3 @@ app.get('/getalljournals', firebaseAuth, getalljournal)
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
 
-//i am not dumb

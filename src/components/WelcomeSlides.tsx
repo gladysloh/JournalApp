@@ -7,7 +7,7 @@ import { AuthContext } from '../context/auth.context';
 const WelcomeSlides: React.FC = () => {
     const value = useContext(AuthContext);
 
-    const user = localStorage.getItem("oadUser") || '';
+    const user = localStorage.getItem("userDetails") || '';
     const displayName = JSON.parse(user).displayname;
 
     return (

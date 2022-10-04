@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 /** STYLE */
+=======
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
+import ExploreContainer from '../../components/ExploreContainer';
+>>>>>>> origin/frontend
 import './journaloverview.css';
 
 /** ICONS */
@@ -17,81 +22,146 @@ import clock from '../../theme/icons/clock.png';
 
 /** SERVER */
 import getalljournal from '../../server/functions/routes/getalljournal'
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
+import { useParams, useHistory } from "react-router";
 import { getMonth } from 'date-fns';
+import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 
 const JournalOverview: React.FC = () => {
-    // const loadJournal = () => {
-    //     getalljournal();
-    // }
-
-    // // This function will called only once
-    // useEffect(() => {
-    //     loadJournal();
-    // }, [])
+    const history = useHistory();
     const [present, dismiss] = useIonLoading();
 
     const current = new Date();
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // const user = localStorage.getItem("oadUser") || '';
-    // const userString = JSON.parse(user).uid;
-    const [items, setItems] = useState([]);
-    const [cookies, setCookies] = useCookies(['connect.sid']);
+    const [journals, setJournals] = useState([]);
 
-
-    useIonViewDidEnter(() => {
-        axios.get('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser').then((res)=>{
-            console.log(res);
-            setCookies('connect.sid', res.data.token)
-            console.log(res.data.token) 
+    useIonViewWillEnter(() => {
+        const instance = axios.create({
+            withCredentials: true,
+            baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
         })
-        // fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/getuser', {
-        //     credentials: 'same-origin'
-        //   })
-        //     .then((res) => res.json())
-        //     .then((json) => {
-        //         console.log(json)
-        //         setItems(json);
-        //     })
+
+        instance.get('/getalljournals').then((res) => {
+            console.log(res);
+            let j: [] = res.data
+            j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
+
+            setJournals(j);
+
+        }).catch((err) => {
+            console.error("ERROR: ", err);
+            if (err.response.status == 401) history.replace("/login")
+
+        })
     });
 
-
-    const handleEditJournal = (userid) => {
-        return <Redirect
-            to={{
-                pathname: "/journal",
-                //   foo: userid
-
-            }}
-        />
+    const getJournalTime = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0,5);
+        return result;
     }
 
-    const handleAddEntry = (userid) => {
-        return <Redirect
-            to={{
-                pathname: "/journal",
-                //   foo: userid
-
-            }}
-        />
+    const getJournalDate = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const date = new Date(seconds * 1000).getDate()
+        const month = new Date(seconds * 1000).getMonth()
+        return date + " " + MONTH_NAMES[month];
     }
+
+    const getJournalDay = (timestamp: any) => {
+        let seconds = timestamp._seconds;
+        const day = new Date(seconds * 1000).getDay()
+        return DAY_NAMES[day]
+    }
+
+
+    const handleViewJournal = (journal: any) => {
+        console.log("view")
+        let jsonJournal = JSON.stringify(journal)
+        localStorage.setItem("journalEntry", jsonJournal)
+
+        history.push({
+            pathname: '/tabs/journalview',
+            search: '?mode=view&id=' + journal.id,
+            state: { detail: 'edit' }
+        });
+    }
+
+    const handleCreateJournal = () => {
+        console.log("create")
+        history.push({
+            pathname: '/tabs/journaltextedit',
+            search: '?mode=create',
+            state: { detail: 'create' }
+        });
+    }
+
+    /**
+     * Streaks
+     */
+    const calculateStreaks = () => {
+        let count = 0
+        journals.reverse().forEach((el, i) => {
+            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) count++
+        })
+        return count;
+    }
+
+    /** 
+     * Get total number of journal entries
+    */
+    const getNoOfEntries = () => {
+        return journals.length;
+    }
+
+    /**
+     * Get total number of images
+     */
+    const getNoOfImg = () => {
+        let count = 0
+        journals.forEach((el, i) => {
+            if (el['url']) count++
+        })
+        return count;
+    }
+
+    /**
+     * Get emotion
+     */
+    const getEmotion = () => {
+        let count = 0
+        journals.forEach((el, i) => {
+            if (el['sentiment']) {
+                count = el['sentiment'] + count
+            }
+        })
+        return count * 100 + "%";
+
+    }
+
+
     return (
         <IonPage>
+            <IonHeader class="ion-no-border">
+                <IonToolbar>
+                    <IonButtons slot='start'>
+                        <IonMenuButton></IonMenuButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
             <IonContent className="ioncontent" fullscreen>
 
                 <IonGrid>
                     <IonRow>
                         <IonCol>
                             <IonCard className='card1'>
-                                <IonCardContent>
-                                    <IonGrid>
+                                <IonCardContent className='statusCardContent'>
+                                    <IonGrid className='statusGrid'>
                                         <IonRow>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>22</p>
+                                                        <p className='statusvalues'>{calculateStreaks()}</p>
                                                         <p className='statuslabels'>STREAKS</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -100,9 +170,9 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>150</p>
+                                                        <p className='statusvalues'>{getNoOfEntries()}</p>
                                                         <p className='statuslabels'>ENTRIES</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -111,9 +181,9 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>55</p>
+                                                        <p className='statusvalues'>{getNoOfImg()}</p>
                                                         <p className='statuslabels'>IMAGES</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -122,9 +192,9 @@ const JournalOverview: React.FC = () => {
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
-                                                <IonRow>
+                                                <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>76%</p>
+                                                        <p className='statusvalues'>{getEmotion()}</p>
                                                         <p className='statuslabels'>HAPPY</p>
                                                     </IonCol>
                                                     <IonCol size='6'>
@@ -160,7 +230,8 @@ const JournalOverview: React.FC = () => {
                                 <IonCardSubtitle>ENTRY</IonCardSubtitle>
                             </IonCard>
                         </IonCol>
-                        <IonCol className="inputTypeBackground" size='6'>
+                        { /* I removed this bc i think its unncessary */}
+                        {/* <IonCol className="inputTypeBackground" size='6'>
                             <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
                                 <IonSegmentButton className='inputTypes' value="text">
                                     <IonLabel>
@@ -173,40 +244,45 @@ const JournalOverview: React.FC = () => {
                                     </IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
-                        </IonCol>
+                        </IonCol> */}
                     </IonRow>
 
-                    <IonRow className="entries" onClick={handleEditJournal}>
+
+                    <IonRow className="entries">
                         <IonCol>
-                            <IonRow>
+                            <IonRow onClick={handleCreateJournal}>
                                 <IonCol className="entryDateDay" size='2'>
-                                    <p className="entryDate">{current.getDate()} {monthNames[current.getMonth()]}</p>
-                                    <p className="entryDay">{dayNames[current.getDay()]}</p>
+                                    <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
+                                    <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
                                 </IonCol>
                                 <IonCol className="entryList" size='10'>
                                     <IonCard className="entryListCard">
                                         <IonCardContent>
                                             <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
-                                            <p className="entryTime">00:00</p>
+
                                             <p className="entryText">Begin your day here...</p>
                                         </IonCardContent>
                                     </IonCard>
                                 </IonCol>
                             </IonRow>
 
-                            {items.map(item => {
+                            {journals.map(item => {
                                 return (
-                                    <IonRow>
+                                    <IonRow onClick={() => handleViewJournal(item)}>
                                         <IonCol className="entryDateDay" size='2'>
-                                            <p className="entryDate">21 JAN</p>
-                                            <p className="entryDay">MONDAY</p>
+                                            <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
+                                            <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
                                         </IonCol>
                                         <IonCol className="entryList" size='10'>
                                             <IonCard className="entryListCard">
                                                 <IonCardContent>
-                                                    <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
-                                                    <p className="entryTime">00:00</p>
-                                                    <p className="entryText">Begin your day here...</p>
+                                                    <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                    <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
+                                                    <p className="entryText">{item['body']}</p>
+                                                    { item['url'] ?
+                                                        <div > <img src={item['url']} /> </div> :
+                                                        <div> </div>}
+
                                                 </IonCardContent>
                                             </IonCard>
                                         </IonCol>
@@ -215,8 +291,11 @@ const JournalOverview: React.FC = () => {
                             })}
                         </IonCol>
                     </IonRow>
+                    <div className="spacer"></div>
                 </IonGrid>
+
             </IonContent>
+
         </IonPage>
     );
 };
