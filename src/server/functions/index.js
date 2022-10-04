@@ -70,7 +70,6 @@ app.post('/register', validateEmailAndPassword, register)
 app.get('/getuser', firebaseAuth, getUser)
 app.post('/createjournal', firebaseAuth, createjournal)
 app.get('/getrandomquestion', getRandomQuestion)
-app.get('/getalljournals', firebaseAuth, getalljournal)
 app.post('/editjournal', firebaseAuth, editjournal)
 app.post('/logout', logout)
 app.get('/randomq', getRandomQuestion)
@@ -78,6 +77,8 @@ app.post('/sentimentanalyzer', sentimentAnalyzer)
 app.post('/googlelogin', googlelogin)
 app.post('/monthlymood', firebaseAuth, monthlymood)
 app.post('/removejournal', firebaseAuth, removejournal)
+app.get('/getalljournals', firebaseAuth, getalljournal)
+
 
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);

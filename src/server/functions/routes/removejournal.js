@@ -23,29 +23,33 @@ async function removejournal(req, res){
         const journal = snapshot.data().fields
         console.log(journal.filename)
         if (journal.url){
-            await bucket.file(`post-images/${journal.filename}`).delete((error) => {
-                if (error){
-                    return res.status(400).json({
-                        success: false,
-                        message: 'image not deleted',
-                        error: error
-                    })
-                }
-            })
+            try {
+            await bucket.file(`post-images/${journal.filename}`).delete()
+            console.log('delete image success')
+            } catch (error) {
+                console.log('i shouldnt be in this block there was no error')
+                return res.status(400).json({
+                    success: false,
+                    error: error.message
+                })
+            }
         }
         try {
+            console.log('within try, deleting post')
             await firestore.collection('users')
                 .doc(userID)
                 .collection('journal')
                 .doc(journalid)
                 .delete()
         } catch (error){
+            console.log('caught an error')
             return res.status(400).json({
                 success: false,
                 error: 'journal not deleted'
             })
         }
     }
+    console.log('no error caught, exiting')
     return res.status(200).json({
         success: true
     })

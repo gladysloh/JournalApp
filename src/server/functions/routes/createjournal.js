@@ -1,5 +1,6 @@
 
 const firestore = require('firebase-admin').firestore()
+const e = require('express')
 const admin = require('firebase-admin')
 const uploadimage = require('./uploadimage')
 require('firebase/storage')
@@ -47,14 +48,21 @@ async function createjournal(req, res) {
     await firestore.doc(`users/${uid}`).collection('journal').add({
         fields
     }, err => {
-        res.status(400).json({ success: false,
-                               error: err                            
-        })
+        if (err){
+            return res.status(400).json({ success: false,
+                                error: err                            
+            })
+        } else {
+            return res.status(200).json({ 
+                success: true,
+                fields
+            })
+        }
     })
     return res.status(200).json({ 
         success: true,
         fields
-     })
+    })
 }
 
 module.exports = createjournal
