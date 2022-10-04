@@ -47,7 +47,7 @@ async function createjournal(req, res) {
     await firestore.doc(`users/${uid}`).collection('journal').add({
         fields
     }, err => {
-        res.status(400).json({ success: false,
+        return res.status(400).json({ success: false,
                                error: err                            
         })
     })

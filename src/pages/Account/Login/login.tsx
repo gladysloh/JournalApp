@@ -14,11 +14,12 @@ import React, { useState, useRef, useEffect, createContext, useContext } from 'r
 import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
-import { AuthContext } from '../../../context/auth.context';
+// import { AuthContext } from '../../../context/auth.context';
 import { Link, NavLink, Redirect, Route, RouteComponentProps, useHistory } from 'react-router-dom';
 
 import JournalOverview from '../../Journal/journaloverview';
 import axios from 'axios';
+
 
 
 const Login: React.FC = () => {
@@ -28,14 +29,6 @@ const Login: React.FC = () => {
     email: '',
     password: ''
   }
-
-  const { state: ContextState, login } = useContext(AuthContext);
-
-  const {
-    isLoginPending,
-    isLoggedIn,
-    loginError
-  } = ContextState;
 
   const [state, setState] = useSetState(initialState);
 
@@ -107,7 +100,6 @@ const Login: React.FC = () => {
       setUserID(result.uid)
 
       const { email, password } = state;
-      login(email, password);
       setState({
         email: '',
         password: ''
@@ -124,25 +116,9 @@ const Login: React.FC = () => {
     }
   };
 
-  const loginWithGoogle = () => {
-    // const instance = axios.create({
-    //   withCredentials: true,
-    //   baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    // })
-
-    // instance.get('/googlelogin').then((res) => {
-    //   console.log(res);
-
-    // }).catch((err) => {
-    //   console.log("ERROR: ", err);
-    //   if (err.response.status == 401) history.replace("/login")
-
-    // })
-  }
-
   const goToJournals = () => {
     console.log("going journals")
-    history.replace("/tabs/journaloverview");
+    history.push("/tabs/journaloverview");
   }
 
   return (
@@ -191,7 +167,7 @@ const Login: React.FC = () => {
                   Login
             </IonButton>
 
-                <IonButton className="google-button" expand="full" color="secondary" onClick={loginWithGoogle()}>
+                <IonButton className="google-button" expand="full" color="secondary">
                   Login with <img src={logo} width="30px" />
                 </IonButton>
 

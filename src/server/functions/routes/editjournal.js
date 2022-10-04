@@ -11,7 +11,7 @@ async function editjournal(req, res){
     const journalid = req.body.journalid
     const newbody = req.body.newbody
     const newtitle = req.body.newtitle
-    const sentiment = req.body.semtiment
+    const sentiment = req.body.sentiment
 
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image

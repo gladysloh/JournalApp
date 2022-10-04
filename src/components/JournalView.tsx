@@ -40,16 +40,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { MONTH_NAMES } from '../SharedVariables';
 
 export const JournalView: React.FC = () => {
-
-    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
-    const [title, setTitle] = useState<string>();
-    const [body, setBody] = useState<string>();
-
-    const [logs, setLogs] = useState<string[]>([]);
-    const pushLog = (msg: string) => {
-        setLogs([msg, ...logs]);
-    };
+    const [val, setVal] = useState('view');
 
     const history = useHistory();
 
@@ -76,6 +67,9 @@ export const JournalView: React.FC = () => {
         let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
         console.log(userJournal)
         setView(userJournal);
+        if (params.get("mode") == "view") {
+            setVal('view')
+        }
 
     }, [location]);
 
@@ -107,7 +101,6 @@ export const JournalView: React.FC = () => {
         return new Date(viewJournal.timestamp._seconds * 1000).getFullYear()
     }
 
-    const [val, setVal] = useState(['view']);
     const handleChange = (e: any) => {
         const newVal = e.detail.value;
         console.log(newVal);

@@ -48,25 +48,6 @@ import { MONTH_NAMES } from '../SharedVariables';
 
 export const JournalTextEdit: React.FC = () => {
 
-    const [title, setTitle] = useState<string>();
-    const [body, setBody] = useState<string>();
-
-    const [logs, setLogs] = useState<string[]>([]);
-    const pushLog = (msg: string) => {
-        setLogs([msg, ...logs]);
-    };
-
-    const [showHide, setShowHide] = useState(true);
-    const [segment, setSegment] = useState(['text']);
-    const handleSegment = (e: any) => {
-        console.log(e)
-        setSegment(e)
-        if (e == "image") { setShowHide(false) }
-        else if (e == "text") setShowHide(true)
-    }
-
-    const history = useHistory();
-
     const initialJournal = {
         timestamp: {
             _seconds: 0
@@ -74,12 +55,34 @@ export const JournalTextEdit: React.FC = () => {
         id: '',
         body: '',
         title: '',
-        img: ''
+        url: '',
+        sentiment: 0
     }
+
+    const [showHide, setShowHide] = useState(true);
+    const [segment, setSegment] = useState(['text']);
+
+    const [val, setVal] = useState('edit');
+
 
     const [editJournal, setEdit] = useSetState(initialJournal);
     const [uid, setUid] = useState<string>(localStorage.getItem("uid"));
 
+
+    const [loading, setLoading] = useState(false);
+    const [present, dismiss] = useIonLoading();
+
+    const { deletePhoto, photos, takePhoto } = usePhotoGallery();
+    const [photoToDelete, setPhotoToDelete] = useState<UserPhoto>();
+
+    const history = useHistory();
+
+    const handleSegment = (e: any) => {
+        console.log(e)
+        setSegment(e)
+        if (e == "image") { setShowHide(false) }
+        else if (e == "text") setShowHide(true)
+    }
 
     const location = useLocation();
     const params = new URLSearchParams(location.search)
@@ -87,13 +90,19 @@ export const JournalTextEdit: React.FC = () => {
 
     useEffect(() => {
         console.log(location.pathname); // result: '/secondpage'
-        console.log(location.search);
-
+        console.log(val)
         let params = new URLSearchParams(location.search)
+
         let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
         if (params.get("mode") == "edit") {
             setEdit(userJournal)
+            setVal('edit')
+        } else if (params.get("mode") == "create"){
+            setEdit(initialJournal)
+            setVal('edit')
         }
+
+        
 
     }, [location]);
 
@@ -128,8 +137,6 @@ export const JournalTextEdit: React.FC = () => {
             return new Date(editJournal.timestamp._seconds * 1000).getDate()
         else if (params.get('mode') == 'create')
             return new Date().getDate();
-
-
     }
 
     const getJournalMonth = () => {
@@ -146,7 +153,6 @@ export const JournalTextEdit: React.FC = () => {
             return new Date().getFullYear();
     }
 
-    const [val, setVal] = useState(['edit']);
     const handleChange = (e: any) => {
         const newVal = e.detail.value;
         console.log(newVal);
@@ -168,13 +174,6 @@ export const JournalTextEdit: React.FC = () => {
         });
     }
 
-
-    const [loading, setLoading] = useState(false);
-    const [present, dismiss] = useIonLoading();
-
-    const { deletePhoto, photos, takePhoto } = usePhotoGallery();
-    const [photoToDelete, setPhotoToDelete] = useState<UserPhoto>();
-
     const onInputchange = (event: any) => {
         // console.log(event.target.name)
         setEdit({
@@ -191,16 +190,16 @@ export const JournalTextEdit: React.FC = () => {
     const sentiment = async (journalBody: any) => {
         const res = await instance.post('/sentimentanalyzer', journalBody)
         console.log(res.data.compound)
-        if(res.status == 200){
+        if (res.status == 200) {
             return res.data.compound
-        }else{
+        } else {
             // throw new Error(res.statusText)
             return 0
         }
-        
-        
+
+
     }
-    
+
 
     /**
    *
@@ -217,38 +216,46 @@ export const JournalTextEdit: React.FC = () => {
 
         if (params.get('mode') == 'edit') {
             console.log()
+            // let tempImg = editJournal.url ? await base64FromPath(photos.webviewPath) : ''
+            // if(tempImg) tempImg.split(",").pop();
+            let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
                 uid: uid,
                 journalid: editJournal.id,
                 newbody: editJournal.body,
                 newtitle: editJournal.title,
-                sentiment: await sentiment(editJournal.body)
+                // newimage: tempImg!= '' ? tempImg.split(",").pop() : false,
+                sentiment: sentimentVal
             }
 
             console.log(editBody)
 
             instance.post('/editjournal', editBody).then((res) => {
                 console.log(res);
+                dismiss();
+                setLoading(false);
+                goToSentiment(sentimentVal)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
-                console.error("ERROR: ", err.response.data.error);
+                console.error("ERROR: ", err);
             })
 
 
         } else if (params.get('mode') == 'create') {
 
             // console.log(await base64FromPath(photos.webviewPath))
-            let tempImg = photos ? await base64FromPath(photos.webviewPath) : ''
-            if(tempImg) tempImg.split(",").pop();
+            let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
+            let sentimentVal = await sentiment(editJournal.body);
+            if (tempImg) tempImg.split(",").pop();
 
 
             let createBody = {
                 uid: uid,
                 title: editJournal.title,
                 journal: editJournal.body,
-                image: tempImg!= '' ? tempImg.split(",").pop() : false,
-                sentiment: await sentiment(editJournal.body)
+                image: tempImg != '' ? tempImg.split(",").pop() : false,
+                sentiment: sentimentVal
             }
 
             console.log(createBody)
@@ -257,8 +264,9 @@ export const JournalTextEdit: React.FC = () => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToOverview()
-            }).catch((err) => {
+                goToSentiment(sentimentVal)
+            })
+            .catch((err) => {
                 toaster("Error! Something went wrong", closeCircleOutline)
                 dismiss();
                 setLoading(false);
@@ -270,19 +278,41 @@ export const JournalTextEdit: React.FC = () => {
 
     };
 
+    const deleteJournal = async (event: any) => {
+        // setLoading(true);
+
+        // present({
+        //     message: 'Deleting Journal'
+        // })
+
+
+        //     instance.post('/editjournal', editBody).then((res) => {
+        //         console.log(res);
+        //     }).catch((err) => {
+        //         dismiss();
+        //         setLoading(false);
+        //         console.error("ERROR: ", err.response.data.error);
+        //     })
+    };
+
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
         deletePhoto(photos);
         setPhotoToDelete(undefined)
         setEdit(initialJournal)
-
     });
 
     const goToOverview = () => {
-       
         history.push({
             pathname: '/tabs/journaloverview'
+        });
+    }
+
+    const goToSentiment = (sentiment: number) => {
+        history.push({
+            pathname: '/tabs/journalgeneratemood',
+            search: `?sentiment=${sentiment}`,
         });
     }
 
@@ -361,7 +391,7 @@ export const JournalTextEdit: React.FC = () => {
                                                         placeholder="Select mode"
                                                         name="mode"
                                                         value={val} onIonChange={handleChange}>
-                                                        <IonSelectOption className="selectMode" value="view">VIEW MODE</IonSelectOption>
+                                                        {params.get('mode') != 'create' ? <IonSelectOption className="selectMode" value="view">VIEW MODE</IonSelectOption> : <IonSelectOption className="selectMode" value="view" disabled="true">VIEW MODE</IonSelectOption>}
                                                         <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
                                                     </IonSelect>
                                                 </IonCol>
@@ -387,7 +417,7 @@ export const JournalTextEdit: React.FC = () => {
                             :
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
-                                    {photos ? <IonImg src={photos ? photos.webviewPath : ''} /> : <span></span>} 
+                                    {photos ? <IonImg src={photos ? photos.webviewPath : ''} /> : <span></span>}
                                 </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">
@@ -403,6 +433,7 @@ export const JournalTextEdit: React.FC = () => {
                         <IonRow>
                             <IonCol size="6">
                                 <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
+                                {params.get("mode") == 'edit' ? <IonButton onClick={deleteJournal} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
                             </IonCol>
 
                             <IonCol size="6">

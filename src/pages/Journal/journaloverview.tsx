@@ -52,7 +52,7 @@ const JournalOverview: React.FC = () => {
 
     const getJournalTime = (timestamp: any) => {
         let seconds = timestamp._seconds;
-        const result = new Date(seconds * 1000).toISOString().slice(11, 16);
+        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0,5);
         return result;
     }
 
