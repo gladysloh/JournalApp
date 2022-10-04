@@ -107,25 +107,28 @@ function Mood_Calendar() {
 
   return (
     <IonPage>
-      <IonCard className="calendar-card">
-        <IonCardTitle className="chart-header">MOOD TRACKER</IonCardTitle>
-        <Calendar className="calendar-class"
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end" views={['month']}
-          style={{ height: 350, width: 320, margin: "0px" }}
+      <IonContent fullscreen>
+        <IonCard className="calendar-card">
+          <IonCardTitle className="chart-header">MOOD TRACKER</IonCardTitle>
+          <Calendar className="calendar-class"
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end" views={['month']}
+            style={{ height: 350, width: 320, margin: "0px" }}
 
-          eventPropGetter={(event, start, end, isSelected) => ({
-            event,
-            start,
-            end,
-            isSelected,
-            style: { backgroundColor: "white" }
-          })}
-        />
-        <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
-      </IonCard>
+            eventPropGetter={(event, start, end, isSelected) => ({
+              event,
+              start,
+              end,
+              isSelected,
+              style: { backgroundColor: "white" }
+            })}
+          />
+          <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
+        </IonCard>
+      </IonContent>
+
     </IonPage>
   )
 }

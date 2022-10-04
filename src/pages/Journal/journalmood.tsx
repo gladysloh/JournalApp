@@ -65,18 +65,10 @@ const JournalMood: React.FC = () => {
     <IonPage>
       <IonContent className="ioncontent" fullscreen>
         <IonGrid className="ionGrid">
-<<<<<<< HEAD
           <IonRow className="title">
             <IonCardTitle>{getTodayDate()}</IonCardTitle>
             <p></p>
             <p>Your mood for today is...</p>
-=======
-          <IonRow className="titleBackground">
-            <IonCardTitle className="title">21 January 2022</IonCardTitle>
-          </IonRow>
-          <IonRow className="subtitleBackground">
-            <p className="subtitle">Your mood for today is...</p>
->>>>>>> origin/frontend
           </IonRow>
           <IonRow>
             <IonCol>
@@ -97,7 +89,6 @@ const JournalMood: React.FC = () => {
                     <IonRow>
                       <p className="checkEmojiSubtitle">No, my mood for today is...</p>
                     </IonRow>
-<<<<<<< HEAD
                     <IonRow className="emojiCards">
                       <IonCol>
                         <IonCard className="emojiCard" onClick={()=>updateMood(1)}>
@@ -119,38 +110,12 @@ const JournalMood: React.FC = () => {
                       <IonCol>
                         <IonCard className="emojiCard" onClick={()=>updateMood(-1)}>
                           <IonImg className="emojiImage" src={verysad}/>
-=======
-                    <IonRow className="emojiCardsBackground">
-                      <IonCol className="emojiCards">
-                        <IonCard className="emojiCard">
-                          <IonImg className="emojiImage" src={smiling} />
-                        </IonCard>
-                      </IonCol>
-                      <IonCol className="emojiCards">
-                        <IonCard className="emojiCard">
-                          <IonImg className="emojiImage" src={neutral} />
-                        </IonCard>
-                      </IonCol>
-                      <IonCol className="emojiCards">
-                        <IonCard className="emojiCard">
-                          <IonImg className="emojiImage" src={sad} />
-                        </IonCard>
-                      </IonCol>
-                      <IonCol className="emojiCards">
-                        <IonCard className="emojiCard">
-                          <IonImg className="emojiImage" src={verysad} />
->>>>>>> origin/frontend
                         </IonCard>
                       </IonCol>
                     </IonRow>
                     <IonRow>
-<<<<<<< HEAD
                       <IonButton onClick={()=>goToOverview()}>SKIP</IonButton>
                       {/* <IonButton>NEXT</IonButton> */}
-=======
-                      <IonButton className="greybutton" color="greybutton">SKIP</IonButton>
-                      <IonButton className="greybutton" color="greybutton">NEXT</IonButton>
->>>>>>> origin/frontend
                     </IonRow>
                   </IonGrid>
                 </IonCardContent>

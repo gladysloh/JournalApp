@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 /** STYLE */
-=======
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
->>>>>>> origin/frontend
 import './journaloverview.css';
 
 /** ICONS */
@@ -20,11 +15,7 @@ import text from '../../theme/icons/text.png';
 import image from '../../theme/icons/image.png';
 import clock from '../../theme/icons/clock.png';
 
-/** SERVER */
-import getalljournal from '../../server/functions/routes/getalljournal'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
-import { useParams, useHistory } from "react-router";
-import { getMonth } from 'date-fns';
+import { Link, Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 
 const JournalOverview: React.FC = () => {
@@ -34,6 +25,8 @@ const JournalOverview: React.FC = () => {
     const current = new Date();
 
     const [journals, setJournals] = useState([]);
+
+    const [entry, setEntry] = useState(true);
 
     useIonViewWillEnter(() => {
         const instance = axios.create({
@@ -55,9 +48,13 @@ const JournalOverview: React.FC = () => {
         })
     });
 
+    // const checkTodayJournal = () =>{
+    //     if(journals[0].
+    // }
+
     const getJournalTime = (timestamp: any) => {
         let seconds = timestamp._seconds;
-        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0,5);
+        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0, 5);
         return result;
     }
 
@@ -101,11 +98,25 @@ const JournalOverview: React.FC = () => {
      */
     const calculateStreaks = () => {
         let count = 0
-        journals.reverse().forEach((el, i) => {
-            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) count++
+        let index = 0
+        let current = [];
+
+        journals.forEach((el, i) => {
+            console.log((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0))/86400000)
+    
+            if ((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)) === index * 86400000) {
+                count++
+                console.log((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)), i * 86400000)
+            }
+
+            if(new Date(journals[i]['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) != new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)) 
+            {
+                index++
+            }
         })
         return count;
     }
+
 
     /** 
      * Get total number of journal entries
@@ -130,25 +141,29 @@ const JournalOverview: React.FC = () => {
      */
     const getEmotion = () => {
         let count = 0
+        console.log(journals)
         journals.forEach((el, i) => {
+            console.log(el)
             if (el['sentiment']) {
+                console.log(el)
                 count = el['sentiment'] + count
             }
         })
-        return count * 100 + "%";
+
+        return Math.round(count) + "%";
 
     }
 
 
     return (
         <IonPage>
-            <IonHeader class="ion-no-border">
+            {/* <IonHeader class="ion-no-border">
                 <IonToolbar>
                     <IonButtons slot='start'>
                         <IonMenuButton></IonMenuButton>
                     </IonButtons>
                 </IonToolbar>
-            </IonHeader>
+            </IonHeader> */}
             <IonContent className="ioncontent" fullscreen>
 
                 <IonGrid>
@@ -250,6 +265,7 @@ const JournalOverview: React.FC = () => {
 
                     <IonRow className="entries">
                         <IonCol>
+                            
                             <IonRow onClick={handleCreateJournal}>
                                 <IonCol className="entryDateDay" size='2'>
                                     <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
@@ -279,7 +295,7 @@ const JournalOverview: React.FC = () => {
                                                     <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
                                                     <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
                                                     <p className="entryText">{item['body']}</p>
-                                                    { item['url'] ?
+                                                    {item['url'] ?
                                                         <div > <img src={item['url']} /> </div> :
                                                         <div> </div>}
 

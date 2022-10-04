@@ -50,10 +50,20 @@ import calendar from '../theme/icons/calendar.svg'
 import diary from '../theme/icons/diary.svg';
 import chart from '../theme/icons/chart.svg'
 import JournalTextEdit from '../components/JournalTextEdit';
+import { SideMenu } from './SideMenu/sidemenu';
+import Settings from './Settings/settings';
+
+
 
 const TabRoot: React.FC = () => (
     <IonTabs>
         <IonRouterOutlet>
+            <Route path="/sidemenu">
+                <SideMenu />
+            </Route>
+            <Route exact path="/sidemenu/settings">
+                <Settings />
+            </Route>
             <Route exact path="/">
                 <Redirect to="/tabs/journaloverview" />
             </Route>

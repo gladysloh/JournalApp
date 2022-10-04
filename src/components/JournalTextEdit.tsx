@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
-import React, { useState, Component } from 'react';
->>>>>>> origin/frontend
 import {
     IonContent,
     IonHeader,
@@ -31,12 +27,7 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-<<<<<<< HEAD
     IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave
-=======
-    IonImg,
-    useIonAlert
->>>>>>> origin/frontend
 } from '@ionic/react';
 import { textSharp, imageSharp, help, closeCircleOutline } from 'ionicons/icons';
 
@@ -57,7 +48,6 @@ import { MONTH_NAMES } from '../SharedVariables';
 
 export const JournalTextEdit: React.FC = () => {
 
-<<<<<<< HEAD
     const initialJournal = {
         timestamp: {
             _seconds: 0
@@ -303,15 +293,8 @@ export const JournalTextEdit: React.FC = () => {
         //         setLoading(false);
         //         console.error("ERROR: ", err.response.data.error);
         //     })
-=======
-    const [title, setTitle] = useState<string>();
-    const [body, setBody] = useState<string>();
-    const [logs, setLogs] = useState<string[]>([]);
-    const pushLog = (msg: string) => {
-        setLogs([msg, ...logs]);
->>>>>>> origin/frontend
     };
-    const [presentAlert] = useIonAlert();
+    // const [presentAlert] = useIonAlert();
     const [handlerMessage, setHandlerMessage] = useState('');
     const [roleMessage, setRoleMessage] = useState('');
 
@@ -324,13 +307,13 @@ export const JournalTextEdit: React.FC = () => {
     });
 
     const goToOverview = () => {
-        history.push({
+        history.replace({
             pathname: '/tabs/journaloverview'
         });
     }
 
     const goToSentiment = (sentiment: number) => {
-        history.push({
+        history.replace({
             pathname: '/tabs/journalgeneratemood',
             search: `?sentiment=${sentiment}`,
         });
@@ -362,19 +345,13 @@ export const JournalTextEdit: React.FC = () => {
                                     </IonRow>
                                 </IonCol>
                                 <IonCol className="questionMarkBackground" size='2'>
-<<<<<<< HEAD
                                     <IonButton className="questionMark" size="small" color="light" onClick={questionPrompt}>
-=======
-                                    <IonButton className="questionMark" size="small" color="light"
-                                    onClick={() => setHandlerMessage('If you could relieve any day of your life and change nothing, what day would you choose?')}>
->>>>>>> origin/frontend
                                         <IonImg className="questionMarkImg" src={question} />
                                     </IonButton>
                                 </IonCol>
                             </IonRow>
                         </IonGrid>
                     </IonRow>
-<<<<<<< HEAD
 
                     {qns.length > 0 ?
                         (
@@ -429,23 +406,6 @@ export const JournalTextEdit: React.FC = () => {
                                                     value={editJournal.body}
                                                     name="body"
                                                     onIonChange={onInputchange}
-=======
-                    <IonRow>
-                        <p>{handlerMessage}</p>
-                    </IonRow>
-                    <IonRow>
-                        <IonCard className='journalEntryCard'>
-                            <IonCardContent>
-                                <IonGrid className="journalEntryGrid">
-                                    <IonRow className="titleInputBackground">
-                                        <IonCol>
-                                            <IonCardSubtitle>
-                                                <IonInput
-                                                    className='titleInput'
-                                                    value={title}
-                                                    placeholder="Add title"
-                                                    onIonChange={e => setTitle(e.detail.value!)}
->>>>>>> origin/frontend
                                                     required={true}
                                                     rows={10}
                                                     inputMode="text"
