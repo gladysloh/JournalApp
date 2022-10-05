@@ -24,7 +24,9 @@ async function getalljournal(req, res){
             message: err.message
         })
     }
-   
+    return res.status(200).json({
+        journals
+    })
 
     // //let journals = []
     // const query = firestore.collection(`users/${uid}/journal`)
