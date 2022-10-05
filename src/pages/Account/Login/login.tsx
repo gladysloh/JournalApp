@@ -10,12 +10,12 @@ import onceaday from "../../../theme/icons/onceaday.png"
 import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 
-import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
-// import { AuthContext } from '../../../context/auth.context';
-import { Link, NavLink, Redirect, Route, RouteComponentProps, useHistory } from 'react-router-dom';
+
+import { NavLink, useHistory } from 'react-router-dom';
 
 import JournalOverview from '../../Journal/journaloverview';
 import axios from 'axios';

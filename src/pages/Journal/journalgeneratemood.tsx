@@ -19,16 +19,14 @@ const JournalGenerateMood: React.FC = () => {
     const location = useLocation();
     const history = useHistory();
     const params = new URLSearchParams(location.search)
-    // const [journalMode, setMode] = useState<string>();
 
     useIonViewDidEnter(() => {
         console.log(location.pathname); // result: '/secondpage'
         console.log(location.search);
 
-        let params = new URLSearchParams(location.search)
-        history.push({
+        history.replace({
             pathname: '/tabs/journalmood',
-            search: '?sentiment='+params.get('sentiment')
+            search: `?sentiment=${params.get('sentiment')}&journalid=${params.get('journalid')}`
         });
     })
 

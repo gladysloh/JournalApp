@@ -97,12 +97,12 @@ export const JournalTextEdit: React.FC = () => {
         if (params.get("mode") == "edit") {
             setEdit(userJournal)
             setVal('edit')
-        } else if (params.get("mode") == "create"){
+        } else if (params.get("mode") == "create") {
             setEdit(initialJournal)
             setVal('edit')
         }
 
-        
+
 
     }, [location]);
 
@@ -215,8 +215,8 @@ export const JournalTextEdit: React.FC = () => {
         })
 
         if (params.get('mode') == 'edit') {
-            console.log()
-            // let tempImg = editJournal.url ? await base64FromPath(photos.webviewPath) : ''
+
+            let tempImg = await base64FromPath(photos['webviewPath'])
             // if(tempImg) tempImg.split(",").pop();
             let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
@@ -224,17 +224,18 @@ export const JournalTextEdit: React.FC = () => {
                 journalid: editJournal.id,
                 newbody: editJournal.body,
                 newtitle: editJournal.title,
-                // newimage: tempImg!= '' ? tempImg.split(",").pop() : false,
+                newimage: tempImg != '' ? tempImg.split(",").pop() : false,
                 sentiment: sentimentVal
             }
 
+            setEdit(editBody)
             console.log(editBody)
 
             instance.post('/editjournal', editBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal)
+                goToSentiment(sentimentVal, res.data)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
@@ -258,20 +259,19 @@ export const JournalTextEdit: React.FC = () => {
                 sentiment: sentimentVal
             }
 
-            console.log(createBody)
-
             instance.post('/createjournal', createBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal)
+                goToSentiment(sentimentVal, res.data)
+
             })
-            .catch((err) => {
-                toaster("Error! Something went wrong", closeCircleOutline)
-                dismiss();
-                setLoading(false);
-                // console.error("ERROR: ", err.response.data.error);
-            })
+                .catch((err) => {
+                    toaster("Error! Something went wrong", closeCircleOutline)
+                    dismiss();
+                    setLoading(false);
+                    // console.error("ERROR: ", err.response.data.error);
+                })
 
         }
 
@@ -279,25 +279,24 @@ export const JournalTextEdit: React.FC = () => {
     };
 
     const deleteJournal = async (event: any) => {
-        // setLoading(true);
+        setLoading(true);
 
-        // present({
-        //     message: 'Deleting Journal'
-        // })
+        present({
+            message: 'Deleting Journal'
+        })
 
+        console.log(editJournal.id)
 
-        //     instance.post('/editjournal', editBody).then((res) => {
-        //         console.log(res);
-        //     }).catch((err) => {
-        //         dismiss();
-        //         setLoading(false);
-        //         console.error("ERROR: ", err.response.data.error);
-        //     })
+        instance.post('/removejournal', {journalid: editJournal.id}).then((res) => {
+            console.log(res);
+            dismiss();
+            goToOverview()
+        }).catch((err) => {
+            dismiss();
+            setLoading(false);
+            console.error("ERROR: ", err);
+        })
     };
-    // const [presentAlert] = useIonAlert();
-    const [handlerMessage, setHandlerMessage] = useState('');
-    const [roleMessage, setRoleMessage] = useState('');
-
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
@@ -312,10 +311,11 @@ export const JournalTextEdit: React.FC = () => {
         });
     }
 
-    const goToSentiment = (sentiment: number) => {
+    const goToSentiment = (sentiment: number, res: any) => {
+        localStorage.setItem('journalEntry', JSON.stringify(res.fields))
         history.replace({
             pathname: '/tabs/journalgeneratemood',
-            search: `?sentiment=${sentiment}`,
+            search: `?sentiment=${sentiment}&journalid=${res.id}`,
         });
     }
 
@@ -436,7 +436,7 @@ export const JournalTextEdit: React.FC = () => {
                         <IonRow>
                             <IonCol size="6">
                                 <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
-                                {params.get("mode") == 'edit' ? <IonButton onClick={deleteJournal} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+                                {params.get("mode") == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
                             </IonCol>
 
                             <IonCol size="6">

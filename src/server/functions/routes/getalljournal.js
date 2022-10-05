@@ -1,7 +1,11 @@
 const firestore = require('firebase-admin').firestore()
-const { getDocs, collection, doc } = require('firebase/firestore')
-async function getalljournal(req, res){
-    
+const {
+    getDocs,
+    collection,
+    doc
+} = require('firebase/firestore')
+async function getalljournal(req, res) {
+
     const uid = req.body.uid
     const journals = []
     try {
@@ -18,13 +22,18 @@ async function getalljournal(req, res){
                     })
                 })
             })
+
+        return res.status(200).json({
+            journals
+        })
     } catch (error) {
+        console.log(error)
         return res.status(400).json({
             success: false,
             message: err.message
         })
     }
-   
+
 
     // //let journals = []
     // const query = firestore.collection(`users/${uid}/journal`)

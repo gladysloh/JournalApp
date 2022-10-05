@@ -82,15 +82,6 @@ const TabRoot: React.FC = () => (
             <Route path="/tabs/journaltextedit">
                 <JournalTextEdit />
             </Route>
-            <Route path="/tabs/journalimage">
-                <JournalImage />
-            </Route>
-            <Route path="/tabs/journaltextview">
-                <JournalTextView />
-            </Route>
-            <Route exact path="/tabs/journalimageview">
-                <JournalImageView />
-            </Route>
             <Route exact path="/tabs/journalview">
                 <JournalView />
             </Route>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IonApp, useIonViewWillEnter } from "@ionic/react";
 import FusionCharts from "fusioncharts";
 import Charts from "fusioncharts/fusioncharts.charts";
@@ -61,21 +61,22 @@ const Moodchart: React.FC = () => {
       year: selectedYear
     }
 
-    console.log(body)
-
     instance.post('/monthlymood', body).then((res) => {
       console.log(res);
       setMoods(res.data.moods)
 
     }).catch((err) => {
       console.error("ERROR: ", err);
-      // if (err.response.status == 401) history.replace("/login")
-
+      if (err.response.status == 401) history.replace("/login")
     })
   });
 
   useEffect(() => {
     console.log(moods)
+    getMoodChart()
+  }, [moods])
+
+  const getMoodChart = () => {
     moods.forEach((j: any) => {
       if (j['sentiment'] >= -1 && j['sentiment'] < -0.6) {
         updateMood(0, monthlyMoods[0])
@@ -88,11 +89,10 @@ const Moodchart: React.FC = () => {
       } else if (j['sentiment'] >= 0.6 && j['sentiment'] <= 1) {
         updateMood(4, monthlyMoods[4])
       }
-
     })
     dataSource.chart.caption = getJournalMonth()
     dataSource.data = monthlyMoods
-  }, [moods])
+  }
 
   const updateMood = (id: any, mood: any) => {
     setMonthlyMoods(
@@ -110,8 +110,6 @@ const Moodchart: React.FC = () => {
   };
 
   const getJournalMonth = () => {
-    // return MONTH_NAMES[new Date(moods[0]['timestamp']['_seconds'] * 1000).getMonth()]
-
     return "JUNE"
   }
 

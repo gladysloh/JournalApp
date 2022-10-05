@@ -32,10 +32,6 @@ function Mood_Calendar() {
     locales,
   })
 
-
-
-
-
   const events = [
     {
       title: "..😁",
@@ -91,7 +87,7 @@ function Mood_Calendar() {
     }
 
     instance.post('/monthlymood', body).then((res) => {
-      console.log(res);
+      console.log(res.data);
 
     }).catch((err) => {
       console.error("ERROR: ", err);

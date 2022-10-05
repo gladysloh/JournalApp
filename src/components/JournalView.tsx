@@ -105,10 +105,10 @@ export const JournalView: React.FC = () => {
         const newVal = e.detail.value;
         console.log(newVal);
         setVal(newVal);
-        if(newVal == 'edit'){
+        if (newVal == 'edit') {
             handleEditJournal(viewJournal)
         }
-        
+
     };
 
 
@@ -119,7 +119,7 @@ export const JournalView: React.FC = () => {
 
         history.push({
             pathname: '/tabs/journaltextedit',
-            search: '?mode=edit&id='+journal.id,
+            search: '?mode=edit&id=' + journal.id,
             state: { detail: 'edit' }
         });
     }
@@ -159,13 +159,6 @@ export const JournalView: React.FC = () => {
                                     <IonRow className="titleInputBackground">
                                         <IonCol>
                                             <IonCardSubtitle>
-                                                {/* <IonInput
-                                                  className='titleInput'
-                                                  value='CHILL DAY'
-                                                  readonly
-                                                  inputMode="text"
-                                                  maxlength={20}>
-                                              </IonInput> */}
 
                                                 {viewJournal.title}
                                             </IonCardSubtitle>
@@ -182,15 +175,6 @@ export const JournalView: React.FC = () => {
                                         </IonCol>
                                     </IonRow>
                                     <IonRow className="bodyInputBackground" >
-                                        {/* <IonTextarea
-                                          className='bodyInput'
-                                          value='Today was a very busy day. But I love busy days like today. It keeps me motivated and productive throughout the day to complete as many tasks as possible. I do not like to waste my time, so I try to keep myself occupied with tasks everyday. I completed 3 school assignments, submitted my project proposal to my supervisor and spent time with my family.'
-                                          disabled
-                                          readonly
-                                          rows={15}
-                                          inputMode="text"
-                                          maxlength={1500}>
-                                      </IonTextarea> */}
                                         <span className='bodyInput'> {viewJournal.body} </span>
                                     </IonRow>
                                     <IonRow className="row3">
