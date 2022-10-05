@@ -58,6 +58,7 @@ async function editjournal(req, res){
         })
         res.status(200).json({
             success: true,
+            id: journalid,
             fields
         })
     } catch(err) {

@@ -24,10 +24,10 @@ const JournalGenerateMood: React.FC = () => {
         console.log(location.pathname); // result: '/secondpage'
         console.log(location.search);
 
-        history.replace({
-            pathname: '/tabs/journalmood',
-            search: `?sentiment=${params.get('sentiment')}&journalid=${params.get('journalid')}`
-        });
+        // history.push({
+        //     pathname: '/tabs/journalmood',
+        //     search: `?sentiment=${params.get('sentiment')}&journalid=${params.get('journalid')}`
+        // });
     })
 
   

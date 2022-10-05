@@ -216,7 +216,7 @@ export const JournalTextEdit: React.FC = () => {
 
         if (params.get('mode') == 'edit') {
 
-            let tempImg = await base64FromPath(photos['webviewPath'])
+            let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
             // if(tempImg) tempImg.split(",").pop();
             let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
@@ -313,8 +313,8 @@ export const JournalTextEdit: React.FC = () => {
 
     const goToSentiment = (sentiment: number, res: any) => {
         localStorage.setItem('journalEntry', JSON.stringify(res.fields))
-        history.replace({
-            pathname: '/tabs/journalgeneratemood',
+        history.push({
+            pathname: '/tabs/journalmood',
             search: `?sentiment=${sentiment}&journalid=${res.id}`,
         });
     }

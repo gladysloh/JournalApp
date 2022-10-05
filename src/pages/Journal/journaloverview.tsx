@@ -51,7 +51,6 @@ const JournalOverview: React.FC = () => {
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
             // dismiss()
-
         })
         // dismiss()
     }, [journals]);
