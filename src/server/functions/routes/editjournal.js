@@ -12,18 +12,43 @@ async function editjournal(req, res){
     const newbody = req.body.newbody
     const newtitle = req.body.newtitle
     const sentiment = req.body.sentiment
+    let imageexists = true
+    //the following try-catch block is to check if the journal of concern already has an image, sets imageexists boolean to true or false
+    try {
+        const snapshot = await firestore
+            .collection('users')
+            .doc(uid)
+            .collection('journal')
+            .doc(journalid)
+            .get()
+        console.log(snapshot.get('fields.url'))
+        if(snapshot.get('fields.url')) {
+            imageexists = true
+        } else {
+            imageexists = false
+        }
+    } catch (err) {
+        console.log('caught an error')
+        return res.status(400).json({
+            success: false,
+            message: err.message
+        })
+    }
+    console.log(imageexists)
 
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
         var filename = req.body.filename
-        try {
-            await bucket.file(`post-images/${filename}`).delete()
-        } catch (err){
-            return res.status(400).json({
-                success: false,
-                message: err.message
-            })
-        }
+        if (imageexists) {
+            try {
+                await bucket.file(`post-images/${filename}`).delete()
+            } catch (err){
+                return res.status(400).json({
+                    success: false,
+                    message: err.message
+                })
+            }
+        } 
         
         var temp = await uploadimage(req.body.newimage, uid)
         temp = JSON.parse(temp)
