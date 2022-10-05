@@ -16,14 +16,14 @@ async function editjournal(req, res){
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
         var filename = req.body.filename
-        await bucket.file(`post-images/${filename}`).delete((error) => {
-            if (error){
-                return res.status(400).json({
-                    success: false,
-                    message: 'failed to delete existing image'
-                })
-            }
-        })
+        try {
+            await bucket.file(`post-images/${filename}`).delete()
+        } catch (err){
+            return res.status(400).json({
+                success: false,
+                message: err.message
+            })
+        }
         
         var temp = await uploadimage(req.body.newimage, uid)
         temp = JSON.parse(temp)
