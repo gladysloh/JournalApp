@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
-import React, { useState, Component } from 'react';
->>>>>>> origin/frontend
 import {
     IonContent,
     IonHeader,
@@ -31,12 +27,7 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-<<<<<<< HEAD
     IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave
-=======
-    IonImg,
-    useIonAlert
->>>>>>> origin/frontend
 } from '@ionic/react';
 import { textSharp, imageSharp, help, closeCircleOutline } from 'ionicons/icons';
 
@@ -57,7 +48,6 @@ import { MONTH_NAMES } from '../SharedVariables';
 
 export const JournalTextEdit: React.FC = () => {
 
-<<<<<<< HEAD
     const initialJournal = {
         timestamp: {
             _seconds: 0
@@ -107,12 +97,12 @@ export const JournalTextEdit: React.FC = () => {
         if (params.get("mode") == "edit") {
             setEdit(userJournal)
             setVal('edit')
-        } else if (params.get("mode") == "create"){
+        } else if (params.get("mode") == "create") {
             setEdit(initialJournal)
             setVal('edit')
         }
 
-        
+
 
     }, [location]);
 
@@ -225,8 +215,8 @@ export const JournalTextEdit: React.FC = () => {
         })
 
         if (params.get('mode') == 'edit') {
-            console.log()
-            // let tempImg = editJournal.url ? await base64FromPath(photos.webviewPath) : ''
+
+            let tempImg = await base64FromPath(photos['webviewPath'])
             // if(tempImg) tempImg.split(",").pop();
             let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
@@ -234,17 +224,18 @@ export const JournalTextEdit: React.FC = () => {
                 journalid: editJournal.id,
                 newbody: editJournal.body,
                 newtitle: editJournal.title,
-                // newimage: tempImg!= '' ? tempImg.split(",").pop() : false,
+                newimage: tempImg != '' ? tempImg.split(",").pop() : false,
                 sentiment: sentimentVal
             }
 
+            setEdit(editBody)
             console.log(editBody)
 
             instance.post('/editjournal', editBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal)
+                goToSentiment(sentimentVal, res.data)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
@@ -268,20 +259,19 @@ export const JournalTextEdit: React.FC = () => {
                 sentiment: sentimentVal
             }
 
-            console.log(createBody)
-
             instance.post('/createjournal', createBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal)
+                goToSentiment(sentimentVal, res.data)
+
             })
-            .catch((err) => {
-                toaster("Error! Something went wrong", closeCircleOutline)
-                dismiss();
-                setLoading(false);
-                // console.error("ERROR: ", err.response.data.error);
-            })
+                .catch((err) => {
+                    toaster("Error! Something went wrong", closeCircleOutline)
+                    dismiss();
+                    setLoading(false);
+                    // console.error("ERROR: ", err.response.data.error);
+                })
 
         }
 
@@ -289,32 +279,24 @@ export const JournalTextEdit: React.FC = () => {
     };
 
     const deleteJournal = async (event: any) => {
-        // setLoading(true);
+        setLoading(true);
 
-        // present({
-        //     message: 'Deleting Journal'
-        // })
+        present({
+            message: 'Deleting Journal'
+        })
 
+        console.log(editJournal.id)
 
-        //     instance.post('/editjournal', editBody).then((res) => {
-        //         console.log(res);
-        //     }).catch((err) => {
-        //         dismiss();
-        //         setLoading(false);
-        //         console.error("ERROR: ", err.response.data.error);
-        //     })
-=======
-    const [title, setTitle] = useState<string>();
-    const [body, setBody] = useState<string>();
-    const [logs, setLogs] = useState<string[]>([]);
-    const pushLog = (msg: string) => {
-        setLogs([msg, ...logs]);
->>>>>>> origin/frontend
+        instance.post('/removejournal', {journalid: editJournal.id}).then((res) => {
+            console.log(res);
+            dismiss();
+            goToOverview()
+        }).catch((err) => {
+            dismiss();
+            setLoading(false);
+            console.error("ERROR: ", err);
+        })
     };
-    const [presentAlert] = useIonAlert();
-    const [handlerMessage, setHandlerMessage] = useState('');
-    const [roleMessage, setRoleMessage] = useState('');
-
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
@@ -324,15 +306,16 @@ export const JournalTextEdit: React.FC = () => {
     });
 
     const goToOverview = () => {
-        history.push({
+        history.replace({
             pathname: '/tabs/journaloverview'
         });
     }
 
-    const goToSentiment = (sentiment: number) => {
-        history.push({
+    const goToSentiment = (sentiment: number, res: any) => {
+        localStorage.setItem('journalEntry', JSON.stringify(res.fields))
+        history.replace({
             pathname: '/tabs/journalgeneratemood',
-            search: `?sentiment=${sentiment}`,
+            search: `?sentiment=${sentiment}&journalid=${res.id}`,
         });
     }
 
@@ -362,19 +345,13 @@ export const JournalTextEdit: React.FC = () => {
                                     </IonRow>
                                 </IonCol>
                                 <IonCol className="questionMarkBackground" size='2'>
-<<<<<<< HEAD
                                     <IonButton className="questionMark" size="small" color="light" onClick={questionPrompt}>
-=======
-                                    <IonButton className="questionMark" size="small" color="light"
-                                    onClick={() => setHandlerMessage('If you could relieve any day of your life and change nothing, what day would you choose?')}>
->>>>>>> origin/frontend
                                         <IonImg className="questionMarkImg" src={question} />
                                     </IonButton>
                                 </IonCol>
                             </IonRow>
                         </IonGrid>
                     </IonRow>
-<<<<<<< HEAD
 
                     {qns.length > 0 ?
                         (
@@ -429,23 +406,6 @@ export const JournalTextEdit: React.FC = () => {
                                                     value={editJournal.body}
                                                     name="body"
                                                     onIonChange={onInputchange}
-=======
-                    <IonRow>
-                        <p>{handlerMessage}</p>
-                    </IonRow>
-                    <IonRow>
-                        <IonCard className='journalEntryCard'>
-                            <IonCardContent>
-                                <IonGrid className="journalEntryGrid">
-                                    <IonRow className="titleInputBackground">
-                                        <IonCol>
-                                            <IonCardSubtitle>
-                                                <IonInput
-                                                    className='titleInput'
-                                                    value={title}
-                                                    placeholder="Add title"
-                                                    onIonChange={e => setTitle(e.detail.value!)}
->>>>>>> origin/frontend
                                                     required={true}
                                                     rows={10}
                                                     inputMode="text"
@@ -476,7 +436,7 @@ export const JournalTextEdit: React.FC = () => {
                         <IonRow>
                             <IonCol size="6">
                                 <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
-                                {params.get("mode") == 'edit' ? <IonButton onClick={deleteJournal} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+                                {params.get("mode") == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
                             </IonCol>
 
                             <IonCol size="6">

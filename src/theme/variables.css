@@ -106,33 +106,8 @@ ion-content {
 }
 
 ion-toolbar {
-<<<<<<< HEAD
   --background-color: transparent;
   --ion-color-base: transparent !important;
-=======
-  --background-color: #FFDBBD;
-  --ion-color-base: #FFDBBD;
-  --background: transparent;
-
-}
-
-ion-title{
-  font-family: 'Raleway-Bold';
-}
-
-ion-menu-button {
-  --color: black;
-}
-
-/**
-* NotoSans Font
-*/
-@font-face {
-  font-family: "NotoSans";
-  font-style: normal;
-  font-weight: normal;
-  src: url("../../public/assets/fonts/NotoSans/NotoSans-Regular.ttf");
->>>>>>> origin/frontend
 }
 
 .spacer{
