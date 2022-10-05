@@ -35,11 +35,11 @@ async function editjournal(req, res){
         })
     }
     console.log(imageexists)
-
+    var filename = req.body.filename
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
-        var filename = req.body.filename
-        if (imageexists) {
+        //var filename = req.body.filename
+        if (imageexists) { //if there already exists an image attached to the journal, delete it first
             try {
                 await bucket.file(`post-images/${filename}`).delete()
             } catch (err){
@@ -65,6 +65,16 @@ async function editjournal(req, res){
         }
 
     }  else { //does not update image, journal entry with just the body
+        if (imageexists) { //original post had an image, but the user did not include another image in the edit function
+            try {
+                await bucket.file(`post-images/${filename}`).delete()
+            } catch (err){
+                return res.status(400).json({
+                    success: false,
+                    message: err.message
+                })
+            }
+        } 
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             body: newbody,
