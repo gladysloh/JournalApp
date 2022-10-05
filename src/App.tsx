@@ -9,9 +9,6 @@ import {
   IonTabs,
   setupIonicReact,
   IonLoading,
-<<<<<<< HEAD
-  useIonViewWillEnter
-=======
   IonMenu,
   IonHeader,
   IonToolbar,
@@ -20,7 +17,6 @@ import {
   IonPage,
   IonButtons,
   IonMenuButton
->>>>>>> origin/frontend
 } from '@ionic/react';
 
 import React, { useEffect, useContext } from "react";
@@ -56,24 +52,8 @@ import './theme/variables.css';
 import './theme/floating-tab-bar.css';
 import { useState } from 'react';
 import axios from 'axios';
-import JournalGenerateMood from './pages/Journal/journalgeneratemood';
 import JournalOverview from './pages/Journal/journaloverview';
-
-
-<<<<<<< HEAD
-=======
-import CardExamples from './pages/tutorial/CardExamples';
-import InputExamples from './pages/tutorial/InputExamples';
-import SegmentExamples from './pages/tutorial/SegmentExamples';
-import TextAreaExamples from './pages/tutorial/TextAreaExamples';
-import { SlideExample } from './pages/tutorial/Slides';
-import JournalView from './components/JournalView';
-import JournalGenerateMood from './pages/Journal/journalgeneratemood';
-import JournalMood from './pages/Journal/journalmood';
-import Question from './pages/Journal/question';
 import { SideMenu } from './pages/SideMenu/sidemenu';
-import Settings from './pages/Settings/settings';
->>>>>>> origin/frontend
 
 setupIonicReact();
 
@@ -107,108 +87,11 @@ const App: React.FC = () => {
 
           <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
           <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
+          {userStatus ? <SideMenu /> : <Redirect to ="/login"/>}
 
         </IonRouterOutlet>
       </IonReactRouter>
-<<<<<<< HEAD
     </IonApp>
   )
 }
-=======
-    )
-  } else {
-    return (
-      <IonApp>
-        <IonReactRouter>
-          <SideMenu />
-          <IonTabs onIonTabsDidChange={e => setActiveTab(e.detail.tab)}>
-            <IonRouterOutlet id='main'>
-
-              {tabs.map((tab, index) => {
-
-                return (
-
-                  <Route key={index} exact path={tab.url}>
-                    <tab.component />
-                  </Route>
-                );
-              })}
-
-              <Route path="/sidemenu">
-                <SideMenu />
-              </Route>
-              <Route exact path ="/sidemenu/settings">
-                <Settings />
-              </Route>
-              <Route exact path="/journaloverview">
-                <JournalOverview />
-              </Route>
-              <Route exact path="/journaltext">
-                <JournalText />
-              </Route>
-              <Route exact path="/journalimage">
-                <JournalImage />
-              </Route>
-              <Route exact path="/journaltextview">
-                <JournalTextView />
-              </Route>
-              <Route exact path="/journalimageview">
-                <JournalImageView />
-              </Route>
-              <Route exact path="/journalview">
-                <JournalView />
-              </Route>
-              <Route exact path="/question">
-                <Question />
-              </Route>
-              <Route exact path="/journalgeneratemood">
-                <JournalGenerateMood />
-              </Route>
-              <Route exact path="/journalmood">
-                <JournalMood />
-              </Route>
-              
-              <Route exact path="/loading">
-                <Loading />
-              </Route>
-              <Route exact path="/cardexamples">
-                <CardExamples />              
-              </Route>
-              <Route exact path="/inputexamples">
-                <InputExamples />              
-              </Route>
-              <Route exact path="/segmentexamples">
-                <SegmentExamples />              
-              </Route>
-              <Route exact path="/textareaexamples">
-                <TextAreaExamples />              
-              </Route>
-              <Route exact path="/slideexamples">
-                <SlideExample />              
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/journaloverview" />
-              </Route>
-            </IonRouterOutlet>
-            <IonTabBar slot="bottom">
-              {tabs.map((tab, barIndex) => {
-
-                const active = tab.name === activeTab;
-
-                return (
-
-                  <IonTabButton key={`tab_${barIndex}`} tab={tab.name} href={tab.url}>
-                    <IonIcon icon={active ? tab.activeIcon : tab.icon} />
-                  </IonTabButton>
-                );
-              })}
-            </IonTabBar>
-          </IonTabs>
-        </IonReactRouter>
-      </IonApp>
-    );
-  }
-
-};
->>>>>>> origin/frontend
 export default App;

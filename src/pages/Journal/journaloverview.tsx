@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import { IonButton, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 /** STYLE */
-=======
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
->>>>>>> origin/frontend
 import './journaloverview.css';
 
 /** ICONS */
@@ -20,22 +15,25 @@ import text from '../../theme/icons/text.png';
 import image from '../../theme/icons/image.png';
 import clock from '../../theme/icons/clock.png';
 
-/** SERVER */
-import getalljournal from '../../server/functions/routes/getalljournal'
-import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
-import { useParams, useHistory } from "react-router";
-import { getMonth } from 'date-fns';
+import { Link, Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
+
     const [present, dismiss] = useIonLoading();
+    const [loading, setLoading] = useState(false);
 
     const current = new Date();
 
     const [journals, setJournals] = useState([]);
 
-    useIonViewWillEnter(() => {
+    const [entry, setEntry] = useState(false);
+
+    useIonViewDidEnter(() => {
+        console.log("ion view enter")
+        // present()
+
         const instance = axios.create({
             withCredentials: true,
             baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
@@ -43,21 +41,33 @@ const JournalOverview: React.FC = () => {
 
         instance.get('/getalljournals').then((res) => {
             console.log(res);
-            let j: [] = res.data
+            let j: [] = res.data.journals
             j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
 
             setJournals(j);
+            // dismiss()
 
         }).catch((err) => {
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
+            // dismiss()
 
         })
-    });
+        // dismiss()
+    }, [journals]);
+
+    const checkJournals = () => {
+        if(journals.length!=0){
+            if (new Date(journals[0]['timestamp']['_seconds']*1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
+            else return false
+        }
+        
+    }
+
 
     const getJournalTime = (timestamp: any) => {
         let seconds = timestamp._seconds;
-        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0,5);
+        const result = new Date(seconds * 1000).toLocaleTimeString().slice(0, 5);
         return result;
     }
 
@@ -101,11 +111,21 @@ const JournalOverview: React.FC = () => {
      */
     const calculateStreaks = () => {
         let count = 0
-        journals.reverse().forEach((el, i) => {
-            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) count++
+
+        journals.forEach((el, i) => {
+            if(!checkJournals()){
+                i++
+            }
+
+            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) {
+                count++
+                console.log((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)), i * 86400000)
+            }
+            
         })
         return count;
     }
+
 
     /** 
      * Get total number of journal entries
@@ -130,25 +150,28 @@ const JournalOverview: React.FC = () => {
      */
     const getEmotion = () => {
         let count = 0
+
         journals.forEach((el, i) => {
             if (el['sentiment']) {
+                // console.log(el)
                 count = el['sentiment'] + count
             }
         })
-        return count * 100 + "%";
+
+        return Math.round(count) + "%";
 
     }
 
 
     return (
         <IonPage>
-            <IonHeader class="ion-no-border">
+            {/* <IonHeader class="ion-no-border">
                 <IonToolbar>
                     <IonButtons slot='start'>
                         <IonMenuButton></IonMenuButton>
                     </IonButtons>
                 </IonToolbar>
-            </IonHeader>
+            </IonHeader> */}
             <IonContent className="ioncontent" fullscreen>
 
                 <IonGrid>
@@ -250,21 +273,28 @@ const JournalOverview: React.FC = () => {
 
                     <IonRow className="entries">
                         <IonCol>
-                            <IonRow onClick={handleCreateJournal}>
-                                <IonCol className="entryDateDay" size='2'>
-                                    <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
-                                    <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
-                                </IonCol>
-                                <IonCol className="entryList" size='10'>
-                                    <IonCard className="entryListCard">
-                                        <IonCardContent>
-                                            <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
 
-                                            <p className="entryText">Begin your day here...</p>
-                                        </IonCardContent>
-                                    </IonCard>
-                                </IonCol>
-                            </IonRow>
+                            {
+
+                                checkJournals() ?
+                                    <IonRow></IonRow> :
+                                    <IonRow onClick={handleCreateJournal}>
+                                        <IonCol className="entryDateDay" size='2'>
+                                            <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
+                                            <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
+                                        </IonCol>
+                                        <IonCol className="entryList" size='10'>
+                                            <IonCard className="entryListCard">
+                                                <IonCardContent>
+                                                    <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
+
+                                                    <p className="entryText">Begin your day here...</p>
+                                                </IonCardContent>
+                                            </IonCard>
+                                        </IonCol>
+                                    </IonRow>
+                            }
+
 
                             {journals.map(item => {
                                 return (
@@ -279,7 +309,7 @@ const JournalOverview: React.FC = () => {
                                                     <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
                                                     <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
                                                     <p className="entryText">{item['body']}</p>
-                                                    { item['url'] ?
+                                                    {item['url'] ?
                                                         <div > <img src={item['url']} /> </div> :
                                                         <div> </div>}
 
