@@ -49,8 +49,16 @@ const Moodchart: React.FC = () => {
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
 
-
   useIonViewWillEnter(() => {
+    loadData()
+  });
+
+  useEffect(() => {
+    console.log()
+    getMoodChart()
+  }, [])
+
+  const loadData = () =>{
     const instance = axios.create({
       withCredentials: true,
       baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
@@ -69,12 +77,7 @@ const Moodchart: React.FC = () => {
       console.error("ERROR: ", err);
       if (err.response.status == 401) history.replace("/login")
     })
-  });
-
-  useEffect(() => {
-    console.log(moods)
-    getMoodChart()
-  }, [moods])
+  }
 
   const getMoodChart = () => {
     moods.forEach((j: any) => {

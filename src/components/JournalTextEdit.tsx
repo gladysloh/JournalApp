@@ -56,6 +56,7 @@ export const JournalTextEdit: React.FC = () => {
         body: '',
         title: '',
         url: '',
+        filename: '',
         sentiment: 0
     }
 
@@ -86,9 +87,9 @@ export const JournalTextEdit: React.FC = () => {
 
     const location = useLocation();
     const params = new URLSearchParams(location.search)
-    // const [journalMode, setMode] = useState<string>();
-
-    useEffect(() => {
+    
+    const loadData = () => {
+        setLoading(true)
         console.log(location.pathname); // result: '/secondpage'
         console.log(val)
         let params = new URLSearchParams(location.search)
@@ -101,10 +102,14 @@ export const JournalTextEdit: React.FC = () => {
             setEdit(initialJournal)
             setVal('edit')
         }
+        setLoading(false)
+    }
+
+    useIonViewDidEnter(() => {
+        loadData()
+    }, []);
 
 
-
-    }, [location]);
 
     const [presentToast] = useIonToast();
     const toaster = (msg: any, icon: any) => {
@@ -215,15 +220,16 @@ export const JournalTextEdit: React.FC = () => {
         })
 
         if (params.get('mode') == 'edit') {
-
+            
             let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
-            // if(tempImg) tempImg.split(",").pop();
+      
             let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
                 uid: uid,
                 journalid: editJournal.id,
                 newbody: editJournal.body,
                 newtitle: editJournal.title,
+                filename: editJournal.filename,
                 newimage: tempImg != '' ? tempImg.split(",").pop() : false,
                 sentiment: sentimentVal
             }
@@ -235,7 +241,7 @@ export const JournalTextEdit: React.FC = () => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, res.data)
+                goToSentiment(sentimentVal, editJournal.id)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
@@ -248,8 +254,6 @@ export const JournalTextEdit: React.FC = () => {
             // console.log(await base64FromPath(photos.webviewPath))
             let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
             let sentimentVal = await sentiment(editJournal.body);
-            if (tempImg) tempImg.split(",").pop();
-
 
             let createBody = {
                 uid: uid,
@@ -263,7 +267,7 @@ export const JournalTextEdit: React.FC = () => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, res.data)
+                goToSentiment(sentimentVal, 0)
 
             })
                 .catch((err) => {
@@ -300,6 +304,7 @@ export const JournalTextEdit: React.FC = () => {
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
+        console.log(photos)
         deletePhoto(photos);
         setPhotoToDelete(undefined)
         setEdit(initialJournal)
@@ -311,11 +316,11 @@ export const JournalTextEdit: React.FC = () => {
         });
     }
 
-    const goToSentiment = (sentiment: number, res: any) => {
-        localStorage.setItem('journalEntry', JSON.stringify(res.fields))
+    const goToSentiment = (sentiment: number, journalId: any) => {
+        
         history.push({
             pathname: '/tabs/journalmood',
-            search: `?sentiment=${sentiment}&journalid=${res.id}`,
+            search: `?sentiment=${sentiment}&journalid=${journalId}`,
         });
     }
 
@@ -420,7 +425,8 @@ export const JournalTextEdit: React.FC = () => {
                             :
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
-                                    {photos ? <IonImg src={photos ? photos.webviewPath : ''} /> : <span></span>}
+                                    
+                                    {photos ? <IonImg src={photos.webviewPath ? photos.webviewPath : ''} /> : editJournal.url ? <IonImg src={editJournal ? editJournal.url  : ''  }/> : <span></span>   }
                                 </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">

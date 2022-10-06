@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonToast, useIonViewDidEnter } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonLoading, useIonToast, useIonViewDidEnter } from '@ionic/react';
 // import ExploreContainer from '../../components/ExploreContainer';
 import './journalmood.css';
 
@@ -12,16 +12,28 @@ import { MONTH_NAMES } from '../../SharedVariables';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { checkmarkCircleOutline } from 'ionicons/icons';
+import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 const JournalMood: React.FC = () => {
+
   const [mood, setMood] = useState(false)
   const [sentiment, setSentiment] = useState(0)
   const [journalId, setJournalId] = useState(" ")
 
+
+  const [loading, setLoading] = useState(false);
+  const [present, dismiss] = useIonLoading();
+
   const location = useLocation();
   const history = useHistory();
   const params = new URLSearchParams(location.search)
+
+
+  const goToOverview = () => {
+    history.push({
+      pathname: '/tabs/journaloverview'
+    });
+  }
 
   useEffect(() => {
     console.log(location.pathname); // result: '/secondpage'
@@ -33,7 +45,8 @@ const JournalMood: React.FC = () => {
     let j = params.get("journalid") || ""
     setJournalId(j)
 
-    if(j=="") goToOverview()
+    if (j == "") 
+      goToOverview()
 
   }, [location])
 
@@ -43,15 +56,15 @@ const JournalMood: React.FC = () => {
   }
 
   const [presentToast] = useIonToast();
-    const toaster = (msg: any, icon: any) => {
-        presentToast({
-            message: msg,
-            duration: 1500,
-            position: 'bottom',
-            cssClass: icon==checkmarkCircleOutline ? "toaster-success" : "toaster-fail",
-            icon: icon
-        });
-    };
+  const toaster = (msg: any, icon: any) => {
+    presentToast({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+      cssClass: icon == checkmarkCircleOutline ? "toaster-success" : "toaster-fail",
+      icon: icon
+    });
+  };
 
   const generateMood = () => {
     //-1 to -0.6, -0.6 to -0.2, -0.2 to 0.2, 0.2 to 0.6, 0.6 to 1
@@ -79,97 +92,116 @@ const JournalMood: React.FC = () => {
 
     let body = localStorage.getItem("journalEntry") || ""
     let bodyJson = JSON.parse(body)
-    let editBody = {
-      uid: localStorage.getItem("uid"),
-      journalid: params.get("journalid"),
-      newbody: bodyJson.body,
-      newtitle: bodyJson.title,
-      newimage: bodyJson.url,
-      sentiment: s
+
+    let journalId = params.get("journalid") || ''
+
+    if (journalId == '0') {
+      let createBody = {
+        ...bodyJson,
+        sentiment: s
+      }
+
+      instance.post('/createjournal', createBody).then((res) => {
+        console.log(res);
+        dismiss();
+        setLoading(false);
+
+      })
+        .catch((err) => {
+          toaster("Error! Something went wrong", closeCircleOutline)
+          dismiss();
+          setLoading(false);
+          // console.error("ERROR: ", err.response.data.error);
+        })
+
+    }
+    else{
+      let editBody = {
+        ...bodyJson,
+        sentiment: s
+      }
+
+      console.log(bodyJson)
+
+      instance.post('/editjournal', editBody).then((res) => {
+        console.log(res);
+        toaster("Mood updated", checkmarkCircleOutline)
+        goToOverview()
+
+      }).catch((err) => {
+        console.error("ERROR: ", err);
+      })
+
+
+    }
   }
 
-    instance.post('/editjournal', editBody).then((res) => {
-      console.log(res);
-      toaster("Mood updated", checkmarkCircleOutline)
-      goToOverview()
-     
-    }).catch((err) => {
-      console.error("ERROR: ", err);
-    })
-  }
 
-  const goToOverview = () => {
-    history.push({
-      pathname: '/tabs/journaloverview'
-    });
-  }
+    return (
+      <IonPage>
+        <IonContent className="ioncontent" fullscreen>
+          <IonGrid className="ionGrid">
+            <IonRow className="title">
+              <IonCardTitle>{getTodayDate()}</IonCardTitle>
+              <p></p>
+              <p>Your mood for today is...</p>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonCard className="generatedEmojiCard">
+                  <IonImg className="generatedEmojiImage" src={generateMood()?.src} />
+                  <IonCardTitle> {generateMood()?.name} </IonCardTitle>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <IonCard className="checkEmojiCard">
+                  <IonCardContent>
+                    <IonGrid className="checkEmojiGrid">
+                      <IonRow>
+                        <IonCardTitle className="checkEmojiTitle">Is this your mood for today?</IonCardTitle>
+                      </IonRow>
+                      <IonRow>
+                        <p className="checkEmojiSubtitle">No, my mood for today is...</p>
+                      </IonRow>
+                      <IonRow className="emojiCards">
+                        <IonCol>
+                          <IonCard className="emojiCard" onClick={() => updateMood(1)}>
+                            <IonImg className="emojiImage" src={smiling} />
+                          </IonCard>
+                        </IonCol>
 
+                        <IonCol>
+                          <IonCard className="emojiCard" onClick={() => updateMood(0)}>
+                            <IonImg className="emojiImage" src={neutral} />
+                          </IonCard>
+                        </IonCol>
+                        <IonCol>
+                          <IonCard className="emojiCard" onClick={() => updateMood(-0.5)}>
+                            <IonImg className="emojiImage" src={sad} />
+                          </IonCard>
+                        </IonCol>
 
-  return (
-    <IonPage>
-      <IonContent className="ioncontent" fullscreen>
-        <IonGrid className="ionGrid">
-          <IonRow className="title">
-            <IonCardTitle>{getTodayDate()}</IonCardTitle>
-            <p></p>
-            <p>Your mood for today is...</p>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonCard className="generatedEmojiCard">
-                <IonImg className="generatedEmojiImage" src={generateMood()?.src} />
-                <IonCardTitle> {generateMood()?.name} </IonCardTitle>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonCard className="checkEmojiCard">
-                <IonCardContent>
-                  <IonGrid className="checkEmojiGrid">
-                    <IonRow>
-                      <IonCardTitle className="checkEmojiTitle">Is this your mood for today?</IonCardTitle>
-                    </IonRow>
-                    <IonRow>
-                      <p className="checkEmojiSubtitle">No, my mood for today is...</p>
-                    </IonRow>
-                    <IonRow className="emojiCards">
-                      <IonCol>
-                        <IonCard className="emojiCard" onClick={() => updateMood(1)}>
-                          <IonImg className="emojiImage" src={smiling} />
-                        </IonCard>
-                      </IonCol>
+                        <IonCol>
+                          <IonCard className="emojiCard" onClick={() => updateMood(-1)}>
+                            <IonImg className="emojiImage" src={verysad} />
+                          </IonCard>
+                        </IonCol>
+                      </IonRow>
+                      <IonRow>
+                        <IonButton onClick={updateMood(sentiment)}>SKIP</IonButton>
+                        {/* <IonButton>NEXT</IonButton> */}
+                      </IonRow>
+                    </IonGrid>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonContent>
+      </IonPage>
+    );
+  };
 
-                      <IonCol>
-                        <IonCard className="emojiCard" onClick={() => updateMood(0)}>
-                          <IonImg className="emojiImage" src={neutral} />
-                        </IonCard>
-                      </IonCol>
-                      <IonCol>
-                        <IonCard className="emojiCard" onClick={() => updateMood(-0.5)}>
-                          <IonImg className="emojiImage" src={sad} />
-                        </IonCard>
-                      </IonCol>
-
-                      <IonCol>
-                        <IonCard className="emojiCard" onClick={() => updateMood(-1)}>
-                          <IonImg className="emojiImage" src={verysad} />
-                        </IonCard>
-                      </IonCol>
-                    </IonRow>
-                    <IonRow>
-                      <IonButton onClick={goToOverview}>SKIP</IonButton>
-                      {/* <IonButton>NEXT</IonButton> */}
-                    </IonRow>
-                  </IonGrid>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
-  );
-};
-
-export default JournalMood;
+  export default JournalMood;

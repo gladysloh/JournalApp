@@ -22,7 +22,6 @@ const JournalOverview: React.FC = () => {
     const history = useHistory();
 
     const [present, dismiss] = useIonLoading();
-    const [loading, setLoading] = useState(false);
 
     const current = new Date();
 
@@ -30,10 +29,12 @@ const JournalOverview: React.FC = () => {
 
     const [entry, setEntry] = useState(false);
 
-    useIonViewDidEnter(() => {
-        console.log("ion view enter")
-        // present()
+    const [loading, setLoading] = useState(false);
 
+    const getJournalInfo = async () => {
+        console.log("getting all journals")
+        setLoading(true); // Set loading before sending API request
+        // present()
         const instance = axios.create({
             withCredentials: true,
             baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
@@ -43,17 +44,26 @@ const JournalOverview: React.FC = () => {
             console.log(res);
             let j: [] = res.data.journals
             j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
-
+            
             setJournals(j);
-            // dismiss()
+            setLoading(false); // Stop loading
+            
 
         }).catch((err) => {
+            setLoading(false); // Stop loading
+            
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
-            // dismiss()
         })
-        // dismiss()
-    }, [journals]);
+
+        
+    };
+
+    useIonViewDidEnter(() => {
+        console.log("ion view enter")
+        getJournalInfo()
+
+    }, []);
 
     const checkJournals = () => {
         if(journals.length!=0){
@@ -118,7 +128,7 @@ const JournalOverview: React.FC = () => {
 
             if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) {
                 count++
-                console.log((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)), i * 86400000)
+                
             }
             
         })
@@ -253,7 +263,7 @@ const JournalOverview: React.FC = () => {
                             </IonCard>
                         </IonCol>
                         { /* I removed this bc i think its unncessary */}
-                        {/* <IonCol className="inputTypeBackground" size='6'>
+                        <IonCol className="inputTypeBackground" size='6'>
                             <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
                                 <IonSegmentButton className='inputTypes' value="text">
                                     <IonLabel>
@@ -266,7 +276,7 @@ const JournalOverview: React.FC = () => {
                                     </IonLabel>
                                 </IonSegmentButton>
                             </IonSegment>
-                        </IonCol> */}
+                        </IonCol>
                     </IonRow>
 
 

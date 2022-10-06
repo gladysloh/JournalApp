@@ -66,7 +66,7 @@ const App: React.FC = () => {
   })
 
   instance.get('/getuser').then((res) => {
-    console.log(res);
+    // console.log(res);
     setUserStatus(true)
   })
   .catch((err) => {

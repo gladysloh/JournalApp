@@ -27,7 +27,7 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-    IonImg
+    IonImg, useIonViewDidEnter
 } from '@ionic/react';
 import { textSharp, imageSharp, help } from 'ionicons/icons';
 
@@ -58,8 +58,9 @@ export const JournalView: React.FC = () => {
 
     const location = useLocation();
     const params = new URLSearchParams(location.search)
-
-    useEffect(() => {
+    const [loading, setLoading] = useState(false);
+    useIonViewDidEnter(() => {
+        setLoading(true)
         console.log(location.pathname); // result: '/secondpage'
         console.log(location.search); // result: '?query=abc'
 
@@ -71,7 +72,9 @@ export const JournalView: React.FC = () => {
             setVal('view')
         }
 
-    }, [location]);
+        setLoading(false)
+
+    }, [loading]);
 
     const [qns, setQns] = useState([]);
     const questionPrompt = () => {
@@ -152,37 +155,43 @@ export const JournalView: React.FC = () => {
                             </IonRow>
                         </IonGrid>
                     </IonRow>
-                    <IonRow>
-                        <IonCard className='journalEntryCard'>
-                            <IonCardContent>
-                                <IonGrid>
-                                    <IonRow className="titleInputBackground">
-                                        <IonCol>
-                                            <IonCardSubtitle>
 
-                                                {viewJournal.title}
-                                            </IonCardSubtitle>
-                                        </IonCol>
-                                        <IonCol size='5'>
-                                            <IonSelect
-                                                className="selectMode"
-                                                interface="popover"
-                                                placeholder="Select mode"
-                                                value={val} onIonChange={handleChange}>
-                                                <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
-                                                <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
-                                            </IonSelect>
-                                        </IonCol>
-                                    </IonRow>
-                                    <IonRow className="bodyInputBackground" >
-                                        <span className='bodyInput'> {viewJournal.body} </span>
-                                    </IonRow>
-                                    <IonRow className="row3">
-                                        <IonImg className="uploadedImage" src={viewJournal.url}></IonImg>
-                                    </IonRow>
-                                </IonGrid>
-                            </IonCardContent>
-                        </IonCard>
+                    <IonRow class="viewRow">
+                        <IonCol>
+                            <IonCard className='journalViewCard'>
+                                <IonCardContent>
+                                    <IonGrid>
+                                        <IonRow className="titleInputBackground">
+                                            <IonCol>
+                                                <IonCardSubtitle>
+
+                                                    {viewJournal.title}
+                                                </IonCardSubtitle>
+                                            </IonCol>
+                                            <IonCol size='5'>
+                                                <IonSelect
+                                                    className="selectMode"
+                                                    interface="popover"
+                                                    placeholder="Select mode"
+                                                    value={val} onIonChange={handleChange}>
+                                                    <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
+                                                    <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
+                                                </IonSelect>
+                                            </IonCol>
+                                        </IonRow>
+                                        <IonRow className="bodyInputBackground" >
+                                            <IonCol>
+                                                <p className='bodyInput'> {viewJournal.body} </p>
+                                                <IonImg className="uploadedImage" src={viewJournal.url}></IonImg>
+                                            </IonCol>
+                                        </IonRow>
+
+                                    </IonGrid>
+                                </IonCardContent>
+                            </IonCard>
+
+                        </IonCol>
+
                     </IonRow>
                 </IonGrid>
             </IonContent>
