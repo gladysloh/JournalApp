@@ -7,6 +7,7 @@ const {
 async function getalljournal(req, res) {
 
     const uid = req.body.uid
+    console.log(uid)
     const journals = []
     try {
         await firestore.collection(`users/${uid}/journal`).get()
@@ -18,7 +19,8 @@ async function getalljournal(req, res) {
                         url: doc.data().fields.url,
                         timestamp: doc.data().fields.timestamp,
                         title: doc.data().fields.title,
-                        filename: doc.data().fields.filename
+                        filename: doc.data().fields.filename,
+                        sentiment: doc.data().fields.sentiment
                     })
                 })
             })
