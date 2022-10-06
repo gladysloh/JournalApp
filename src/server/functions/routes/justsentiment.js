@@ -4,8 +4,11 @@ const admin = require('firebase-admin')
 async function justsentiment(req, res){
     const uid = req.body.uid
     console.log(uid)
-    const newsentiment = req.body.uid
+    const newsentiment = req.body.sentiment
+    console.log(newsentiment)
     const journalid = req.body.journalid
+    const fields = { sentiment: newsentiment }
+    const query = firestore.collection(`users/${uid}/journal/${journalid}/fields`)
 
     try {
         await firestore
@@ -14,7 +17,7 @@ async function justsentiment(req, res){
         .collection('journal')
         .doc(journalid)
         .update({
-            sentiment: newsentiment
+            "fields.sentiment": newsentiment
         })
         res.status(200).json({
             success: true
