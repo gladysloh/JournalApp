@@ -10,7 +10,7 @@ import onceaday from "../../../theme/icons/onceaday.png"
 import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
@@ -42,6 +42,7 @@ const Login: React.FC = () => {
   );
 
   const [data, setData] = useState(null);
+  const [isRedirect, setIsRedirect] = useState(false)
   const [loading, setLoading] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
@@ -59,7 +60,13 @@ const Login: React.FC = () => {
 
   const [uid, setUserID] = useState([]);
 
+  const goToJournals = () => {
+    console.log("going journals")
+    history.replace("/tabs/journaloverview");
+  }
+
   const onSubmit = async (e: any) => {
+
     const userDetails = {
       email: e.email,
       password: e.password
@@ -99,14 +106,12 @@ const Login: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(result))
       setUserID(result.uid)
 
-      const { email, password } = state;
-      setState({
-        email: '',
-        password: ''
-      });
-
-      goToJournals()
-
+      setState(initialState);
+      setIsRedirect(true)
+      if(isRedirect){
+        goToJournals()
+      }
+    
     } catch (err: any) {
       console.log(err.message)
       setError(err.message);
@@ -116,10 +121,13 @@ const Login: React.FC = () => {
     }
   };
 
-  const goToJournals = () => {
-    console.log("going journals")
-    history.push("/tabs/journaloverview");
-  }
+  useEffect(()=>{
+
+    if(isRedirect){
+      goToJournals()
+    }
+    
+    },[isRedirect,history])
 
   return (
     <IonPage>
@@ -149,7 +157,7 @@ const Login: React.FC = () => {
                   }
                 })} value={state.email}
                 ></IonInput>
-                {errors.email && <span className='err'>{errors.email.message}</span>}
+                {errors.email && <span className='err'> Invalid email address </span>}
               </IonItem>
 
               <IonItem className="password-field">
@@ -167,9 +175,9 @@ const Login: React.FC = () => {
                   Login
             </IonButton>
 
-                <IonButton className="google-button" expand="full" color="secondary">
+                {/* <IonButton className="google-button" expand="full" color="secondary">
                   Login with <img src={logo} width="30px" />
-                </IonButton>
+                </IonButton> */}
 
                 <IonItem lines="none" color="white">
                   <IonLabel className="rememberme" >Remember me </IonLabel>

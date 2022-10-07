@@ -59,19 +59,22 @@ export const JournalView: React.FC = () => {
     const location = useLocation();
     const params = new URLSearchParams(location.search)
     const [loading, setLoading] = useState(false);
+
     useIonViewDidEnter(() => {
         setLoading(true)
         console.log(location.pathname); // result: '/secondpage'
         console.log(location.search); // result: '?query=abc'
 
         let params = new URLSearchParams(location.search)
-        let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
+        let json = localStorage.getItem("journalEntry") || ''
+        let userJournal = JSON.parse(json)
         console.log(userJournal)
+        
+        
         setView(userJournal);
         if (params.get("mode") == "view") {
             setVal('view')
         }
-
         setLoading(false)
 
     }, [loading]);
@@ -119,6 +122,7 @@ export const JournalView: React.FC = () => {
         console.log("edit")
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
+        console.log(jsonJournal)
 
         history.push({
             pathname: '/tabs/journaltextedit',
@@ -156,9 +160,9 @@ export const JournalView: React.FC = () => {
                         </IonGrid>
                     </IonRow>
 
-                    <IonRow class="viewRow">
+                    <IonRow>
                         <IonCol>
-                            <IonCard className='journalViewCard'>
+                            <IonCard className='journalEditCard'>
                                 <IonCardContent>
                                     <IonGrid>
                                         <IonRow className="titleInputBackground">
@@ -182,7 +186,10 @@ export const JournalView: React.FC = () => {
                                         <IonRow className="bodyInputBackground" >
                                             <IonCol>
                                                 <p className='bodyInput'> {viewJournal.body} </p>
-                                                <IonImg className="uploadedImage" src={viewJournal.url}></IonImg>
+                                                <div className="imageDiv">
+                                                    {viewJournal.url ? <img className="uploadedImage" src={viewJournal.url}></img> : <div className="box"></div>}
+                                                </div>
+
                                             </IonCol>
                                         </IonRow>
 

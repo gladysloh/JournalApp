@@ -35,20 +35,20 @@ const JournalMood: React.FC = () => {
     });
   }
 
-  useEffect(() => {
+  useIonViewDidEnter(() => {
     console.log(location.pathname); // result: '/secondpage'
     console.log(location.search);
 
     let s = params.get("sentiment") || "0"
     setSentiment(parseInt(s))
 
-    let j = params.get("journalid") || ""
+    let j = params.get("journalid") || " "
     setJournalId(j)
 
     if (j == "") 
       goToOverview()
 
-  }, [location])
+  }, [])
 
   const getTodayDate = () => {
     let today = new Date()
@@ -83,57 +83,33 @@ const JournalMood: React.FC = () => {
   }
 
   const updateMood = (s: number) => {
-    console.log(s)
+    
 
     const instance = axios.create({
       withCredentials: true,
       baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
     })
 
-    let body = localStorage.getItem("journalEntry") || ""
-    let bodyJson = JSON.parse(body)
-
-    let journalId = params.get("journalid") || ''
-
-    if (journalId == '0') {
-      let createBody = {
-        ...bodyJson,
-        sentiment: s
+      let body = {
+        sentiment: s,
+        journalid: journalId,
       }
 
-      instance.post('/createjournal', createBody).then((res) => {
+      console.log(body)
+
+      instance.post('/justsentiment', body).then((res) => {
         console.log(res);
         dismiss();
         setLoading(false);
-
-      })
-        .catch((err) => {
+        history.push("/tabs/journaloverview")
+      }).catch((err) => {
           toaster("Error! Something went wrong", closeCircleOutline)
           dismiss();
           setLoading(false);
-          // console.error("ERROR: ", err.response.data.error);
+          console.error("ERROR: ", err.response);
         })
 
-    }
-    else{
-      let editBody = {
-        ...bodyJson,
-        sentiment: s
-      }
-
-      console.log(bodyJson)
-
-      instance.post('/editjournal', editBody).then((res) => {
-        console.log(res);
-        toaster("Mood updated", checkmarkCircleOutline)
-        goToOverview()
-
-      }).catch((err) => {
-        console.error("ERROR: ", err);
-      })
-
-
-    }
+    
   }
 
 
@@ -190,7 +166,7 @@ const JournalMood: React.FC = () => {
                         </IonCol>
                       </IonRow>
                       <IonRow>
-                        <IonButton onClick={updateMood(sentiment)}>SKIP</IonButton>
+                        <IonButton onClick={()=>updateMood(sentiment)}>SKIP</IonButton>
                         {/* <IonButton>NEXT</IonButton> */}
                       </IonRow>
                     </IonGrid>

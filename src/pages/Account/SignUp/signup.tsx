@@ -15,7 +15,6 @@ import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import logo from "../../../theme/icons/google.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import './signup.css';
-import { AuthContext } from '../../../context/auth.context';
 
 
 const SignUp: React.FC = () => {
@@ -25,13 +24,6 @@ const SignUp: React.FC = () => {
     password: '',
     displayName: ''
   }
-
-  const { state: ContextState, signUp } = useContext(AuthContext);
-  const {
-    isLoginPending,
-    isLoggedIn,
-    loginError
-  } = ContextState;
 
   const [state, setState] = useSetState(initialState);
 
@@ -109,15 +101,13 @@ const SignUp: React.FC = () => {
       localStorage.setItem('oadUser', JSON.stringify(result))
       setUserID(result.uid)
 
-      const { email, password, displayName } = state;
-      signUp(email, password, displayName);
       setState({
         email: '',
         password: '',
         displayName: ''
       });
 
-    } catch (err) {
+    } catch (err: any) {
       console.log(err.message)
       setError(err.message);
       
@@ -172,7 +162,7 @@ const SignUp: React.FC = () => {
                   })}
 
                 ></IonInput>
-                {errors.email && <span className='err'>{errors.email.message}</span>}
+                {errors.email && <span className='err'>Invalid email address</span>}
               </IonItem>
 
               <IonItem className="form-field">
@@ -187,7 +177,7 @@ const SignUp: React.FC = () => {
                     }
                   })}>
                 </IonInput>
-                {errors.password && <span className='err'>{errors.password.message}</span>}
+                {errors.password && <span className='err'> Password must have at least 8 characters </span>}
               </IonItem>
 
 
@@ -201,7 +191,7 @@ const SignUp: React.FC = () => {
                   })}>
 
                 </IonInput>
-                {errors.password_repeat && <span className='err'>{errors.password_repeat.message}</span>}
+                {errors.password_repeat && <span className='err'> Passwords do not match </span>}
               </IonItem>
 
 
