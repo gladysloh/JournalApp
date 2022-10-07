@@ -13,6 +13,7 @@ async function getalljournal(req, res) {
         await firestore.collection(`users/${uid}/journal`).get()
             .then(querysnapshot => {
                 querysnapshot.docs.forEach(doc => {
+                    console.log(doc.data())
                     journals.push({
                         id: doc.id,
                         body: doc.data().fields.body,
