@@ -21,7 +21,7 @@ async function editjournal(req, res){
             .collection('journal')
             .doc(journalid)
             .get()
-        console.log(snapshot.get('fields.url'))
+        //fields.timestamp = snapshot.get('fields.timestamp')
         if(snapshot.get('fields.url')) {
             imageexists = true
         } else {
@@ -34,7 +34,7 @@ async function editjournal(req, res){
             message: err.message
         })
     }
-    console.log(imageexists)
+
     var filename = req.body.filename
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
@@ -63,7 +63,6 @@ async function editjournal(req, res){
             title: newtitle,
             sentiment: sentiment
         }
-
     }  else { //does not update image, journal entry with just the body
         if (imageexists) { //original post had an image, but the user did not include another image in the edit function
             try {
