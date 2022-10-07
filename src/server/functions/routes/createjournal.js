@@ -15,19 +15,19 @@ async function createjournal(req, res) {
         })
     }
     try { //if there is an image attached, else no image attached
+        // fields = {
+        //     timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        //     title: req.body.title,
+        //     body: req.body.journal,
+        //     sentiment: req.body.sentiment
+        // }
         if (req.body.image) {
             var temp = await uploadimage(req.body.image, uid)
             temp = JSON.parse(temp)
             const signedUrl = temp.signedUrl
             const filename = temp.fileName
-            var fields = {
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                title: req.body.title,
-                body: req.body.journal,
-                url: signedUrl,
-                filename: filename,
-                sentiment: req.body.sentiment
-            }
+            fields.filename = filename
+            fields.url = signedUrl
         } else {
             fields = {
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
