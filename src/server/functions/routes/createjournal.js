@@ -14,6 +14,12 @@ async function createjournal(req, res) {
             error: "empty field(s)"
         })
     }
+    fields = {
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        title: req.body.title,
+        body: req.body.journal,
+        sentiment: req.body.sentiment
+    }
     try { //if there is an image attached, else no image attached
         fields = {
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
@@ -28,25 +34,19 @@ async function createjournal(req, res) {
             const filename = temp.fileName
             fields.filename = filename
             fields.url = signedUrl
-        } else {
-            fields = {
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                title: req.body.title,
-                body: req.body.journal,
-                sentiment: req.body.sentiment
-            }
-        }
+        } 
     } catch (err) {
         return res.status(400).json({
             success: false,
             error: err.message
         })
     }
+    // const entries = JSON.stringify(fields)
+    // console.log(entries)
 
-
-    await firestore.doc(`users/${uid}`).collection('journal').add({
+    await firestore.doc(`users/${uid}`).collection('journal').add(
         fields
-    }).then(function (docRef) {
+    ).then(function (docRef) {
         return res.status(200).json({
             success: true,
             fields,
