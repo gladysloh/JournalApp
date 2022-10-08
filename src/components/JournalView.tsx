@@ -124,7 +124,7 @@ export const JournalView: React.FC = () => {
         localStorage.setItem("journalEntry", jsonJournal)
         console.log(jsonJournal)
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journaltextedit',
             search: '?mode=edit&id=' + journal.id,
             state: { detail: 'edit' }

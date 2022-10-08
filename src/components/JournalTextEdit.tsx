@@ -64,6 +64,7 @@ export const JournalTextEdit: React.FC = () => {
     const [segment, setSegment] = useState('text');
 
     const [val, setVal] = useState('edit');
+    const[mode, setMode] = useState('')
     const [disabled, setDisable] = useState(true);
 
 
@@ -92,24 +93,33 @@ export const JournalTextEdit: React.FC = () => {
     const params = new URLSearchParams(location.search)
 
     const loadData = () => {
+        
         setLoading(true)
         console.log(location.pathname); // result: '/secondpage'
-
+        console.log(location);     
         let jsonBody = localStorage.getItem("journalEntry") || ''
-        let userJournal = JSON.parse(jsonBody)
-        console.log(params.get("mode"))
+        let userJournal = {}
+        if(jsonBody!= ''){
+            userJournal = JSON.parse(jsonBody);
+        }else{
+            userJournal = initialJournal
+        }
+
+        console.log("mods: ", params.get("mode"))
 
         if (params.get("mode") == "edit") {
             console.log(userJournal)
             setEdit(userJournal)
             setVal('edit')
             // setJournalImage(editJournal.url)
+            setMode("edit")
             setDisable(false)
 
         } else if (params.get("mode") == "create") {
             console.log(initialJournal)
             setEdit(initialJournal)
             setVal('edit')
+            setMode("create")
             setDisable(true)
 
         }
@@ -117,15 +127,46 @@ export const JournalTextEdit: React.FC = () => {
     }
 
     useIonViewDidEnter(() => {
-        loadData()
-    }, []);
+        console.log("enter journal edit")
+        setLoading(true)
+        console.log(location.pathname); // result: '/secondpage'
+        console.log(location);     
+        let jsonBody = localStorage.getItem("journalEntry") || ''
+        let userJournal = {}
+        if(jsonBody!= ''){
+            userJournal = JSON.parse(jsonBody);
+        }else{
+            userJournal = initialJournal
+        }
+
+        console.log("mods: ", params.get("mode"))
+
+        if (params.get("mode") == "edit") {
+            console.log(userJournal)
+            setEdit(userJournal)
+            setVal('edit')
+            // setJournalImage(editJournal.url)
+            setMode("edit")
+            setDisable(false)
+
+        } else if (params.get("mode") == "create") {
+            console.log(initialJournal)
+            setEdit(initialJournal)
+            setVal('edit')
+            setMode("create")
+            setDisable(true)
+
+        }
+        setLoading(false)
+    }, [mode, editJournal]);
 
     const getJournalImg = () =>{
         if(photos || editJournal.url){
             if(photos?.webviewPath){
                 if(photos.webviewPath!=''){
-                    let photoFile = photos.webviewPath || ''
-                    return (<IonImg src={photos.webviewPath}/>)
+                    let photoFile = photos.webviewPath
+                    console.log(photoFile)
+                    return (<IonImg src={photos.webviewPath} onClick={() => setPhotoToDelete(photos)}/>)
                 }
             }else if(editJournal.url){
                 return (<IonImg src={editJournal.url}/>)
@@ -163,23 +204,23 @@ export const JournalTextEdit: React.FC = () => {
     }
 
     const getJournalDay = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return new Date(editJournal.timestamp._seconds * 1000).getDate()
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return new Date().getDate();
     }
 
     const getJournalMonth = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return MONTH_NAMES[new Date(editJournal.timestamp._seconds * 1000).getMonth()]
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return MONTH_NAMES[new Date().getMonth()];
     }
 
     const getJournalYear = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return new Date(editJournal.timestamp._seconds * 1000).getFullYear()
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return new Date().getFullYear();
     }
 
@@ -244,7 +285,7 @@ export const JournalTextEdit: React.FC = () => {
             message: 'Saving Journal'
         })
 
-        if (params.get('mode') == 'edit') {
+        if (mode == 'edit') {
             let tempPhotos = photos != undefined ? photos.webviewPath : ''
             let tempImg = tempPhotos ? await base64FromPath(tempPhotos) : '';
 
@@ -274,7 +315,7 @@ export const JournalTextEdit: React.FC = () => {
             })
 
 
-        } else if (params.get('mode') == 'create') {
+        } else if (mode == 'create') {
             // console.log(await base64FromPath(photos.webviewPath))
             let tempPhotos = photos != undefined ? photos.webviewPath : '';
             let tempImg = '';
@@ -342,10 +383,7 @@ export const JournalTextEdit: React.FC = () => {
     });
 
     const removeImage = () => {
-        if(photos){
-            let delImg = photos.webviewPath || ''
-            deletePhoto(delImg)
-         }
+        deletePhoto(photos)
         setPhotoToDelete(undefined);
     }
 
@@ -463,18 +501,19 @@ export const JournalTextEdit: React.FC = () => {
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
                                     
-                                    {getJournalImg()
+                                    {
+                                    // getJournalImg()
 
                                         // journalImg != '' ? <IonImg src={journalImg}/> : <span></span>
-                                    // photos ?
-                                    //     <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)} onLoad={()=>setPhotoToDelete(photos)}/> :
-                                    //     editJournal.url ? <IonImg src={editJournal ? editJournal.url : ''} /> : <span></span> 
+                                    photos ?
+                                        <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)}/> :
+                                        editJournal.url ? <IonImg src={editJournal ? editJournal.url : ''} /> : <span></span> 
                                     }
                                 </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">
                                         <IonCardContent>
-                                            <IonImg className="uploadImageIcon" src={uploadImage} onClick={() => {takePhoto(); getJournalImg()}}></IonImg>
+                                            <IonImg className="uploadImageIcon" src={uploadImage} onClick={() => takePhoto()}></IonImg>
                                         </IonCardContent>
                                     </IonCard>
                                 </IonCol>
@@ -485,7 +524,7 @@ export const JournalTextEdit: React.FC = () => {
                         <IonRow>
                             <IonCol size="6">
                                 <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
-                                {params.get("mode") == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+                                {mode == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
                             </IonCol>
 
                             <IonCol size="6">

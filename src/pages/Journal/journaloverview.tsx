@@ -162,7 +162,6 @@ const JournalOverview: React.FC = () => {
 
         journals.forEach((el, i) => {
             if (el['sentiment']) {
-                // console.log(el)
                 count = el['sentiment'] + count
             }
         })

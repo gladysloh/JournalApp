@@ -24,7 +24,7 @@ import axios from 'axios';
 
 const Login: React.FC = () => {
   const history = useHistory();
-  
+
   const initialState = {
     email: '',
     password: ''
@@ -60,11 +60,6 @@ const Login: React.FC = () => {
 
   const [uid, setUserID] = useState([]);
 
-  const goToJournals = () => {
-    console.log("going journals")
-    history.replace("/tabs/journaloverview");
-  }
-
   const onSubmit = async (e: any) => {
 
     const userDetails = {
@@ -80,54 +75,34 @@ const Login: React.FC = () => {
       message: 'Logging In'
     })
 
-    try {
-      const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/login', {
-        method: 'POST',
-        body: userjson,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
+    const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
 
-      if (!response.ok) {
-        toaster("Error! Login failed", closeCircleOutline)
-        throw new Error(`Error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      console.log('result is: ', JSON.stringify(result, null, 4));
-      console.log(JSON.stringify(result.uid))
-      setData(result);
-
-      // store the user in localStorage
-      localStorage.setItem('user', JSON.stringify(result))
-      setUserID(result.uid)
-
-      setState(initialState);
-      setIsRedirect(true)
-      if(isRedirect){
-        goToJournals()
-      }
-    
-    } catch (err: any) {
-      console.log(err.message)
-      setError(err.message);
-    } finally {
+    instance.post('/login', userDetails).then((res) => {
+      console.log(res);
       dismiss();
       setLoading(false);
-    }
+      setIsRedirect(true)
+      localStorage.setItem('user', JSON.stringify(res.data))
+      history.push("/tabs/journaloverview")
+      setState(initialState);
+    }).catch((err) => {
+      toaster("Error! Something went wrong", closeCircleOutline)
+      dismiss();
+      setLoading(false);
+      console.error("ERROR: ", err.response);
+    })
+
   };
 
-  useEffect(()=>{
-
-    if(isRedirect){
-      goToJournals()
+  useEffect(() => {
+    if (isRedirect) {
+      history.replace("/tabs/journaloverview");
     }
-    
-    },[isRedirect,history])
+
+  }, [isRedirect, history])
 
   return (
     <IonPage>
