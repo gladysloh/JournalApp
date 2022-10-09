@@ -89,6 +89,7 @@ const Login: React.FC = () => {
       localStorage.setItem('user', JSON.stringify(res.data))
 
       toaster("Logged in successfully", checkmarkCircleOutline)
+      history.replace("/tabs/journaloverview");
       history.go(0)
       setState(initialState);
 

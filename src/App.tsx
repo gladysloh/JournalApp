@@ -94,7 +94,7 @@ const App: React.FC = () => {
 
           <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
           <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
-          {userStatus ? <SideMenu /> : <Redirect to ="/login"/>}
+          {userStatus ? <TabRoot/> : <Redirect to ="/login"/>}
 
         </IonRouterOutlet>
       </IonReactRouter>

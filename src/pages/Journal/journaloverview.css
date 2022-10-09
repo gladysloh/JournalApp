@@ -9,8 +9,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 350px;
-    height: 55.5px;
+    /* width: 350px;
+    height: 55.5px; */
     margin: 20px 10px 10px 10px;
     padding: 0px;
     box-sizing: border-box;
@@ -21,6 +21,7 @@
     /* Note: backdrop-filter has minimal browser support */
     border-radius: 10px;
 }
+
 
 .statusCardContent {
     margin: 0px !important;
@@ -185,7 +186,7 @@
 .entries {
     margin: 0px 20px 0px 20px;
     padding: 0px;
-    height: 60vh;
+    height: 70vh;
     overflow-x: scroll;
 
     display: flex;

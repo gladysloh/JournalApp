@@ -125,9 +125,8 @@ const JournalOverview: React.FC = () => {
                 i++
             }
 
-            if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) {
+            if ((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)) === i * 86400000) {
                 count++
-
             }
 
         })
@@ -167,7 +166,7 @@ const JournalOverview: React.FC = () => {
         })
 
         let avgRate = Math.round(count) / journals.length;
-        console.log(avgRate)
+        // console.log(avgRate)
 
         if (avgRate >= -1 && avgRate < -0.6) {
             percentage = 0
@@ -198,8 +197,8 @@ const JournalOverview: React.FC = () => {
             <IonContent className="ioncontent" fullscreen>
 
                 <IonGrid>
-                    <IonRow>
-                        <IonCol>
+                    <IonRow className="statusBar">
+                        <IonCol size="12">
                             <IonCard className='card1'>
                                 <IonCardContent className='statusCardContent'>
                                     <IonGrid className='statusGrid'>
