@@ -21,7 +21,8 @@ async function getalljournal(req, res) {
                         timestamp: doc.data().timestamp,
                         title: doc.data().title,
                         filename: doc.data().filename,
-                        sentiment: doc.data().sentiment
+                        sentiment: doc.data().sentiment,
+                        editTime: doc.data().editTime
                     })
                 })
             })
