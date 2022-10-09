@@ -161,6 +161,8 @@
 .entries {
     margin: 0px 20px 0px 20px;
     padding: 0px;
+    height: 60vh;
+    overflow-x: scroll;
 
     display: flex;
     flex-direction: column;
@@ -238,4 +240,8 @@
     font-size: 8px;
     font-family: NotoSans-Italic !important;
 }
+
+/* ion-row.entryRow:last-child{
+    margin-bottom:30px;
+} */
 

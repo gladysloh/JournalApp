@@ -44,33 +44,32 @@ const JournalOverview: React.FC = () => {
             console.log(res);
             let j: [] = res.data.journals
             j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
-            
+
             setJournals(j);
             setLoading(false); // Stop loading
-            
+
 
         }).catch((err) => {
             setLoading(false); // Stop loading
-            
+
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
         })
 
-        
+
     };
 
-    useIonViewDidEnter(() => {
+    useIonViewWillEnter(() => {
         console.log("ion view enter")
         getJournalInfo()
-
     }, []);
 
     const checkJournals = () => {
-        if(journals.length!=0){
-            if (new Date(journals[0]['timestamp']['_seconds']*1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
+        if (journals.length != 0) {
+            if (new Date(journals[0]['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
             else return false
         }
-        
+
     }
 
 
@@ -99,7 +98,7 @@ const JournalOverview: React.FC = () => {
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journalview',
             search: '?mode=view&id=' + journal.id,
             state: { detail: 'edit' }
@@ -108,7 +107,7 @@ const JournalOverview: React.FC = () => {
 
     const handleCreateJournal = () => {
         console.log("create")
-        history.push({
+        history.replace({
             pathname: '/tabs/journaltextedit',
             search: '?mode=create',
             state: { detail: 'create' }
@@ -122,15 +121,15 @@ const JournalOverview: React.FC = () => {
         let count = 0
 
         journals.forEach((el, i) => {
-            if(!checkJournals()){
+            if (!checkJournals()) {
                 i++
             }
 
             if ((new Date().setUTCHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setUTCHours(0, 0, 0, 0)) === i * 86400000) {
                 count++
-                
+
             }
-            
+
         })
         return count;
     }
@@ -162,7 +161,6 @@ const JournalOverview: React.FC = () => {
 
         journals.forEach((el, i) => {
             if (el['sentiment']) {
-                // console.log(el)
                 count = el['sentiment'] + count
             }
         })
@@ -287,7 +285,7 @@ const JournalOverview: React.FC = () => {
 
                                 checkJournals() ?
                                     <IonRow></IonRow> :
-                                    <IonRow onClick={handleCreateJournal}>
+                                    <IonRow onClick={()=>handleCreateJournal()}>
                                         <IonCol className="entryDateDay" size='2'>
                                             <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
                                             <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
@@ -307,30 +305,38 @@ const JournalOverview: React.FC = () => {
 
                             {journals.map(item => {
                                 return (
-                                    <IonRow onClick={() => handleViewJournal(item)}>
-                                        <IonCol className="entryDateDay" size='2'>
-                                            <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
-                                            <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
-                                        </IonCol>
-                                        <IonCol className="entryList" size='10'>
-                                            <IonCard className="entryListCard">
-                                                <IonCardContent>
-                                                    <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
-                                                    <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
-                                                    <p className="entryText">{item['body']}</p>
-                                                    {item['url'] ?
-                                                        <div > <img src={item['url']} /> </div> :
-                                                        <div> </div>}
+                                    <>
+                                        <div>
+                                            <IonRow onClick={() => handleViewJournal(item)}>
+                                                <IonCol className="entryDateDay" size='2'>
+                                                    <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
+                                                    <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
+                                                </IonCol>
+                                                <IonCol className="entryList" size='10'>
+                                                    <IonCard className="entryListCard">
+                                                        <IonCardContent>
+                                                            <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                            <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
+                                                            <p className="entryText">{item['body']}</p>
+                                                            {item['url'] ?
+                                                                <div > <img src={item['url']} /> </div> :
+                                                                <div> </div>}
 
-                                                </IonCardContent>
-                                            </IonCard>
-                                        </IonCol>
-                                    </IonRow>
+                                                        </IonCardContent>
+                                                    </IonCard>
+                                                </IonCol>
+                                            </IonRow>
+                                        </div>
+                                    </>
                                 )
                             })}
+
+
                         </IonCol>
                     </IonRow>
-                    <div className="spacer"></div>
+                    
+                    {/* <IonButton expand="block">LOG OUT</IonButton> */}
+                    
                 </IonGrid>
 
             </IonContent>

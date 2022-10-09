@@ -90,7 +90,7 @@ export function usePhotoGallery() {
         }
     };
 
-    const deletePhoto = async (photo: UserPhoto) => {
+    const deletePhoto = async (photo: any) => {
         // Remove this photo from the Photos reference data array
         const newPhotos = initialPhoto
 

@@ -10,7 +10,7 @@ import onceaday from "../../../theme/icons/onceaday.png"
 import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from "react-dom";
 import { useSetState } from 'react-use';
 import { useForm, Controller } from 'react-hook-form';
@@ -24,7 +24,7 @@ import axios from 'axios';
 
 const Login: React.FC = () => {
   const history = useHistory();
-  
+
   const initialState = {
     email: '',
     password: ''
@@ -42,6 +42,7 @@ const Login: React.FC = () => {
   );
 
   const [data, setData] = useState(null);
+  const [isRedirect, setIsRedirect] = useState(false)
   const [loading, setLoading] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
@@ -60,6 +61,7 @@ const Login: React.FC = () => {
   const [uid, setUserID] = useState([]);
 
   const onSubmit = async (e: any) => {
+
     const userDetails = {
       email: e.email,
       password: e.password
@@ -73,53 +75,34 @@ const Login: React.FC = () => {
       message: 'Logging In'
     })
 
-    try {
-      const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/login', {
-        method: 'POST',
-        body: userjson,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
+    const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
 
-      if (!response.ok) {
-        toaster("Error! Login failed", closeCircleOutline)
-        throw new Error(`Error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      console.log('result is: ', JSON.stringify(result, null, 4));
-      console.log(JSON.stringify(result.uid))
-      setData(result);
-
-      // store the user in localStorage
-      localStorage.setItem('user', JSON.stringify(result))
-      setUserID(result.uid)
-
-      const { email, password } = state;
-      setState({
-        email: '',
-        password: ''
-      });
-
-      goToJournals()
-
-    } catch (err: any) {
-      console.log(err.message)
-      setError(err.message);
-    } finally {
+    instance.post('/login', userDetails).then((res) => {
+      console.log(res);
       dismiss();
       setLoading(false);
-    }
+      setIsRedirect(true)
+      localStorage.setItem('user', JSON.stringify(res.data))
+      history.push("/tabs/journaloverview")
+      setState(initialState);
+    }).catch((err) => {
+      toaster("Error! Something went wrong", closeCircleOutline)
+      dismiss();
+      setLoading(false);
+      console.error("ERROR: ", err.response);
+    })
+
   };
 
-  const goToJournals = () => {
-    console.log("going journals")
-    history.push("/tabs/journaloverview");
-  }
+  useEffect(() => {
+    if (isRedirect) {
+      history.replace("/tabs/journaloverview");
+    }
+
+  }, [isRedirect, history])
 
   return (
     <IonPage>
@@ -149,7 +132,7 @@ const Login: React.FC = () => {
                   }
                 })} value={state.email}
                 ></IonInput>
-                {errors.email && <span className='err'>{errors.email.message}</span>}
+                {errors.email && <span className='err'> Invalid email address </span>}
               </IonItem>
 
               <IonItem className="password-field">
@@ -167,9 +150,9 @@ const Login: React.FC = () => {
                   Login
             </IonButton>
 
-                <IonButton className="google-button" expand="full" color="secondary">
+                {/* <IonButton className="google-button" expand="full" color="secondary">
                   Login with <img src={logo} width="30px" />
-                </IonButton>
+                </IonButton> */}
 
                 <IonItem lines="none" color="white">
                   <IonLabel className="rememberme" >Remember me </IonLabel>
