@@ -158,6 +158,7 @@ const JournalOverview: React.FC = () => {
      */
     const getEmotion = () => {
         let count = 0
+        let percentage = 0;
 
         journals.forEach((el, i) => {
             if (el['sentiment']) {
@@ -165,7 +166,22 @@ const JournalOverview: React.FC = () => {
             }
         })
 
-        return Math.round(count) + "%";
+        let avgRate = Math.round(count) / journals.length;
+        console.log(avgRate)
+
+        if (avgRate >= -1 && avgRate < -0.6) {
+            percentage = 0
+          } else if (avgRate >= -0.6 && avgRate < -0.2) {
+            percentage = 20
+          } else if (avgRate >= -0.2 && avgRate < 0.2) {
+            percentage = 40
+          } else if (avgRate >= 0.2 && avgRate < 0.6) {
+            percentage = 60
+          } else if (avgRate >= 0.6 && avgRate <= 1) {
+            percentage = 100
+          }
+
+        return percentage + "%";
 
     }
 
