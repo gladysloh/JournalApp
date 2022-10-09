@@ -5,7 +5,7 @@ import {
   useIonLoading, useIonToast
 } from '@ionic/react';
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useHistory } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { useForm, Controller } from 'react-hook-form';
 import { useSetState } from 'react-use';
@@ -15,10 +15,11 @@ import moodlogo from "../../../theme/icons/output-onlinepngtools.png"
 import logo from "../../../theme/icons/google.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import './signup.css';
+import axios from 'axios';
 
 
 const SignUp: React.FC = () => {
-
+  const history = useHistory();
   const initialState = {
     email: '',
     password: '',
@@ -41,6 +42,8 @@ const SignUp: React.FC = () => {
   password.current = watch("password", "");
 
   const [data, setData] = useState(null);
+
+  const [isRedirect, setIsRedirect] = useState(false)
   const [loading, setLoading] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
@@ -62,7 +65,7 @@ const SignUp: React.FC = () => {
 
     const userDetails = {
       email: e.email,
-      displayname: e.displayName,
+      displayName: e.displayName,
       password: e.password
     }
 
@@ -76,45 +79,66 @@ const SignUp: React.FC = () => {
       message: 'Signing Up'
     })
 
-    try {
-      const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/register', {
-        method: 'POST',
-        body: userjson,
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
+    const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
 
-      if (!response.ok) {
-        toaster("Error! Sign Up not successful", closeCircleOutline)
-        throw new Error(`Error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      console.log('result is: ', JSON.stringify(result, null, 4));
-      toaster("Signed up successfully", checkmarkCircleOutline)
-      setData(result);
-
-      // store the user in localStorage
-      localStorage.setItem('oadUser', JSON.stringify(result))
-      setUserID(result.uid)
-
-      setState({
-        email: '',
-        password: '',
-        displayName: ''
-      });
-
-    } catch (err: any) {
-      console.log(err.message)
-      setError(err.message);
-      
-    } finally {
+    instance.post('/register', userDetails).then((res) => {
+      console.log(res);
       dismiss();
       setLoading(false);
-    }
+      setIsRedirect(true)
+      localStorage.setItem('user', JSON.stringify(res.data))
+      toaster("Signed up successfully", checkmarkCircleOutline)
+      history.replace("/tabs/journaloverview")
+      setState(initialState);
+    }).catch((err) => {
+      toaster("Error! Sign Up not successful", closeCircleOutline)
+      dismiss();
+      setLoading(false);
+      console.error("ERROR: ", err.response);
+    })
+
+    // try {
+    //   const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/register', {
+    //     method: 'POST',
+    //     body: userjson,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Accept: 'application/json',
+    //     },
+    //   });
+
+    //   if (!response.ok) {
+    //     toaster("Error! Sign Up not successful", closeCircleOutline)
+    //     throw new Error(`Error! status: ${response.status}`);
+    //   }
+
+    //   const result = await response.json();
+
+    //   console.log('result is: ', JSON.stringify(result, null, 4));
+    //   toaster("Signed up successfully", checkmarkCircleOutline)
+    //   setData(result);
+
+    //   // store the user in localStorage
+    //   localStorage.setItem('oadUser', JSON.stringify(result))
+    //   setUserID(result.uid)
+
+    //   setState({
+    //     email: '',
+    //     password: '',
+    //     displayName: ''
+    //   });
+
+    // } catch (err: any) {
+    //   console.log(err.message)
+    //   setError(err.message);
+      
+    // } finally {
+    //   dismiss();
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -198,9 +222,9 @@ const SignUp: React.FC = () => {
               <div>
                 <IonButton className="login-button" expand="full" type="submit" color="primary"> Sign Up </IonButton>
                 <IonRow className="ion-row3"> </IonRow>
-                <IonButton className="google-button" expand="full" type="submit" color="secondary">
+                {/* <IonButton className="google-button" expand="full" type="submit" color="secondary">
                   Sign up with <img src={logo} width="30px" />
-                </IonButton>
+                </IonButton> */}
 
                 <IonFooter>Already have an account? Log In <NavLink to="/login"> here </NavLink>
                 </IonFooter>

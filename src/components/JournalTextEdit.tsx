@@ -89,14 +89,14 @@ export const JournalTextEdit: React.FC = () => {
         else if (e == "text") setShowHide(true)
     }
 
-    const location = useLocation();
-    const params = new URLSearchParams(location.search)
+    // const location = useLocation();
+    // const params = new URLSearchParams(history.location.search)
 
     const loadData = () => {
-        
-        setLoading(true)
-        console.log(location.pathname); // result: '/secondpage'
-        console.log(location);     
+        setLoading(true) 
+        console.log(history.location)
+        let params = new URLSearchParams(history.location.search)
+
         let jsonBody = localStorage.getItem("journalEntry") || ''
         let userJournal = {}
         if(jsonBody!= ''){
@@ -105,7 +105,7 @@ export const JournalTextEdit: React.FC = () => {
             userJournal = initialJournal
         }
 
-        console.log("mods: ", params.get("mode"))
+        console.log("moods: ", params.get("mode"))
 
         if (params.get("mode") == "edit") {
             console.log(userJournal)
@@ -126,39 +126,15 @@ export const JournalTextEdit: React.FC = () => {
         setLoading(false)
     }
 
-    useIonViewDidEnter(() => {
+    useIonViewWillEnter(() => {
         console.log("enter journal edit")
-        setLoading(true)
-        console.log(location.pathname); // result: '/secondpage'
-        console.log(location);     
-        let jsonBody = localStorage.getItem("journalEntry") || ''
-        let userJournal = {}
-        if(jsonBody!= ''){
-            userJournal = JSON.parse(jsonBody);
-        }else{
-            userJournal = initialJournal
-        }
+        loadData()
+    }, [mode]);
 
-        console.log("mods: ", params.get("mode"))
-
-        if (params.get("mode") == "edit") {
-            console.log(userJournal)
-            setEdit(userJournal)
-            setVal('edit')
-            // setJournalImage(editJournal.url)
-            setMode("edit")
-            setDisable(false)
-
-        } else if (params.get("mode") == "create") {
-            console.log(initialJournal)
-            setEdit(initialJournal)
-            setVal('edit')
-            setMode("create")
-            setDisable(true)
-
-        }
-        setLoading(false)
-    }, [mode, editJournal]);
+    useEffect(() => {
+        console.log("enter journal edit")
+        loadData()
+    }, [mode]);
 
     const getJournalImg = () =>{
         if(photos || editJournal.url){
@@ -238,7 +214,7 @@ export const JournalTextEdit: React.FC = () => {
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journalview',
             search: '?mode=view&id=' + journal.id,
             state: { detail: 'view' }
@@ -395,7 +371,7 @@ export const JournalTextEdit: React.FC = () => {
 
     const goToSentiment = (sentiment: number, journalId: any) => {
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journalmood',
             search: `?sentiment=${sentiment}&journalid=${journalId}`,
         });

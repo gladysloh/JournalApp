@@ -56,28 +56,25 @@ export const JournalView: React.FC = () => {
 
     const [viewJournal, setView] = useState(initialJournal);
 
-    const location = useLocation();
-    const params = new URLSearchParams(location.search)
+    // const location = useLocation();
+    const params = new URLSearchParams(history.location.search)
     const [loading, setLoading] = useState(false);
 
-    useIonViewDidEnter(() => {
+    useIonViewDidEnter(()=>{
         setLoading(true)
-        console.log(location.pathname); // result: '/secondpage'
-        console.log(location.search); // result: '?query=abc'
+        console.log(history.location.pathname); // result: '/secondpage'
+        console.log(history.location.search); // result: '?query=abc'
 
-        let params = new URLSearchParams(location.search)
         let json = localStorage.getItem("journalEntry") || ''
         let userJournal = JSON.parse(json)
         console.log(userJournal)
-        
         
         setView(userJournal);
         if (params.get("mode") == "view") {
             setVal('view')
         }
         setLoading(false)
-
-    }, [loading]);
+    })
 
     const [qns, setQns] = useState([]);
     const questionPrompt = () => {
@@ -109,7 +106,7 @@ export const JournalView: React.FC = () => {
 
     const handleChange = (e: any) => {
         const newVal = e.detail.value;
-        console.log(newVal);
+        console.log("chnage to: ", newVal);
         setVal(newVal);
         if (newVal == 'edit') {
             handleEditJournal(viewJournal)
@@ -119,7 +116,7 @@ export const JournalView: React.FC = () => {
 
 
     const handleEditJournal = (journal: any) => {
-        console.log("edit")
+        console.log("going to edit")
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
         console.log(jsonJournal)
@@ -177,7 +174,7 @@ export const JournalView: React.FC = () => {
                                                     className="selectMode"
                                                     interface="popover"
                                                     placeholder="Select mode"
-                                                    value={val} onIonChange={handleChange}>
+                                                    value={val} onIonChange={e=>handleChange(e)}>
                                                     <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
                                                     <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
                                                 </IonSelect>
