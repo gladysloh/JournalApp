@@ -99,8 +99,33 @@
     padding: 5px;
 }
 
+.nomargin {
+    margin: 0px;
+    padding: 0px;
+}
+
+.selectModeBackground {
+    margin: 0px;
+    padding: 0px;
+    height: 20px;
+
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.selectMode {
+    font-family: 'Nunito-Bold';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+
+    color: rgba(0, 0, 0, 0.8);
+}
+
 .titleInputBackground {
-    height: 50px;
+    height: 100px;
     margin: 0px;
     padding: 0px;
 
@@ -118,16 +143,8 @@
     line-height: 27px;
 
     color: rgba(0, 0, 0, 0.5);
-}
 
-.selectMode {
-    font-family: 'Nunito-Bold';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 16px;
-
-    color: rgba(0, 0, 0, 0.2);
+    white-space: normal !important;
 }
 
 .bodyInputBackground {

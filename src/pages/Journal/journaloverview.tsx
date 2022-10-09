@@ -78,7 +78,7 @@ const JournalOverview: React.FC = () => {
                             </IonCard>
                         </IonCol>
                     </IonRow>
-                    <IonRow className="chooseDate">
+                    {/* <IonRow className="chooseDate">
                         <div>
                             <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
                         </div>
@@ -88,7 +88,7 @@ const JournalOverview: React.FC = () => {
                             presentation="date"
                             showDefaultButtons={true}></IonDatetime>
                         </IonModal>
-                    </IonRow>
+                    </IonRow> */}
                     <IonRow className='type'>
                         <IonCol className="dayBackground" size='2'>
                             <IonCard className="day">
@@ -100,19 +100,16 @@ const JournalOverview: React.FC = () => {
                                 <IonCardSubtitle>ENTRY</IonCardSubtitle>
                             </IonCard>
                         </IonCol>
-                        <IonCol className="inputTypeBackground" size='6'>
-                            <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
-                                <IonSegmentButton className='inputTypes' value="text">
-                                <IonLabel>
-                                    <IonImg src={text} />
-                                </IonLabel>
-                                </IonSegmentButton>
-                                <IonSegmentButton className='inputTypes' value="image">
-                                <IonLabel>
-                                    <IonImg src={image} />
-                                </IonLabel>
-                                </IonSegmentButton>
-                            </IonSegment>
+                        <IonCol className="chooseDate" size='6'>
+                            <div>
+                                <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
+                            </div>
+                            <IonModal keepContentsMounted={true}>
+                                <IonDatetime 
+                                id="datetime" 
+                                presentation="date"
+                                showDefaultButtons={true}></IonDatetime>
+                            </IonModal>
                         </IonCol>
                     </IonRow>
                     <IonRow className="entries">

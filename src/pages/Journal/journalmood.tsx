@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonLabel, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import './journalmood.css';
 
@@ -24,6 +24,7 @@ const JournalMood: React.FC = () => {
             <IonCol>
               <IonCard className="generatedEmojiCard">
                 <IonImg className="generatedEmojiImage" src={elated} />
+                <IonLabel className="generatedEmojiLabel">ELATED</IonLabel>
               </IonCard>
             </IonCol>
           </IonRow>

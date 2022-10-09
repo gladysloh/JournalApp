@@ -83,14 +83,6 @@
     border-radius: 10px;
 }
 
-.chooseDate {
-    margin: 0px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .type {
     margin: 0px 20px 0px 20px;
     padding: 0px;
@@ -130,6 +122,29 @@
     backdrop-filter: blur(40px);
     /* Note: backdrop-filter has minimal browser support */
     border-radius: 10px;
+}
+
+.chooseDate {
+    margin: 0px;
+
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.dateTimeButton {
+
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Convergence !important;
+
+    background: linear-gradient(103.96deg, rgba(255, 255, 255, 0.6) 14.44%, rgba(255, 255, 255, 0.3) 76.39%) !important;
+    backdrop-filter: blur(40px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 10px;
+    
 }
 
 .inputTypeBackground {

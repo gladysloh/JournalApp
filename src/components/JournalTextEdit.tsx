@@ -86,10 +86,22 @@ export const JournalTextEdit: React.FC = () => {
                         <IonCard className='journalEntryCard'>
                             <IonCardContent>
                                 <IonGrid className="journalEntryGrid">
+                                    <IonRow className="nomargin">
+                                        <IonCol className="selectModeBackground">
+                                            <IonSelect
+                                                className="selectMode"
+                                                interface="popover"
+                                                placeholder="MODE"
+                                                onIonChange={e => pushLog(`ionChange fired with value: ${e.detail.value}`)}>
+                                                <IonSelectOption className="selectMode" value="view">VIEW MODE</IonSelectOption>
+                                                <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
+                                            </IonSelect>
+                                        </IonCol>
+                                    </IonRow>
                                     <IonRow className="titleInputBackground">
                                         <IonCol>
                                             <IonCardSubtitle>
-                                                <IonInput
+                                                <IonTextarea
                                                     className='titleInput'
                                                     value={title}
                                                     placeholder="Add title"
@@ -97,18 +109,8 @@ export const JournalTextEdit: React.FC = () => {
                                                     required={true}
                                                     autocapitalize="true"
                                                 >
-                                                </IonInput>
+                                                </IonTextarea>
                                             </IonCardSubtitle>
-                                        </IonCol>
-                                        <IonCol size='5'>
-                                            <IonSelect
-                                                className="selectMode"
-                                                interface="popover"
-                                                placeholder="Select mode"
-                                                onIonChange={e => pushLog(`ionChange fired with value: ${e.detail.value}`)}>
-                                                <IonSelectOption className="selectMode" value="view">VIEW MODE</IonSelectOption>
-                                                <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
-                                            </IonSelect>
                                         </IonCol>
                                     </IonRow>
                                     <IonRow className="bodyInputBackground">
