@@ -30,7 +30,7 @@ const JournalMood: React.FC = () => {
 
 
   const goToOverview = () => {
-    history.push({
+    history.replace({
       pathname: '/tabs/journaloverview'
     });
   }
@@ -101,7 +101,7 @@ const JournalMood: React.FC = () => {
         console.log(res);
         dismiss();
         setLoading(false);
-        history.push("/tabs/journaloverview")
+        history.replace("/tabs/journaloverview")
       }).catch((err) => {
           toaster("Error! Something went wrong", closeCircleOutline)
           dismiss();

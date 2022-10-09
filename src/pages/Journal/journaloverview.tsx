@@ -59,10 +59,9 @@ const JournalOverview: React.FC = () => {
 
     };
 
-    useIonViewDidEnter(() => {
+    useIonViewWillEnter(() => {
         console.log("ion view enter")
         getJournalInfo()
-
     }, []);
 
     const checkJournals = () => {
@@ -99,7 +98,7 @@ const JournalOverview: React.FC = () => {
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journalview',
             search: '?mode=view&id=' + journal.id,
             state: { detail: 'edit' }
@@ -108,7 +107,7 @@ const JournalOverview: React.FC = () => {
 
     const handleCreateJournal = () => {
         console.log("create")
-        history.push({
+        history.replace({
             pathname: '/tabs/journaltextedit',
             search: '?mode=create',
             state: { detail: 'create' }
@@ -286,7 +285,7 @@ const JournalOverview: React.FC = () => {
 
                                 checkJournals() ?
                                     <IonRow></IonRow> :
-                                    <IonRow onClick={handleCreateJournal}>
+                                    <IonRow onClick={()=>handleCreateJournal()}>
                                         <IonCol className="entryDateDay" size='2'>
                                             <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
                                             <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
