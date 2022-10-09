@@ -24,7 +24,7 @@
 
 .statusCardContent {
     margin: 0px !important;
-    padding: 5px 10px 5px 10px !important;
+    padding: 0px 10px 0px 0px !important;
 }
 
 .statusGrid {
@@ -66,10 +66,19 @@
     color: rgba(0, 0, 0, 0.55);
 }
 
+.statusimagesbackground {
+    margin: 0px !important;
+    padding: 0px !important;
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
 .statusimages {
     width: 25px;
     height: 25px;
-    margin: 0px 0px 0px 7px;
+    margin: 0px;
 }
 
 .card2 {

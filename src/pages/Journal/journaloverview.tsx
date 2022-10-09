@@ -27,48 +27,48 @@ const JournalOverview: React.FC = () => {
                             <IonCard className='card1'>
                                 <IonCardContent className='statusCardContent'>
                                     <IonGrid className='statusGrid'>
-                                        <IonRow>
+                                        <IonRow className='statusGrid'>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
+                                                    <IonCol className='statusimagesbackground' size='4'>
+                                                        <IonImg className='statusimages' src={fire} />
+                                                    </IonCol>
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>22</p>
                                                     <p className='statuslabels'>STREAKS</p>
                                                     </IonCol>
-                                                    <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={fire} />
-                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
+                                                    <IonCol size='6'>
+                                                        <IonImg className='statusimages' src={journal} />
+                                                    </IonCol>
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>150</p>
                                                     <p className='statuslabels'>ENTRIES</p>
                                                     </IonCol>
-                                                    <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={journal} />
-                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
+                                                    <IonCol size='6'>
+                                                        <IonImg className='statusimages' src={images} />
+                                                    </IonCol>
                                                     <IonCol size='6'>
                                                     <p className='statusvalues'>55</p>
                                                     <p className='statuslabels'>IMAGES</p>
                                                     </IonCol>
-                                                    <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={images} />
-                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                    <p className='statusvalues'>76%</p>
-                                                    <p className='statuslabels'>HAPPY</p>
+                                                        <IonImg className='statusimages' src={happy} />
                                                     </IonCol>
                                                     <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={happy} />
+                                                    <p className='statusvalues'>76%</p>
+                                                    <p className='statuslabels'>HAPPY</p>
                                                     </IonCol>
                                                 </IonRow>
                                             </IonCol>

@@ -18,7 +18,7 @@ const JournalMood: React.FC = () => {
             <IonCardTitle className="title">21 January 2022</IonCardTitle>
           </IonRow>
           <IonRow className="subtitleBackground">
-            <p className="subtitle">Your mood for today is...</p>
+            <p className="subtitle">Predicted mood is...</p>
           </IonRow>
           <IonRow>
             <IonCol>
