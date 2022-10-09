@@ -21,12 +21,6 @@ async function createjournal(req, res) {
         sentiment: req.body.sentiment
     }
     try { //if there is an image attached, else no image attached
-        fields = {
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            title: req.body.title,
-            body: req.body.journal,
-            sentiment: req.body.sentiment
-        }
         if (req.body.image) {
             var temp = await uploadimage(req.body.image, uid)
             temp = JSON.parse(temp)
@@ -42,7 +36,7 @@ async function createjournal(req, res) {
         })
     }
     // const entries = JSON.stringify(fields)
-    // console.log(entries)
+    console.log(fields)
 
     await firestore.doc(`users/${uid}`).collection('journal').add(
         fields
