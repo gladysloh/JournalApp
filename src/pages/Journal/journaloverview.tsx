@@ -171,15 +171,15 @@ const JournalOverview: React.FC = () => {
 
         if (avgRate >= -1 && avgRate < -0.6) {
             percentage = 0
-          } else if (avgRate >= -0.6 && avgRate < -0.2) {
+        } else if (avgRate >= -0.6 && avgRate < -0.2) {
             percentage = 20
-          } else if (avgRate >= -0.2 && avgRate < 0.2) {
+        } else if (avgRate >= -0.2 && avgRate < 0.2) {
             percentage = 40
-          } else if (avgRate >= 0.2 && avgRate < 0.6) {
+        } else if (avgRate >= 0.2 && avgRate < 0.6) {
             percentage = 60
-          } else if (avgRate >= 0.6 && avgRate <= 1) {
+        } else if (avgRate >= 0.6 && avgRate <= 1) {
             percentage = 100
-          }
+        }
 
         return percentage + "%";
 
@@ -203,49 +203,51 @@ const JournalOverview: React.FC = () => {
                             <IonCard className='card1'>
                                 <IonCardContent className='statusCardContent'>
                                     <IonGrid className='statusGrid'>
-                                        <IonRow>
+                                        <IonRow className='statusGrid'>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
+                                                    <IonCol className='statusimagesbackground' size='4'>
+                                                        <IonImg className='statusimages' src={fire} />
+                                                    </IonCol>
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{calculateStreaks()}</p>
                                                         <p className='statuslabels'>STREAKS</p>
                                                     </IonCol>
-                                                    <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={fire} />
-                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
+                                                    <IonCol size='6'>
+
+                                                        <IonImg className='statusimages' src={journal} />
+                                                    </IonCol>
                                                     <IonCol size='6'>
                                                         <p className='statusvalues'>{getNoOfEntries()}</p>
                                                         <p className='statuslabels'>ENTRIES</p>
                                                     </IonCol>
-                                                    <IonCol size='6'>
-                                                        <IonImg className='statusimages' src={journal} />
-                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
-                                                    <IonCol size='6'>
-                                                        <p className='statusvalues'>{getNoOfImg()}</p>
-                                                        <p className='statuslabels'>IMAGES</p>
-                                                    </IonCol>
                                                     <IonCol size='6'>
                                                         <IonImg className='statusimages' src={images} />
                                                     </IonCol>
+                                                    <IonCol size='6'>
+
+                                                        <p className='statusvalues'>{getNoOfImg()}</p>
+                                                        <p className='statuslabels'>IMAGES</p>
+                                                    </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                             <IonCol size='3'>
                                                 <IonRow className="statusBox">
                                                     <IonCol size='6'>
-                                                        <p className='statusvalues'>{getEmotion()}</p>
-                                                        <p className='statuslabels'>HAPPY</p>
-                                                    </IonCol>
-                                                    <IonCol size='6'>
                                                         <IonImg className='statusimages' src={happy} />
                                                     </IonCol>
+                                                <IonCol size='6'>
+                                                    <p className='statusvalues'>{getEmotion()}</p>
+                                                    <p className='statuslabels'>HAPPY</p>
+                                                </IonCol>
                                                 </IonRow>
                                             </IonCol>
                                         </IonRow>
@@ -254,7 +256,7 @@ const JournalOverview: React.FC = () => {
                             </IonCard>
                         </IonCol>
                     </IonRow>
-                    <IonRow className="chooseDate">
+                {/* <IonRow className="chooseDate">
                         <div>
                             <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
                         </div>
@@ -264,100 +266,96 @@ const JournalOverview: React.FC = () => {
                                 presentation="date"
                                 showDefaultButtons={true}></IonDatetime>
                         </IonModal>
-                    </IonRow>
-                    <IonRow className='type'>
-                        <IonCol className="dayBackground" size='2'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>DAY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
-                        <IonCol className="entryBackground" size='3'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>ENTRY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
-                        { /* I removed this bc i think its unncessary */}
-                        <IonCol className="inputTypeBackground" size='6'>
-                            <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
-                                <IonSegmentButton className='inputTypes' value="text">
-                                    <IonLabel>
-                                        <IonImg src={text} />
-                                    </IonLabel>
-                                </IonSegmentButton>
-                                <IonSegmentButton className='inputTypes' value="image">
-                                    <IonLabel>
-                                        <IonImg src={image} />
-                                    </IonLabel>
-                                </IonSegmentButton>
-                            </IonSegment>
-                        </IonCol>
+                    </IonRow> */}
+                <IonRow className='type'>
+                    <IonCol className="dayBackground" size='2'>
+                        <IonCard className="day">
+                            <IonCardSubtitle>DAY</IonCardSubtitle>
+                        </IonCard>
+                    </IonCol>
+                    <IonCol className="entryBackground" size='3'>
+                        <IonCard className="day">
+                            <IonCardSubtitle>ENTRY</IonCardSubtitle>
+                        </IonCard>
+                    </IonCol>
+                        <IonCol className="chooseDate" size='6'>
+                        <div>
+                            <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
+                        </div>
+                        <IonModal keepContentsMounted={true}>
+                            <IonDatetime
+                                id="datetime"
+                                presentation="date"
+                                showDefaultButtons={true}></IonDatetime>
+                        </IonModal>
+                    </IonCol>
                     </IonRow>
 
 
-                    <IonRow className="entries">
-                        <IonCol>
+                <IonRow className="entries">
+                    <IonCol>
 
-                            {
+                        {
 
-                                checkJournals() ?
-                                    <IonRow></IonRow> :
-                                    <IonRow onClick={()=>handleCreateJournal()}>
-                                        <IonCol className="entryDateDay" size='2'>
-                                            <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
-                                            <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
-                                        </IonCol>
-                                        <IonCol className="entryList" size='10'>
-                                            <IonCard className="entryListCard">
-                                                <IonCardContent>
-                                                    <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
+                            checkJournals() ?
+                                <IonRow></IonRow> :
+                                <IonRow onClick={() => handleCreateJournal()}>
+                                    <IonCol className="entryDateDay" size='2'>
+                                        <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
+                                        <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
+                                    </IonCol>
+                                    <IonCol className="entryList" size='10'>
+                                        <IonCard className="entryListCard">
+                                            <IonCardContent>
+                                                <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
 
-                                                    <p className="entryText">Begin your day here...</p>
-                                                </IonCardContent>
-                                            </IonCard>
-                                        </IonCol>
-                                    </IonRow>
-                            }
-
-
-                            {journals.map(item => {
-                                return (
-                                    <>
-                                        <div>
-                                            <IonRow onClick={() => handleViewJournal(item)}>
-                                                <IonCol className="entryDateDay" size='2'>
-                                                    <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
-                                                    <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
-                                                </IonCol>
-                                                <IonCol className="entryList" size='10'>
-                                                    <IonCard className="entryListCard">
-                                                        <IonCardContent>
-                                                            <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
-                                                            <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
-                                                            <p className="entryText">{item['body']}</p>
-                                                            {item['url'] ?
-                                                                <div > <img src={item['url']} /> </div> :
-                                                                <div> </div>}
-
-                                                        </IonCardContent>
-                                                    </IonCard>
-                                                </IonCol>
-                                            </IonRow>
-                                        </div>
-                                    </>
-                                )
-                            })}
+                                                <p className="entryText">Begin your day here...</p>
+                                            </IonCardContent>
+                                        </IonCard>
+                                    </IonCol>
+                                </IonRow>
+                        }
 
 
-                        </IonCol>
-                    </IonRow>
-                    
-                    {/* <IonButton expand="block">LOG OUT</IonButton> */}
+                        {journals.map(item => {
+                            return (
+                                <>
+                                    <div>
+                                        <IonRow onClick={() => handleViewJournal(item)}>
+                                            <IonCol className="entryDateDay" size='2'>
+                                                <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
+                                                <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
+                                            </IonCol>
+                                            <IonCol className="entryList" size='10'>
+                                                <IonCard className="entryListCard">
+                                                    <IonCardContent>
+                                                        <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                        <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
+                                                        <p className="entryText">{item['body']}</p>
+                                                        {item['url'] ?
+                                                            <div > <img src={item['url']} /> </div> :
+                                                            <div> </div>}
+
+                                                    </IonCardContent>
+                                                </IonCard>
+                                            </IonCol>
+                                        </IonRow>
+                                    </div>
+                                </>
+                            )
+                        })}
+
+
+                    </IonCol>
+                </IonRow>
+
+                {/* <IonButton expand="block">LOG OUT</IonButton> */}
                     
                 </IonGrid>
 
-            </IonContent>
+            </IonContent >
 
-        </IonPage>
+        </IonPage >
     );
 };
 

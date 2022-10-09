@@ -16,6 +16,7 @@ import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 
 const JournalMood: React.FC = () => {
 
+
   const [mood, setMood] = useState(false)
   const [sentiment, setSentiment] = useState(0)
   const [journalId, setJournalId] = useState(" ")
@@ -45,7 +46,7 @@ const JournalMood: React.FC = () => {
     let j = params.get("journalid") || " "
     setJournalId(j)
 
-    if (j == "") 
+    if (j == "")
       goToOverview()
 
   }, [])
@@ -83,101 +84,102 @@ const JournalMood: React.FC = () => {
   }
 
   const updateMood = (s: number) => {
-    
+
 
     const instance = axios.create({
       withCredentials: true,
       baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
     })
 
-      let body = {
-        sentiment: s,
-        journalid: journalId,
-      }
+    let body = {
+      sentiment: s,
+      journalid: journalId,
+    }
 
-      console.log(body)
+    console.log(body)
 
-      instance.post('/justsentiment', body).then((res) => {
-        console.log(res);
-        dismiss();
-        setLoading(false);
-        history.replace("/tabs/journaloverview")
-      }).catch((err) => {
-          toaster("Error! Something went wrong", closeCircleOutline)
-          dismiss();
-          setLoading(false);
-          console.error("ERROR: ", err.response);
-        })
+    instance.post('/justsentiment', body).then((res) => {
+      console.log(res);
+      dismiss();
+      setLoading(false);
+      history.replace("/tabs/journaloverview")
+    }).catch((err) => {
+      toaster("Error! Something went wrong", closeCircleOutline)
+      dismiss();
+      setLoading(false);
+      console.error("ERROR: ", err.response);
+    })
 
-    
+
   }
 
 
-    return (
-      <IonPage>
-        <IonContent className="ioncontent" fullscreen>
-          <IonGrid className="ionGrid">
-            <IonRow className="title">
-              <IonCardTitle>{getTodayDate()}</IonCardTitle>
-              <p></p>
-              <p>Your mood for today is...</p>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonCard className="generatedEmojiCard">
-                  <IonImg className="generatedEmojiImage" src={generateMood()?.src} />
-                  <IonCardTitle> {generateMood()?.name} </IonCardTitle>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonCard className="checkEmojiCard">
-                  <IonCardContent>
-                    <IonGrid className="checkEmojiGrid">
-                      <IonRow>
-                        <IonCardTitle className="checkEmojiTitle">Is this your mood for today?</IonCardTitle>
-                      </IonRow>
-                      <IonRow>
-                        <p className="checkEmojiSubtitle">No, my mood for today is...</p>
-                      </IonRow>
-                      <IonRow className="emojiCards">
-                        <IonCol>
-                          <IonCard className="emojiCard" onClick={() => updateMood(1)}>
-                            <IonImg className="emojiImage" src={smiling} />
-                          </IonCard>
-                        </IonCol>
+  return (
+    <IonPage>
+      <IonContent className="ioncontent" fullscreen>
+        <IonGrid className="ionGrid">
+          <IonRow className="titleBackground">
+            <IonCardTitle className="title">{getTodayDate()}</IonCardTitle>
+          </IonRow>
+          <IonRow className="subtitleBackground">
+            <p className="subtitle">Predicted mood is...</p>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonCard className="generatedEmojiCard">
+                <IonImg className="generatedEmojiImage" src={generateMood()?.src} />
+                <IonLabel className="generatedEmojiLabel">{generateMood()?.name} </IonLabel>
+              </IonCard>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonCard className="checkEmojiCard">
+                <IonCardContent>
+                  <IonGrid className="checkEmojiGrid">
+                    <IonRow>
+                      <IonCardTitle className="checkEmojiTitle">Is this your mood for today?</IonCardTitle>
+                    </IonRow>
+                    <IonRow>
+                      <p className="checkEmojiSubtitle">No, my mood for today is...</p>
+                    </IonRow>
+                    <IonRow className="emojiCardsBackground">
+                      <IonCol>
+                        <IonCard className="emojiCard" onClick={() => updateMood(1)}>
+                          <IonImg className="emojiImage" src={smiling} />
+                        </IonCard>
+                      </IonCol>
 
-                        <IonCol>
-                          <IonCard className="emojiCard" onClick={() => updateMood(0)}>
-                            <IonImg className="emojiImage" src={neutral} />
-                          </IonCard>
-                        </IonCol>
-                        <IonCol>
-                          <IonCard className="emojiCard" onClick={() => updateMood(-0.5)}>
-                            <IonImg className="emojiImage" src={sad} />
-                          </IonCard>
-                        </IonCol>
+                      <IonCol>
+                        <IonCard className="emojiCard" onClick={() => updateMood(0)}>
+                          <IonImg className="emojiImage" src={neutral} />
+                        </IonCard>
+                      </IonCol>
+                      <IonCol>
+                        <IonCard className="emojiCard" onClick={() => updateMood(-0.5)}>
+                          <IonImg className="emojiImage" src={sad} />
+                        </IonCard>
+                      </IonCol>
 
-                        <IonCol>
-                          <IonCard className="emojiCard" onClick={() => updateMood(-1)}>
-                            <IonImg className="emojiImage" src={verysad} />
-                          </IonCard>
-                        </IonCol>
-                      </IonRow>
-                      <IonRow>
-                        <IonButton onClick={()=>updateMood(sentiment)}>SKIP</IonButton>
-                        {/* <IonButton>NEXT</IonButton> */}
-                      </IonRow>
-                    </IonGrid>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonPage>
-    );
-  };
+                      <IonCol>
+                        <IonCard className="emojiCard" onClick={() => updateMood(-1)}>
+                          <IonImg className="emojiImage" src={verysad} />
+                        </IonCard>
+                      </IonCol>
+                    </IonRow>
+                    <IonRow>
+                      <IonButton className="greybutton" color="greybutton">SKIP</IonButton>
+                      {/* <IonButton className="greybutton" color="greybutton">NEXT</IonButton> */}
+                    </IonRow>
+                  </IonGrid>
+                </IonCardContent>
+              </IonCard>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
+  );
+};
 
-  export default JournalMood;
+export default JournalMood;
