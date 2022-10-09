@@ -82,9 +82,9 @@ async function editjournal(req, res){
         .doc(uid)
         .collection('journal')
         .doc(journalid)
-        .update({
+        .update(
             fields
-        })
+        )
         res.status(200).json({
             success: true,
             id: journalid,
