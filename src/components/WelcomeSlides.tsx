@@ -2,10 +2,10 @@ import React, { useContext } from 'react';
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonPage } from '@ionic/react';
 import './WelcomeSlides.css'
 import moodlogo from "../theme/icons/output-onlinepngtools.png"
-import { AuthContext } from '../context/auth.context';
+// import { AuthContext } from '../context/auth.context';
 
 const WelcomeSlides: React.FC = () => {
-    const value = useContext(AuthContext);
+    // const value = useContext(AuthContext);
 
     const user = localStorage.getItem("userDetails") || '';
     const displayName = JSON.parse(user).displayname;

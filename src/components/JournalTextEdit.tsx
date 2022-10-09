@@ -27,9 +27,9 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-    IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave
+    IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave, IonActionSheet
 } from '@ionic/react';
-import { textSharp, imageSharp, help, closeCircleOutline } from 'ionicons/icons';
+import { textSharp, imageSharp, help, closeCircleOutline, trash, close } from 'ionicons/icons';
 
 import './JournalTextEdit.css';
 
@@ -56,19 +56,23 @@ export const JournalTextEdit: React.FC = () => {
         body: '',
         title: '',
         url: '',
-        filename: '',
+        filename: "" || false,
         sentiment: 0
     }
 
     const [showHide, setShowHide] = useState(true);
-    const [segment, setSegment] = useState(['text']);
+    const [segment, setSegment] = useState('text');
 
     const [val, setVal] = useState('edit');
+    const[mode, setMode] = useState('')
+    const [disabled, setDisable] = useState(true);
 
 
     const [editJournal, setEdit] = useSetState(initialJournal);
-    const [uid, setUid] = useState<string>(localStorage.getItem("uid"));
+    const [journalImg, setJournalImage] = useState('')
 
+    let jsonUid = localStorage.getItem("uid") || ''
+    const [uid, setUid] = useState<string>(jsonUid);
 
     const [loading, setLoading] = useState(false);
     const [present, dismiss] = useIonLoading();
@@ -85,29 +89,67 @@ export const JournalTextEdit: React.FC = () => {
         else if (e == "text") setShowHide(true)
     }
 
-    const location = useLocation();
-    const params = new URLSearchParams(location.search)
-    
-    const loadData = () => {
-        setLoading(true)
-        console.log(location.pathname); // result: '/secondpage'
-        console.log(val)
-        let params = new URLSearchParams(location.search)
+    // const location = useLocation();
+    // const params = new URLSearchParams(history.location.search)
 
-        let userJournal = JSON.parse(localStorage.getItem("journalEntry"))
+    const loadData = () => {
+        setLoading(true) 
+        console.log(history.location)
+        let params = new URLSearchParams(history.location.search)
+
+        let jsonBody = localStorage.getItem("journalEntry") || ''
+        let userJournal = {}
+        if(jsonBody!= ''){
+            userJournal = JSON.parse(jsonBody);
+        }else{
+            userJournal = initialJournal
+        }
+
+        console.log("moods: ", params.get("mode"))
+
         if (params.get("mode") == "edit") {
+            console.log(userJournal)
             setEdit(userJournal)
             setVal('edit')
+            // setJournalImage(editJournal.url)
+            setMode("edit")
+            setDisable(false)
+
         } else if (params.get("mode") == "create") {
+            console.log(initialJournal)
             setEdit(initialJournal)
             setVal('edit')
+            setMode("create")
+            setDisable(true)
+
         }
         setLoading(false)
     }
 
-    useIonViewDidEnter(() => {
+    useIonViewWillEnter(() => {
+        console.log("enter journal edit")
         loadData()
-    }, []);
+    }, [mode]);
+
+    useEffect(() => {
+        console.log("enter journal edit")
+        loadData()
+    }, [mode]);
+
+    const getJournalImg = () =>{
+        if(photos || editJournal.url){
+            if(photos?.webviewPath){
+                if(photos.webviewPath!=''){
+                    let photoFile = photos.webviewPath
+                    console.log(photoFile)
+                    return (<IonImg src={photos.webviewPath} onClick={() => setPhotoToDelete(photos)}/>)
+                }
+            }else if(editJournal.url){
+                return (<IonImg src={editJournal.url}/>)
+            }
+
+        }
+    }
 
 
 
@@ -138,23 +180,23 @@ export const JournalTextEdit: React.FC = () => {
     }
 
     const getJournalDay = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return new Date(editJournal.timestamp._seconds * 1000).getDate()
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return new Date().getDate();
     }
 
     const getJournalMonth = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return MONTH_NAMES[new Date(editJournal.timestamp._seconds * 1000).getMonth()]
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return MONTH_NAMES[new Date().getMonth()];
     }
 
     const getJournalYear = () => {
-        if (params.get('mode') == 'edit')
+        if (mode == 'edit')
             return new Date(editJournal.timestamp._seconds * 1000).getFullYear()
-        else if (params.get('mode') == 'create')
+        else if (mode == 'create')
             return new Date().getFullYear();
     }
 
@@ -172,7 +214,7 @@ export const JournalTextEdit: React.FC = () => {
         let jsonJournal = JSON.stringify(journal)
         localStorage.setItem("journalEntry", jsonJournal)
 
-        history.push({
+        history.replace({
             pathname: '/tabs/journalview',
             search: '?mode=view&id=' + journal.id,
             state: { detail: 'view' }
@@ -219,10 +261,10 @@ export const JournalTextEdit: React.FC = () => {
             message: 'Saving Journal'
         })
 
-        if (params.get('mode') == 'edit') {
-            
-            let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
-      
+        if (mode == 'edit') {
+            let tempPhotos = photos != undefined ? photos.webviewPath : ''
+            let tempImg = tempPhotos ? await base64FromPath(tempPhotos) : '';
+
             let sentimentVal = await sentiment(editJournal.body);
             let editBody = {
                 uid: uid,
@@ -249,10 +291,14 @@ export const JournalTextEdit: React.FC = () => {
             })
 
 
-        } else if (params.get('mode') == 'create') {
-
+        } else if (mode == 'create') {
             // console.log(await base64FromPath(photos.webviewPath))
-            let tempImg = photos ? await base64FromPath(photos.webviewPath) : '';
+            let tempPhotos = photos != undefined ? photos.webviewPath : '';
+            let tempImg = '';
+            if (tempPhotos != '') {
+                tempImg = tempPhotos ? await base64FromPath(tempPhotos) : '';
+            }
+
             let sentimentVal = await sentiment(editJournal.body);
 
             let createBody = {
@@ -263,11 +309,13 @@ export const JournalTextEdit: React.FC = () => {
                 sentiment: sentimentVal
             }
 
+            console.log("creating journal", createBody)
+
             instance.post('/createjournal', createBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, 0)
+                goToSentiment(sentimentVal, res.data.id)
 
             })
                 .catch((err) => {
@@ -282,7 +330,7 @@ export const JournalTextEdit: React.FC = () => {
 
     };
 
-    const deleteJournal = async (event: any) => {
+    const deleteJournal = async () => {
         setLoading(true);
 
         present({
@@ -291,7 +339,7 @@ export const JournalTextEdit: React.FC = () => {
 
         console.log(editJournal.id)
 
-        instance.post('/removejournal', {journalid: editJournal.id}).then((res) => {
+        instance.post('/removejournal', { journalid: editJournal.id }).then((res) => {
             console.log(res);
             dismiss();
             goToOverview()
@@ -304,11 +352,16 @@ export const JournalTextEdit: React.FC = () => {
 
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
-        console.log(photos)
-        deletePhoto(photos);
-        setPhotoToDelete(undefined)
+
+        removeImage()
+        localStorage.removeItem("journalEntry")
         setEdit(initialJournal)
     });
+
+    const removeImage = () => {
+        deletePhoto(photos)
+        setPhotoToDelete(undefined);
+    }
 
     const goToOverview = () => {
         history.replace({
@@ -317,15 +370,12 @@ export const JournalTextEdit: React.FC = () => {
     }
 
     const goToSentiment = (sentiment: number, journalId: any) => {
-        
-        history.push({
+
+        history.replace({
             pathname: '/tabs/journalmood',
             search: `?sentiment=${sentiment}&journalid=${journalId}`,
         });
     }
-
-
-
 
 
     return (
@@ -399,7 +449,8 @@ export const JournalTextEdit: React.FC = () => {
                                                         placeholder="Select mode"
                                                         name="mode"
                                                         value={val} onIonChange={handleChange}>
-                                                        {params.get('mode') != 'create' ? <IonSelectOption className="selectMode" value="view">VIEW MODE</IonSelectOption> : <IonSelectOption className="selectMode" value="view" disabled="true">VIEW MODE</IonSelectOption>}
+                                                        <IonSelectOption className="selectMode" value="view" disabled={disabled}>VIEW MODE</IonSelectOption>
+
                                                         <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
                                                     </IonSelect>
                                                 </IonCol>
@@ -426,7 +477,14 @@ export const JournalTextEdit: React.FC = () => {
                             <IonRow className="imageBackground">
                                 <IonCol size="6">
                                     
-                                    {photos ? <IonImg src={photos.webviewPath ? photos.webviewPath : ''} /> : editJournal.url ? <IonImg src={editJournal ? editJournal.url  : ''  }/> : <span></span>   }
+                                    {
+                                    // getJournalImg()
+
+                                        // journalImg != '' ? <IonImg src={journalImg}/> : <span></span>
+                                    photos ?
+                                        <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)}/> :
+                                        editJournal.url ? <IonImg src={editJournal ? editJournal.url : ''} /> : <span></span> 
+                                    }
                                 </IonCol>
                                 <IonCol size='12'>
                                     <IonCard className="journalImageCard">
@@ -442,7 +500,7 @@ export const JournalTextEdit: React.FC = () => {
                         <IonRow>
                             <IonCol size="6">
                                 <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
-                                {params.get("mode") == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+                                {mode == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
                             </IonCol>
 
                             <IonCol size="6">
@@ -466,6 +524,25 @@ export const JournalTextEdit: React.FC = () => {
                 </IonGrid>
 
                 <div className="spacer"></div>
+                <IonActionSheet
+                    isOpen={!!photoToDelete}
+                    buttons={[{
+                        text: 'Delete',
+                        role: 'destructive',
+                        icon: trash,
+                        handler: () => {
+                            if (photoToDelete) {
+                                deletePhoto(photoToDelete);
+                                setPhotoToDelete(undefined);
+                            }
+                        }
+                    }, {
+                        text: 'Cancel',
+                        icon: close,
+                        role: 'cancel'
+                    }]}
+                    onDidDismiss={() => setPhotoToDelete(undefined)}
+                />
             </IonContent>
         </IonPage>
     );

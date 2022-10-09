@@ -35,6 +35,8 @@ async function createjournal(req, res) {
             error: err.message
         })
     }
+    // const entries = JSON.stringify(fields)
+    console.log(fields)
 
 
     await firestore.doc(`users/${uid}`).collection('journal').add(

@@ -23,12 +23,11 @@ import SegmentExamples from './tutorial/SegmentExamples';
 import TextAreaExamples from './tutorial/TextAreaExamples';
 import { SlideExample } from './tutorial/Slides';
 
-import JournalTextView from '../components/JournalTextView'
+// import JournalTextView from '../components/JournalTextView'
 import JournalView from '../components/JournalView';
-import JournalImageView from '../components/JournalImageView'
+// import JournalImageView from '../components/JournalImageView'
 
 import JournalText from './Journal/journaltext'
-import JournalImage from './Journal/journalimage'
 import JournalOverview from './Journal/journaloverview';
 import JournalGenerateMood from './Journal/journalgeneratemood';
 import JournalMood from './Journal/journalmood';
