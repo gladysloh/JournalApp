@@ -16,12 +16,13 @@ async function getalljournal(req, res) {
                     console.log(doc.data())
                     journals.push({
                         id: doc.id,
-                        body: doc.data().fields.body,
-                        url: doc.data().fields.url,
-                        timestamp: doc.data().fields.timestamp,
-                        title: doc.data().fields.title,
-                        filename: doc.data().fields.filename,
-                        sentiment: doc.data().fields.sentiment
+                        body: doc.data().body,
+                        url: doc.data().url,
+                        timestamp: doc.data().timestamp,
+                        title: doc.data().title,
+                        filename: doc.data().filename,
+                        sentiment: doc.data().sentiment,
+                        editTime: doc.data().editTime
                     })
                 })
             })
