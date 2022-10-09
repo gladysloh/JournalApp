@@ -38,6 +38,7 @@ async function createjournal(req, res) {
     // const entries = JSON.stringify(fields)
     console.log(fields)
 
+
     await firestore.doc(`users/${uid}`).collection('journal').add(
         fields
     ).then(function (docRef) {

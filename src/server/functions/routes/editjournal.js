@@ -1,6 +1,7 @@
 
 const firestore = require('firebase-admin').firestore()
 const admin = require('firebase-admin')
+const { url } = require('inspector')
 const uploadimage = require('./uploadimage')
 const bucket = admin.storage().bucket()
 const storage = admin.storage()
@@ -34,7 +35,13 @@ async function editjournal(req, res){
             message: err.message
         })
     }
-
+    fields = {
+        editTime: admin.firestore.FieldValue.serverTimestamp(),
+        body: newbody,
+        title: newtitle,
+        sentiment: sentiment
+    }
+    console.log(typeof(fields))
     var filename = req.body.filename
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
@@ -54,15 +61,8 @@ async function editjournal(req, res){
         temp = JSON.parse(temp)
         const signedUrl = temp.signedUrl
         const newfilename = temp.fileName
-
-        var fields = {
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            body: newbody,
-            url: signedUrl,
-            filename: newfilename,
-            title: newtitle,
-            sentiment: sentiment
-        }
+        fields.url = signedUrl
+        fields.filename = newfilename
     }  else { //does not update image, journal entry with just the body
         if (imageexists) { //original post had an image, but the user did not include another image in the edit function
             try {
@@ -74,13 +74,8 @@ async function editjournal(req, res){
                 })
             }
         } 
-        fields = {
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            body: newbody,
-            title: newtitle,
-            sentiment: sentiment
-        }
     }
+    console.log(fields)
     try {
         await firestore
         .collection('users')
