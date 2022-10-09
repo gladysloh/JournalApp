@@ -84,10 +84,14 @@ const Login: React.FC = () => {
       console.log(res);
       dismiss();
       setLoading(false);
-      setIsRedirect(true)
+      setIsRedirect(true);
+
       localStorage.setItem('user', JSON.stringify(res.data))
-      history.push("/tabs/journaloverview")
+
+      toaster("Logged in successfully", checkmarkCircleOutline)
+      history.go(0)
       setState(initialState);
+
     }).catch((err) => {
       toaster("Error! Something went wrong", closeCircleOutline)
       dismiss();

@@ -91,7 +91,9 @@ const SignUp: React.FC = () => {
       setIsRedirect(true)
       localStorage.setItem('user', JSON.stringify(res.data))
       toaster("Signed up successfully", checkmarkCircleOutline)
-      history.replace("/tabs/journaloverview")
+      
+      history.replace("/tabs/login")
+
       setState(initialState);
     }).catch((err) => {
       toaster("Error! Sign Up not successful", closeCircleOutline)
@@ -100,45 +102,6 @@ const SignUp: React.FC = () => {
       console.error("ERROR: ", err.response);
     })
 
-    // try {
-    //   const response = await fetch('http://localhost:5001/onceaday-48fb7/us-central1/api/register', {
-    //     method: 'POST',
-    //     body: userjson,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Accept: 'application/json',
-    //     },
-    //   });
-
-    //   if (!response.ok) {
-    //     toaster("Error! Sign Up not successful", closeCircleOutline)
-    //     throw new Error(`Error! status: ${response.status}`);
-    //   }
-
-    //   const result = await response.json();
-
-    //   console.log('result is: ', JSON.stringify(result, null, 4));
-    //   toaster("Signed up successfully", checkmarkCircleOutline)
-    //   setData(result);
-
-    //   // store the user in localStorage
-    //   localStorage.setItem('oadUser', JSON.stringify(result))
-    //   setUserID(result.uid)
-
-    //   setState({
-    //     email: '',
-    //     password: '',
-    //     displayName: ''
-    //   });
-
-    // } catch (err: any) {
-    //   console.log(err.message)
-    //   setError(err.message);
-      
-    // } finally {
-    //   dismiss();
-    //   setLoading(false);
-    // }
   };
 
   return (

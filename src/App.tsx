@@ -60,20 +60,27 @@ setupIonicReact();
 const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState(false);
 
-  const instance = axios.create({
-    withCredentials: true,
-    baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-  })
+  const checkUser = () =>{
+    const instance = axios.create({
+      withCredentials: true,
+      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    })
+  
+    instance.get('/getuser').then((res) => {
+      console.log("user name: ", res.data.displayname);
+      setUserStatus(true)
+    })
+    .catch((err) => {
+      console.error("ERROR: ", err);
+      setUserStatus(false)
+  
+    })
+  }
+  
 
-  instance.get('/getuser').then((res) => {
-    console.log(res);
-    setUserStatus(true)
-  })
-  .catch((err) => {
-    console.error("ERROR: ", err);
-    setUserStatus(false)
-
-  })
+  useEffect(()=>{
+    checkUser()
+  },[userStatus])
 
 
   return (
