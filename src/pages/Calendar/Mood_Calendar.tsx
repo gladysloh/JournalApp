@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
@@ -13,6 +13,7 @@ import "./Mood_Calendar.css";
 import logo from "../google.png"
 import axios from 'axios';
 import { useHistory } from 'react-router';
+import { secondsToMilliseconds } from 'date-fns/esm';
 
 
 function Mood_Calendar() {
@@ -32,47 +33,20 @@ function Mood_Calendar() {
     locales,
   })
 
-  const events = [
-    {
-      title: "..😁",
-      start: new Date(2022, 8, 3),
-      end: new Date(2022, 8, 3),
-    },
+  const initialState = [{
+    title: '',
+    start: new Date(),
+    end: new Date()
+  }]
+  const [events, setEvents] = useState(initialState)
+  const [isEvent, setIsEvent] = useState(false)
 
-    {
-      title: "..😁",
-      start: new Date(2022, 8, 4),
-      end: new Date(2022, 8, 4),
-    },
-
-    {
-      title: "..😁",
-      start: new Date(2022, 8, 5),
-      end: new Date(2022, 8, 5),
-    },
-
-    {
-      title: "..{logo}",
-      start: new Date(2022, 8, 6),
-      end: new Date(2022, 8, 6),
-    },
-
-    {
-      title: "..😁",
-      start: new Date(2022, 8, 7),
-      end: new Date(2022, 8, 7),
-    },
-    {
-      title: "..😁",
-      start: new Date(2022, 8, 8),
-      end: new Date(2022, 8, 8),
-    },
-
-  ]
   const history = useHistory();
 
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
+
+  const [moods, setMood] = useState([])
 
 
   useIonViewWillEnter(() => {
@@ -88,6 +62,10 @@ function Mood_Calendar() {
 
     instance.post('/monthlymood', body).then((res) => {
       console.log(res.data);
+      setMood(res.data.moods)
+      setIsEvent(true)
+
+      
 
     }).catch((err) => {
       console.error("ERROR: ", err);
@@ -96,6 +74,40 @@ function Mood_Calendar() {
     })
   });
 
+  useEffect(()=>{
+    moods.forEach((el, i) => {
+      let title = getEmotion(el['sentiment']).emoji
+      let start = getJournalDate(el['timestamp'])
+      let end = getJournalDate(el['timestamp'])
+      console.log({title: title, start: start, end: end })
+      setEvents(events => [...events, {title: title, start: start, end: end }])
+    })
+
+    console.log(events)
+  }, [isEvent] )
+
+
+  const getEmotion = (sentiment: any) => {
+    if (sentiment >= -1 && sentiment < -0.6) {
+      return { name: 'Very Sad', emoji: '😭' }
+    } else if (sentiment >= -0.6 && sentiment < -0.2) {
+      return { name: 'Sad', emoji: '😔' }
+    } else if (sentiment >= -0.2 && sentiment < 0.2) {
+      return { name: 'Neutral', emoji: '😐' }
+    } else if (sentiment >= 0.2 && sentiment < 0.6) {
+      return { name: 'Happy', emoji: '😊' }
+    } else if (sentiment >= 0.6 && sentiment <= 1) {
+      return { name: 'Elated', emoji: '😄' }
+    }
+
+    return { name: 'Elated', emoji: '😄' }
+  }
+
+  const getJournalDate = (timestamp: any) => {
+    let seconds = timestamp._seconds;
+    const date = new Date(seconds * 1000)
+    return date;
+  }
 
 
 

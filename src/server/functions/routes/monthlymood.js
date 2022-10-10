@@ -21,10 +21,10 @@ async function monthlymood(req, res){
     console.log('Targetplusone: ', targetplusone)
 
     const query = firestore.collection(`users/${uid}/journal`)
-                    .where('fields.timestamp',
+                    .where('timestamp',
                             '>=',
                             new Date(`${targetYear}-${targetMonth}-01`))
-                    .where('fields.timestamp',
+                    .where('timestamp',
                             '<',
                             new Date(`${nextMonthYear}-${nextMonth}`))
     await query.onSnapshot(querysnapshot => {
@@ -32,8 +32,8 @@ async function monthlymood(req, res){
         querysnapshot.forEach((doc) => {
             console.log(doc.data())
             moods.push({
-                timestamp: doc.data().fields.timestamp,
-                sentiment: doc.data().fields.sentiment
+                timestamp: doc.data().timestamp,
+                sentiment: doc.data().sentiment
             })
         })
         res.status(200).json({

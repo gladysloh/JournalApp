@@ -54,6 +54,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import JournalOverview from './pages/Journal/journaloverview';
 import { SideMenu } from './pages/SideMenu/sidemenu';
+import Example from './components/LockScreen/lockscreen';
 
 setupIonicReact();
 
@@ -95,6 +96,8 @@ const App: React.FC = () => {
           <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
           <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
           {userStatus ? <TabRoot/> : <Redirect to ="/login"/>}
+
+          <Route path="/lockscreen" component={Example} />
 
         </IonRouterOutlet>
       </IonReactRouter>

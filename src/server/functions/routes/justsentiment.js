@@ -17,7 +17,7 @@ async function justsentiment(req, res){
         .collection('journal')
         .doc(journalid)
         .update({
-            "fields.sentiment": newsentiment
+            "sentiment": newsentiment
         })
         res.status(200).json({
             success: true
