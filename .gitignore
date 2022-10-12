@@ -6,6 +6,8 @@
 .pnp.js
 /src/server/functions/node_modules
 /src/server/node_modules
+/src/server/package-lock.json
+/src/server/functions/package-lock.json
 
 # testing
 /coverage
