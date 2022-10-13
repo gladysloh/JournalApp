@@ -4,17 +4,15 @@ const aposToLexForm = require('apos-to-lex-form')
 const SpellCorrector = require('spelling-corrector')
 const SW = require('stopword')
 const vader = require('vader-sentiment')
-const preprocess = require('./preprocessText')
 
 const spellCorrector = new SpellCorrector()
 spellCorrector.loadDictionary()
 
 //WIP
-function sentimentAnalyzer(req,res){
-    var raw = req.body.journal
-    raw = raw + '.'
+function preprocess(string){
+    string = string + '.'
     const { WordTokenizer, SentenceTokenizer } = natural
-    const lexedJounral = aposToLexForm(raw)
+    const lexedJounral = aposToLexForm(string)
     const lowerJournal = lexedJounral.toLowerCase()
   
     sentTokenizer = new SentenceTokenizer()
@@ -29,10 +27,8 @@ function sentimentAnalyzer(req,res){
         sentences[index] = joinedSentence
     })
     joinedList = sentences.join('. ')
-    console.log(joinedList)
-    var result = vader.SentimentIntensityAnalyzer.polarity_scores(joinedList)
-    console.log(result)
-    return res.json(result)
+    
+    return joinedList
     
     
 
@@ -40,4 +36,4 @@ function sentimentAnalyzer(req,res){
     //return res.status(200).json({ tokenized: filteredJournal })
 }
 
-module.exports = sentimentAnalyzer
+module.exports = preprocess

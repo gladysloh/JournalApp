@@ -1,9 +1,9 @@
 const firestore = require('firebase-admin').firestore()
-const e = require('express')
 const admin = require('firebase-admin')
 const uploadimage = require('./uploadimage')
 require('firebase/storage')
 const bucket = admin.storage().bucket()
+const JournalEntry = require('../../../model/journalEntry')
 global.XMLHttpRequest = require('xhr2')
 
 async function createjournal(req, res) {
@@ -14,8 +14,30 @@ async function createjournal(req, res) {
             error: "empty field(s)"
         })
     }
+
+    //check if a journal already exists TODAY
+    try {
+        const snapshot = (await firestore.collection('users').doc(uid).collection('journal').orderBy('createdTimestamp', 'desc').limit(1).get()).docs[0]
+        if (snapshot.exists){
+            const date = new Date(snapshot.data().createdTimestamp._seconds * 1000 + 8 * 60 * 60 * 1000)
+            const currentDate = new Date()
+            currentDate.setTime(currentDate.getTime() + 8 * 60 * 60 * 1000)
+            if (date.getDate() == currentDate.getDate()){
+                return res.status(400).json({
+                    success: false,
+                    message: 'journal already exists today'
+                })
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: 'error while checking if journal exists today'
+        })
+    }
+
     fields = {
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        createdTimestamp: admin.firestore.FieldValue.serverTimestamp(),
         title: req.body.title,
         body: req.body.journal,
         sentiment: req.body.sentiment
@@ -36,7 +58,6 @@ async function createjournal(req, res) {
         })
     }
     // const entries = JSON.stringify(fields)
-    console.log(fields)
 
 
     await firestore.doc(`users/${uid}`).collection('journal').add(
@@ -54,6 +75,7 @@ async function createjournal(req, res) {
         })
     })
 }
+
 
 module.exports = createjournal
 

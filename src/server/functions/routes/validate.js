@@ -1,4 +1,4 @@
-const isEmail = require('is-email')
+//const isEmail = require('is-email')
 
 function validateEmailAndPassword(req, res, next) {
     const {email, password} = req.body
@@ -8,12 +8,12 @@ function validateEmailAndPassword(req, res, next) {
         return
     }
 
-    if (!isEmail(email)){
-        res
-        .status(400)
-        .send({ error: {code: 'invalid-email'}})
-        return
-    }
+    // if (!isEmail(email)){
+    //     res
+    //     .status(400)
+    //     .send({ error: {code: 'invalid-email'}})
+    //     return
+    // }
 
     if (!password){
         res

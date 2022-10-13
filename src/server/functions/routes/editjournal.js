@@ -1,10 +1,8 @@
 
 const firestore = require('firebase-admin').firestore()
 const admin = require('firebase-admin')
-const { url } = require('inspector')
 const uploadimage = require('./uploadimage')
 const bucket = admin.storage().bucket()
-const storage = admin.storage()
 
 
 async function editjournal(req, res){
@@ -14,6 +12,30 @@ async function editjournal(req, res){
     const newtitle = req.body.newtitle
     const sentiment = req.body.sentiment
     let imageexists = true
+    //check if + 2 days
+    try {
+        const snapshot = await firestore.collection('users').doc(uid).collection('journal').doc(journalid).get()
+        console.log(snapshot.exists)
+        if (snapshot.exists){
+            const date = new Date(snapshot.data().createdTimestamp._seconds * 1000 + 8 * 60 * 60 * 1000)
+            const currentDate = new Date()
+            currentDate.setTime(currentDate.getTime() + 8 * 60 * 60 * 1000)
+            const offsetTime = Math.abs(currentDate - date)
+            const offset = Math.ceil(offsetTime/ (1000 * 60 * 60 * 24))
+            if (offset >= 2){
+                return res.status(400).json({
+                    success: false,
+                    message: 'cannot edit anymore, passed 2 days'
+                })
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: 'error while checking if journal was created within 2 days'
+        })
+    }
+
     //the following try-catch block is to check if the journal of concern already has an image, sets imageexists boolean to true or false
     try {
         const snapshot = await firestore
@@ -36,12 +58,12 @@ async function editjournal(req, res){
         })
     }
     fields = {
-        editTime: admin.firestore.FieldValue.serverTimestamp(),
+        editTimestamp: admin.firestore.FieldValue.serverTimestamp(),
         body: newbody,
         title: newtitle,
         sentiment: sentiment
     }
-    console.log(typeof(fields))
+
     var filename = req.body.filename
     //assumed all paths update text, differentiating factor is whether there is new image
     if (req.body.newimage){ //update image
