@@ -41,7 +41,8 @@ const JournalMood: React.FC = () => {
     console.log(location.search);
 
     let s = params.get("sentiment") || "0"
-    setSentiment(parseInt(s))
+    setSentiment(parseFloat(s))
+    // console.log
 
     let j = params.get("journalid") || " "
     setJournalId(j)
@@ -168,7 +169,7 @@ const JournalMood: React.FC = () => {
                       </IonCol>
                     </IonRow>
                     <IonRow>
-                      <IonButton className="greybutton" color="greybutton">SKIP</IonButton>
+                      <IonButton className="greybutton" color="greybutton" onClick={()=>goToOverview()}>SKIP</IonButton>
                       {/* <IonButton className="greybutton" color="greybutton">NEXT</IonButton> */}
                     </IonRow>
                   </IonGrid>

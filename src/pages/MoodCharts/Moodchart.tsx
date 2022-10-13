@@ -45,18 +45,20 @@ const Moodchart: React.FC = () => {
   const history = useHistory();
   const [moods, setMoods] = useState([]);
   const [monthlyMoods, setMonthlyMoods] = useState(initialMonthlyMood)
-
+  const [isLoad, setIsLoad] = useState(false)
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
 
   useIonViewWillEnter(() => {
+    
     loadData()
   });
 
   useEffect(() => {
-    console.log()
+    console.log(moods)
+    setMonthlyMoods(initialMonthlyMood)
     getMoodChart()
-  }, [])
+  }, [isLoad])
 
   const loadData = () =>{
     const instance = axios.create({
@@ -72,6 +74,7 @@ const Moodchart: React.FC = () => {
     instance.post('/monthlymood', body).then((res) => {
       console.log(res);
       setMoods(res.data.moods)
+      setIsLoad(true)
 
     }).catch((err) => {
       console.error("ERROR: ", err);
@@ -81,30 +84,34 @@ const Moodchart: React.FC = () => {
 
   const getMoodChart = () => {
     moods.forEach((j: any) => {
-      if (j['sentiment'] >= -1 && j['sentiment'] < -0.6) {
-        updateMood(0, monthlyMoods[0])
-      } else if (j['sentiment'] >= -0.6 && j['sentiment'] < -0.2) {
-        updateMood(1, monthlyMoods[1])
-      } else if (j['sentiment'] >= -0.2 && j['sentiment'] < 0.2) {
-        updateMood(2, monthlyMoods[2])
-      } else if (j['sentiment'] >= 0.2 && j['sentiment'] < 0.6) {
-        updateMood(3, monthlyMoods[3])
-      } else if (j['sentiment'] >= 0.6 && j['sentiment'] <= 1) {
-        updateMood(4, monthlyMoods[4])
+      let sentiment = j['sentiment']
+      console.log(sentiment)
+
+      if (sentiment >= -1 && sentiment < -0.6) {
+        updateMood(0)
+      } else if (sentiment >= -0.6 && sentiment < -0.2) {
+        updateMood(1)
+      } else if (sentiment >= -0.2 && sentiment < 0.2) {
+        updateMood(2)
+      } else if (sentiment >= 0.2 && sentiment < 0.6) {
+        updateMood(3)
+      } else if (sentiment >= 0.6 && sentiment <= 1) {
+        updateMood(4)
       }
     })
     dataSource.chart.caption = getJournalMonth()
     dataSource.data = monthlyMoods
+
+    console.log(monthlyMoods)
   }
 
-  const updateMood = (id: any, mood: any) => {
+  const updateMood = (id: any) => {
+    console.log(id)
     setMonthlyMoods(
       monthlyMoods.map((item, i) => {
-        console.log(i)
         let value = item.value++;
-        console.log(item.value)
         if (i === id) {
-          return { ...item, value };
+          return { ...item, value: value };
         } else {
           return item;
         }
@@ -113,7 +120,8 @@ const Moodchart: React.FC = () => {
   };
 
   const getJournalMonth = () => {
-    return "JUNE"
+    let date = new Date().getMonth()
+    return MONTH_NAMES[date];
   }
 
   return (

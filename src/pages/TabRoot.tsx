@@ -51,11 +51,12 @@ import chart from '../theme/icons/chart.svg'
 import JournalTextEdit from '../components/JournalTextEdit';
 import { SideMenu } from './SideMenu/sidemenu';
 import Settings from './Settings/settings';
-
+import { settingsOutline } from 'ionicons/icons';
 
 
 const TabRoot: React.FC = () => (
     <IonTabs>
+        
         <IonRouterOutlet>
             <Route path="/sidemenu">
                 <SideMenu />
@@ -63,6 +64,7 @@ const TabRoot: React.FC = () => (
             <Route exact path="/sidemenu/settings">
                 <Settings />
             </Route>
+            
             <Route exact path="/">
                 <Redirect to="/tabs/journaloverview" />
             </Route>
@@ -111,6 +113,9 @@ const TabRoot: React.FC = () => (
             <Route exact path="/tabs/slideexamples">
                 <SlideExample />
             </Route>
+            <Route exact path="/tabs/settings">
+                <Settings />
+            </Route>
             <Route path="/tabs" render={() => <Redirect to="/tabs/journaloverview" />} exact={true} />
             <Route path="/" render={() => <Redirect to="/tabs/journaloverview" />} exact={true} />
         </IonRouterOutlet>
@@ -124,6 +129,10 @@ const TabRoot: React.FC = () => (
             </IonTabButton>
             <IonTabButton tab="moodchart" href="/tabs/moodcharts">
                 <IonIcon icon={chart} />
+            </IonTabButton>
+
+            <IonTabButton tab="settings" href="/tabs/settings">
+                <IonIcon icon={settingsOutline} />
             </IonTabButton>
         </IonTabBar>
     </IonTabs>

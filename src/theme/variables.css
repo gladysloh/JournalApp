@@ -105,8 +105,8 @@ ion-content {
   padding: 0px;
 }
 
-ion-toolbar {
-  --background-color: transparent;
+ion-toolbar.custom-toolbar {
+  --background: transparent;
   --ion-color-base: transparent !important;
 }
 

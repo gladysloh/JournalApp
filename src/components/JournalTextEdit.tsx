@@ -44,6 +44,8 @@ import { useSetState } from 'react-use';
 
 import { base64FromPath, usePhotoGallery, UserPhoto } from '../hooks/usePhotoGallery';
 import { MONTH_NAMES } from '../SharedVariables';
+import { questionPrompt, getSentiment, editJournal } from '../services/Journal'
+import createjournal from '../server/functions/routes/createjournal';
 
 
 export const JournalTextEdit: React.FC = () => {
@@ -64,11 +66,11 @@ export const JournalTextEdit: React.FC = () => {
     const [segment, setSegment] = useState('text');
 
     const [val, setVal] = useState('edit');
-    const[mode, setMode] = useState('')
+    const [mode, setMode] = useState('')
     const [disabled, setDisable] = useState(true);
 
 
-    const [editJournal, setEdit] = useSetState(initialJournal);
+    const [editBody, setEdit] = useSetState(initialJournal);
     const [journalImg, setJournalImage] = useState('')
 
     let jsonUid = localStorage.getItem("uid") || ''
@@ -93,15 +95,15 @@ export const JournalTextEdit: React.FC = () => {
     // const params = new URLSearchParams(history.location.search)
 
     const loadData = () => {
-        setLoading(true) 
+        setLoading(true)
         console.log(history.location)
         let params = new URLSearchParams(history.location.search)
 
         let jsonBody = localStorage.getItem("journalEntry") || ''
         let userJournal = {}
-        if(jsonBody!= ''){
+        if (jsonBody != '') {
             userJournal = JSON.parse(jsonBody);
-        }else{
+        } else {
             userJournal = initialJournal
         }
 
@@ -136,22 +138,49 @@ export const JournalTextEdit: React.FC = () => {
         loadData()
     }, [mode]);
 
-    const getJournalImg = () =>{
-        if(photos || editJournal.url){
-            if(photos?.webviewPath){
-                if(photos.webviewPath!=''){
+
+    /*** ==================================================================
+     * Initialization
+     */
+    const getJournalImg = () => {
+        if (photos || editBody.url) {
+            if (photos?.webviewPath) {
+                if (photos.webviewPath != '') {
                     let photoFile = photos.webviewPath
                     console.log(photoFile)
-                    return (<IonImg src={photos.webviewPath} onClick={() => setPhotoToDelete(photos)}/>)
+                    return (<IonImg src={photos.webviewPath} onClick={() => setPhotoToDelete(photos)} />)
                 }
-            }else if(editJournal.url){
-                return (<IonImg src={editJournal.url}/>)
+            } else if (editBody.url) {
+                return (<IonImg src={editJournal.url} />)
             }
 
         }
     }
 
+    const getJournalDay = () => {
+        if (mode == 'edit')
+            return new Date(editBody.timestamp._seconds * 1000).getDate()
+        else if (mode == 'create')
+            return new Date().getDate();
+    }
 
+    const getJournalMonth = () => {
+        if (mode == 'edit')
+            return MONTH_NAMES[new Date(editBody.timestamp._seconds * 1000).getMonth()]
+        else if (mode == 'create')
+            return MONTH_NAMES[new Date().getMonth()];
+    }
+
+    const getJournalYear = () => {
+        if (mode == 'edit')
+            return new Date(editBody.timestamp._seconds * 1000).getFullYear()
+        else if (mode == 'create')
+            return new Date().getFullYear();
+    }
+
+    /**
+     * ============================================================================================
+     */
 
     const [presentToast] = useIonToast();
     const toaster = (msg: any, icon: any) => {
@@ -165,39 +194,10 @@ export const JournalTextEdit: React.FC = () => {
     };
 
     const [qns, setQns] = useState([]);
-    const questionPrompt = () => {
-        const instance = axios.create({
-            withCredentials: true,
-            baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-        })
-
-        instance.get('/getrandomquestion').then((res) => {
-            console.log(res);
-            setQns(res.data.question);
-        }).catch((err) => {
-            console.error("ERROR: ", err);
-        })
-    }
-
-    const getJournalDay = () => {
-        if (mode == 'edit')
-            return new Date(editJournal.timestamp._seconds * 1000).getDate()
-        else if (mode == 'create')
-            return new Date().getDate();
-    }
-
-    const getJournalMonth = () => {
-        if (mode == 'edit')
-            return MONTH_NAMES[new Date(editJournal.timestamp._seconds * 1000).getMonth()]
-        else if (mode == 'create')
-            return MONTH_NAMES[new Date().getMonth()];
-    }
-
-    const getJournalYear = () => {
-        if (mode == 'edit')
-            return new Date(editJournal.timestamp._seconds * 1000).getFullYear()
-        else if (mode == 'create')
-            return new Date().getFullYear();
+    const getQuestion = () => {
+        questionPrompt().then(res => {
+            setQns(res.question);
+        }).catch(err => console.log(err))
     }
 
     const handleChange = (e: any) => {
@@ -205,7 +205,7 @@ export const JournalTextEdit: React.FC = () => {
         console.log(newVal);
         setVal(newVal);
         if (newVal == 'view') {
-            handleViewJournal(editJournal)
+            handleViewJournal(editBody)
         }
     };
 
@@ -227,33 +227,12 @@ export const JournalTextEdit: React.FC = () => {
             [event.target.name]: event.target.value
         });
     }
-
-    const instance = axios.create({
-        withCredentials: true,
-        baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
-
-    // You can use async/await or any function that returns a Promise
-    const sentiment = async (journalBody: any) => {
-        const res = await instance.post('/sentimentanalyzer', journalBody)
-        console.log(res.data.compound)
-        if (res.status == 200) {
-            return res.data.compound
-        } else {
-            // throw new Error(res.statusText)
-            return 0
-        }
-
-
-    }
-
-
     /**
    *
    * @param data
    */
     const handleSubmit = async (event: any) => {
-        console.log(editJournal)
+        console.log(editBody)
 
         setLoading(true);
 
@@ -265,25 +244,25 @@ export const JournalTextEdit: React.FC = () => {
             let tempPhotos = photos != undefined ? photos.webviewPath : ''
             let tempImg = tempPhotos ? await base64FromPath(tempPhotos) : '';
 
-            let sentimentVal = await sentiment(editJournal.body);
-            let editBody = {
+            let sentimentVal = await getSentiment(editBody.body);
+            let newEditBody = {
                 uid: uid,
-                journalid: editJournal.id,
-                newbody: editJournal.body,
-                newtitle: editJournal.title,
-                filename: editJournal.filename,
+                journalid: editBody.id,
+                newbody: editBody.body,
+                newtitle: editBody.title,
+                filename: editBody.filename,
                 newimage: tempImg != '' ? tempImg.split(",").pop() : false,
                 sentiment: sentimentVal
             }
 
-            setEdit(editBody)
+            setEdit(newEditBody)
             console.log(editBody)
 
-            instance.post('/editjournal', editBody).then((res) => {
+            editJournal(newEditBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, editJournal.id)
+                goToSentiment(sentimentVal, newEditBody.journalid)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
@@ -299,253 +278,251 @@ export const JournalTextEdit: React.FC = () => {
                 tempImg = tempPhotos ? await base64FromPath(tempPhotos) : '';
             }
 
-            let sentimentVal = await sentiment(editJournal.body);
-
+            let sentimentVal = await getSentiment(editBody.body);
             let createBody = {
                 uid: uid,
-                title: editJournal.title,
-                journal: editJournal.body,
+                title: editBody.title,
+                journal: editBody.body,
                 image: tempImg != '' ? tempImg.split(",").pop() : false,
                 sentiment: sentimentVal
             }
 
-            console.log("creating journal", createBody)
+            setEdit(createBody)
+            console.log(createBody)
 
-            instance.post('/createjournal', createBody).then((res) => {
+            createjournal(createBody).then((res) => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, res.data.id)
-
+                goToSentiment(sentimentVal, res.journalid)
+            }).catch((err) => {
+                dismiss();
+                setLoading(false);
+                toaster("Error! Something went wrong", closeCircleOutline)
+                console.error("ERROR: ", err);
             })
-                .catch((err) => {
-                    toaster("Error! Something went wrong", closeCircleOutline)
-                    dismiss();
-                    setLoading(false);
-                    // console.error("ERROR: ", err.response.data.error);
-                })
 
-        }
+    }
 
 
-    };
+};
 
-    const deleteJournal = async () => {
-        setLoading(true);
+const deleteJournal = async () => {
+    setLoading(true);
 
-        present({
-            message: 'Deleting Journal'
-        })
+    present({
+        message: 'Deleting Journal'
+    })
 
-        console.log(editJournal.id)
+    console.log(editBody.id)
 
-        instance.post('/removejournal', { journalid: editJournal.id }).then((res) => {
-            console.log(res);
-            dismiss();
-            goToOverview()
-        }).catch((err) => {
-            dismiss();
-            setLoading(false);
-            console.error("ERROR: ", err);
-        })
-    };
+    // instance.post('/removejournal', { journalid: editJournal.id }).then((res) => {
+    //     console.log(res);
+    //     dismiss();
+    //     goToOverview()
+    // }).catch((err) => {
+    //     dismiss();
+    //     setLoading(false);
+    //     console.error("ERROR: ", err);
+    // })
+};
 
-    useIonViewDidLeave(() => {
-        console.log('ionViewWillEnter event fired');
+useIonViewDidLeave(() => {
+    console.log('ionViewWillEnter event fired');
 
-        removeImage()
-        localStorage.removeItem("journalEntry")
-        setEdit(initialJournal)
+    removeImage()
+    localStorage.removeItem("journalEntry")
+    setEdit(initialJournal)
+});
+
+const removeImage = () => {
+    deletePhoto(photos)
+    setPhotoToDelete(undefined);
+}
+
+const goToOverview = () => {
+    history.replace({
+        pathname: '/tabs/journaloverview'
     });
+}
 
-    const removeImage = () => {
-        deletePhoto(photos)
-        setPhotoToDelete(undefined);
-    }
+const goToSentiment = (sentiment: number, journalId: any) => {
 
-    const goToOverview = () => {
-        history.replace({
-            pathname: '/tabs/journaloverview'
-        });
-    }
-
-    const goToSentiment = (sentiment: number, journalId: any) => {
-
-        history.replace({
-            pathname: '/tabs/journalmood',
-            search: `?sentiment=${sentiment}&journalid=${journalId}`,
-        });
-    }
+    history.replace({
+        pathname: '/tabs/journalmood',
+        search: `?sentiment=${sentiment}&journalid=${journalId}`,
+    });
+}
 
 
-    return (
+return (
 
-        <IonPage>
-            <IonContent className="ioncontent">
-                <IonGrid className="ionGrid">
-                    <IonRow>
-                        <IonGrid className="headingBackground">
-                            <IonRow className="heading">
-                                <IonCol size='2'>
-                                    <IonRow className="dayBackground" >
-                                        <IonCardSubtitle className="dayNo"> {getJournalDay()} </IonCardSubtitle>
-                                    </IonRow>
-                                </IonCol>
-                                <IonCol size='8'>
-                                    <IonRow>
-                                        <IonCardSubtitle className="year">{getJournalYear()}</IonCardSubtitle>
-                                    </IonRow>
-                                    <IonRow>
-                                        <IonCardTitle className="month">{getJournalMonth()}</IonCardTitle>
-                                    </IonRow>
-                                </IonCol>
-                                <IonCol className="questionMarkBackground" size='2'>
-                                    <IonButton className="questionMark" size="small" color="light" onClick={questionPrompt}>
-                                        <IonImg className="questionMarkImg" src={question} />
-                                    </IonButton>
-                                </IonCol>
-                            </IonRow>
-                        </IonGrid>
-                    </IonRow>
-
-                    {qns.length > 0 ?
-                        (
-                            <IonRow>
-                                <IonCol size="12">
-                                    <h3> <b> Random Question: </b> </h3>
-
-                                    <p>{qns}</p>
-
-                                </IonCol>
-                            </IonRow>) :
-                        (<span></span>)
-                    }
-
-                    <form onSubmit={handleSubmit}>
-
-                        {showHide ?
-                            <IonRow>
-                                <IonCard className='journalEntryCard'>
-                                    <IonCardContent>
-                                        <IonGrid>
-                                            <IonRow className="titleInputBackground">
-                                                <IonCol>
-                                                    <IonCardSubtitle>
-                                                        <IonInput
-                                                            className='titleInput'
-                                                            value={editJournal.title}
-                                                            onIonChange={onInputchange}
-                                                            placeholder="Add title"
-                                                            required={true}
-                                                            name="title"
-                                                            autocapitalize="true">
-                                                        </IonInput>
-                                                    </IonCardSubtitle>
-                                                </IonCol>
-                                                <IonCol size='5'>
-                                                    <IonSelect
-                                                        className="selectMode"
-                                                        interface="popover"
-                                                        placeholder="Select mode"
-                                                        name="mode"
-                                                        value={val} onIonChange={handleChange}>
-                                                        <IonSelectOption className="selectMode" value="view" disabled={disabled}>VIEW MODE</IonSelectOption>
-
-                                                        <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
-                                                    </IonSelect>
-                                                </IonCol>
-                                            </IonRow>
-                                            <IonRow className="bodyInputBackground">
-                                                <IonTextarea
-                                                    className='bodyInput'
-                                                    placeholder="Begin your day here..."
-                                                    value={editJournal.body}
-                                                    name="body"
-                                                    onIonChange={onInputchange}
-                                                    required={true}
-                                                    rows={10}
-                                                    inputMode="text"
-                                                    maxlength={1500}>
-                                                </IonTextarea>
-                                            </IonRow>
-
-                                        </IonGrid>
-                                    </IonCardContent>
-                                </IonCard>
-                            </IonRow>
-                            :
-                            <IonRow className="imageBackground">
-                                <IonCol size="6">
-                                    
-                                    {
-                                    // getJournalImg()
-
-                                        // journalImg != '' ? <IonImg src={journalImg}/> : <span></span>
-                                    photos ?
-                                        <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)}/> :
-                                        editJournal.url ? <IonImg src={editJournal ? editJournal.url : ''} /> : <span></span> 
-                                    }
-                                </IonCol>
-                                <IonCol size='12'>
-                                    <IonCard className="journalImageCard">
-                                        <IonCardContent>
-                                            <IonImg className="uploadImageIcon" src={uploadImage} onClick={() => takePhoto()}></IonImg>
-                                        </IonCardContent>
-                                    </IonCard>
-                                </IonCol>
-                            </IonRow>
-                        }
-
-
-                        <IonRow>
-                            <IonCol size="6">
-                                <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
-                                {mode == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+    <IonPage>
+        <IonContent className="ioncontent">
+            <IonGrid className="ionGrid">
+                <IonRow>
+                    <IonGrid className="headingBackground">
+                        <IonRow className="heading">
+                            <IonCol size='2'>
+                                <IonRow className="dayBackground" >
+                                    <IonCardSubtitle className="dayNo"> {getJournalDay()} </IonCardSubtitle>
+                                </IonRow>
                             </IonCol>
-
-                            <IonCol size="6">
-                                <IonSegment className='inputType' onIonChange={e => handleSegment(e.detail.value)} value={segment}>
-                                    <IonSegmentButton className='inputTypes' value="text">
-                                        <IonLabel>
-                                            <IonImg src={text} />
-                                        </IonLabel>
-                                    </IonSegmentButton>
-                                    <IonSegmentButton className='inputTypes' value="image">
-                                        <IonLabel>
-                                            <IonImg src={image} />
-                                        </IonLabel>
-                                    </IonSegmentButton>
-                                </IonSegment>
+                            <IonCol size='8'>
+                                <IonRow>
+                                    <IonCardSubtitle className="year">{getJournalYear()}</IonCardSubtitle>
+                                </IonRow>
+                                <IonRow>
+                                    <IonCardTitle className="month">{getJournalMonth()}</IonCardTitle>
+                                </IonRow>
+                            </IonCol>
+                            <IonCol className="questionMarkBackground" size='2'>
+                                <IonButton className="questionMark" size="small" color="light" onClick={() => getQuestion()}>
+                                    <IonImg className="questionMarkImg" src={question} />
+                                </IonButton>
                             </IonCol>
                         </IonRow>
-                    </form>
+                    </IonGrid>
+                </IonRow>
+
+                {qns.length > 0 ?
+                    (
+                        <IonRow>
+                            <IonCol size="12">
+                                <h3> <b> Random Question: </b> </h3>
+
+                                <p>{qns}</p>
+
+                            </IonCol>
+                        </IonRow>) :
+                    (<span></span>)
+                }
+
+                <form onSubmit={handleSubmit}>
+
+                    {showHide ?
+                        <IonRow>
+                            <IonCard className='journalEntryCard'>
+                                <IonCardContent>
+                                    <IonGrid>
+                                        <IonRow className="titleInputBackground">
+                                            <IonCol>
+                                                <IonCardSubtitle>
+                                                    <IonInput
+                                                        className='titleInput'
+                                                        value={editJournal.title}
+                                                        onIonChange={onInputchange}
+                                                        placeholder="Add title"
+                                                        required={true}
+                                                        name="title"
+                                                        autocapitalize="true">
+                                                    </IonInput>
+                                                </IonCardSubtitle>
+                                            </IonCol>
+                                            <IonCol size='5'>
+                                                <IonSelect
+                                                    className="selectMode"
+                                                    interface="popover"
+                                                    placeholder="Select mode"
+                                                    name="mode"
+                                                    value={val} onIonChange={handleChange}>
+                                                    <IonSelectOption className="selectMode" value="view" disabled={disabled}>VIEW MODE</IonSelectOption>
+
+                                                    <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
+                                                </IonSelect>
+                                            </IonCol>
+                                        </IonRow>
+                                        <IonRow className="bodyInputBackground">
+                                            <IonTextarea
+                                                className='bodyInput'
+                                                placeholder="Begin your day here..."
+                                                value={editJournal.body}
+                                                name="body"
+                                                onIonChange={onInputchange}
+                                                required={true}
+                                                rows={10}
+                                                inputMode="text"
+                                                maxlength={1500}>
+                                            </IonTextarea>
+                                        </IonRow>
+
+                                    </IonGrid>
+                                </IonCardContent>
+                            </IonCard>
+                        </IonRow>
+                        :
+                        <IonRow className="imageBackground">
+                            <IonCol size="6">
+
+                                {
+                                    // getJournalImg()
+
+                                    // journalImg != '' ? <IonImg src={journalImg}/> : <span></span>
+                                    photos ?
+                                        <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)} /> :
+                                        editJournal.url ? <IonImg src={editJournal ? editJournal.url : ''} /> : <span></span>
+                                }
+                            </IonCol>
+                            <IonCol size='12'>
+                                <IonCard className="journalImageCard">
+                                    <IonCardContent>
+                                        <IonImg className="uploadImageIcon" src={uploadImage} onClick={() => takePhoto()}></IonImg>
+                                    </IonCardContent>
+                                </IonCard>
+                            </IonCol>
+                        </IonRow>
+                    }
 
 
-                </IonGrid>
+                    <IonRow>
+                        <IonCol size="6">
+                            <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
+                            {mode == 'edit' ? <IonButton onClick={() => deleteJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
+                        </IonCol>
 
-                <div className="spacer"></div>
-                <IonActionSheet
-                    isOpen={!!photoToDelete}
-                    buttons={[{
-                        text: 'Delete',
-                        role: 'destructive',
-                        icon: trash,
-                        handler: () => {
-                            if (photoToDelete) {
-                                deletePhoto(photoToDelete);
-                                setPhotoToDelete(undefined);
-                            }
+                        <IonCol size="6">
+                            <IonSegment className='inputType' onIonChange={e => handleSegment(e.detail.value)} value={segment}>
+                                <IonSegmentButton className='inputTypes' value="text">
+                                    <IonLabel>
+                                        <IonImg src={text} />
+                                    </IonLabel>
+                                </IonSegmentButton>
+                                <IonSegmentButton className='inputTypes' value="image">
+                                    <IonLabel>
+                                        <IonImg src={image} />
+                                    </IonLabel>
+                                </IonSegmentButton>
+                            </IonSegment>
+                        </IonCol>
+                    </IonRow>
+                </form>
+
+
+            </IonGrid>
+
+            <div className="spacer"></div>
+            <IonActionSheet
+                isOpen={!!photoToDelete}
+                buttons={[{
+                    text: 'Delete',
+                    role: 'destructive',
+                    icon: trash,
+                    handler: () => {
+                        if (photoToDelete) {
+                            deletePhoto(photoToDelete);
+                            setPhotoToDelete(undefined);
                         }
-                    }, {
-                        text: 'Cancel',
-                        icon: close,
-                        role: 'cancel'
-                    }]}
-                    onDidDismiss={() => setPhotoToDelete(undefined)}
-                />
-            </IonContent>
-        </IonPage>
-    );
+                    }
+                }, {
+                    text: 'Cancel',
+                    icon: close,
+                    role: 'cancel'
+                }]}
+                onDidDismiss={() => setPhotoToDelete(undefined)}
+            />
+        </IonContent>
+    </IonPage>
+);
 };
 
 export default JournalTextEdit;

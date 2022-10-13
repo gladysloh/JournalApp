@@ -61,32 +61,34 @@ setupIonicReact();
 const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState(false);
 
-  const checkUser = () =>{
+  const checkUser = () => {
     const instance = axios.create({
       withCredentials: true,
       baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
     })
-  
+
     instance.get('/getuser').then((res) => {
       console.log("user name: ", res.data.displayname);
       setUserStatus(true)
     })
-    .catch((err) => {
-      console.error("ERROR: ", err);
-      setUserStatus(false)
-  
-    })
-  }
-  
+      .catch((err) => {
+        console.error("ERROR: ", err);
+        setUserStatus(false)
 
-  useEffect(()=>{
+      })
+  }
+
+
+  useEffect(() => {
     checkUser()
-  },[userStatus])
+  }, [userStatus])
 
 
   return (
     <IonApp>
-      <IonReactRouter>
+      <IonReactRouter >
+
+        <SideMenu />
         <IonRouterOutlet>
           <Route path="/login" component={Login} exact={true} />
           <Route path="/signup" component={SignUp} exact={true} />
@@ -95,7 +97,7 @@ const App: React.FC = () => {
 
           <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
           <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
-          {userStatus ? <TabRoot/> : <Redirect to ="/login"/>}
+          {userStatus ? <TabRoot /> : <Redirect to="/login" />}
 
           <Route path="/lockscreen" component={Example} />
 
