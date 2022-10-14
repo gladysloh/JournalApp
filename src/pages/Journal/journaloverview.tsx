@@ -17,6 +17,8 @@ import clock from '../../theme/icons/clock.png';
 
 import { Link, Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
+import { getAllJournals } from '../../services/JournalService';
+import { UserJournal } from '../../interfaces/JournalInterface';
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
@@ -34,16 +36,11 @@ const JournalOverview: React.FC = () => {
     const getJournalInfo = async () => {
         console.log("getting all journals")
         setLoading(true); // Set loading before sending API request
-        // present()
-        const instance = axios.create({
-            withCredentials: true,
-            baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-        })
 
-        instance.get('/getalljournals').then((res) => {
+        getAllJournals().then((res) => {
             console.log(res);
-            let j: [] = res.data.journals
-            j.sort((a, b) => b['timestamp']['_seconds'] - a['timestamp']['_seconds']);
+            let j: [] = res
+            j.sort((a, b) => b['createdTimestamp']['_seconds'] - a['createdTimestamp']['_seconds']);
 
             setJournals(j);
             setLoading(false); // Stop loading
@@ -66,12 +63,11 @@ const JournalOverview: React.FC = () => {
 
     const checkJournals = () => {
         if (journals.length != 0) {
-            if (new Date(journals[0]['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
+            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
             else return false
         }
 
     }
-
 
     const getJournalTime = (timestamp: any) => {
         let seconds = timestamp._seconds;
@@ -93,10 +89,12 @@ const JournalOverview: React.FC = () => {
     }
 
 
+    /**
+     * View individual journal
+     * @param journal 
+     */
     const handleViewJournal = (journal: any) => {
         console.log("view")
-        let jsonJournal = JSON.stringify(journal)
-        localStorage.setItem("journalEntry", jsonJournal)
 
         history.replace({
             pathname: '/tabs/journalview',
@@ -105,6 +103,9 @@ const JournalOverview: React.FC = () => {
         });
     }
 
+    /**
+     * 
+     */
     const handleCreateJournal = () => {
         console.log("create")
         history.replace({
@@ -125,7 +126,7 @@ const JournalOverview: React.FC = () => {
                 i++
             }
 
-            if ((new Date().setHours(0, 0, 0, 0) - new Date(el['timestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)) === i * 86400000) {
+            if ((new Date().setHours(0, 0, 0, 0) - new Date(el['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0)) === i * 86400000) {
                 count++
             }
 
@@ -322,14 +323,14 @@ const JournalOverview: React.FC = () => {
                                         <div>
                                             <IonRow onClick={() => handleViewJournal(item)}>
                                                 <IonCol className="entryDateDay" size='2'>
-                                                    <p className="entryDate">{getJournalDate(item['timestamp'])}</p>
-                                                    <p className="entryDay">{getJournalDay(item['timestamp'])}</p>
+                                                    <p className="entryDate">{getJournalDate(item['createdTimestamp'])}</p>
+                                                    <p className="entryDay">{getJournalDay(item['createdTimestamp'])}</p>
                                                 </IonCol>
                                                 <IonCol className="entryList" size='10'>
                                                     <IonCard className="entryListCard">
                                                         <IonCardContent>
                                                             <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
-                                                            <p className="entryTime">{getJournalTime(item['timestamp'])} </p>
+                                                            <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
                                                             <p className="entryText">{item['body']}</p>
                                                             {item['url'] ?
                                                                 <div > <img src={item['url']} /> </div> :

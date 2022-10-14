@@ -1,5 +1,0 @@
-interface MoodJournal {
-
-}
-
-export {}

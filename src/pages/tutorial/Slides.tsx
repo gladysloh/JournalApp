@@ -3,8 +3,8 @@ import { IonSlides, IonSlide, IonContent } from '@ionic/react';
 
 import './Slides.css';
 
-import JournalTextEdit from '../../components/JournalTextEdit';
-import JournalImageEdit from '../../components/JournalImageEdit';
+import JournalTextEdit from '../Journal/JournalTextEdit';
+import JournalImageEdit from '../Journal/JournalImageEdit';
 
 // Optional parameters to pass to the swiper instance.
 // See https://swiperjs.com/swiper-api for valid options.

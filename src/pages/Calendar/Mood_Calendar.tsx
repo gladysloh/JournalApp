@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton } from '@ionic/react';
 import format from "date-fns/format";
 import getDay from "date-fns/getDay";
 import parse from "date-fns/parse";
@@ -14,6 +14,7 @@ import logo from "../google.png"
 import axios from 'axios';
 import { useHistory } from 'react-router';
 import { secondsToMilliseconds } from 'date-fns/esm';
+import { getMonthlyMood } from '../../services/MoodService';
 
 
 function Mood_Calendar() {
@@ -50,29 +51,22 @@ function Mood_Calendar() {
 
 
   useIonViewWillEnter(() => {
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
+    getMood(selectedMonth, selectedYear)
+  });
 
+  const getMood = async (month: any, year:any) =>{
     let body = {
-      month: selectedMonth,
-      year: selectedYear
+      month: month,
+      year: year
     }
 
-    instance.post('/monthlymood', body).then((res) => {
-      console.log(res.data);
-      setMood(res.data.moods)
-      setIsEvent(true)
+    console.log(body)
 
-      
-
-    }).catch((err) => {
-      console.error("ERROR: ", err);
-      // if (err.response.status == 401) history.replace("/login")
-
-    })
-  });
+    let result = await getMonthlyMood(body)
+    console.log(result)
+    setMood(result.moods)
+    setIsEvent(true)
+  }
 
   useEffect(()=>{
     moods.forEach((el, i) => {
@@ -109,12 +103,29 @@ function Mood_Calendar() {
     return date;
   }
 
+  const getSelected = (month: Date) =>{
+    let currDate = month.getMonth()
+    let currYear = month.getFullYear()
+
+    setMonth(currDate)
+    setYear(currYear)
+    getMood(currDate, currYear)
+
+  }
+
 
 
 
 
   return (
     <IonPage>
+      <IonHeader class="ion-no-border">
+        <IonToolbar class="custom-toolbar">
+          <IonButtons slot="start">
+            <IonMenuButton auto-hide="false"></IonMenuButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
       <IonContent fullscreen>
         <IonCard className="calendar-card">
           <IonCardTitle className="chart-header">MOOD TRACKER</IonCardTitle>
@@ -124,6 +135,7 @@ function Mood_Calendar() {
             startAccessor="start"
             endAccessor="end" views={['month']}
             style={{ height: 350, width: 320, margin: "0px" }}
+            onNavigate={(month)=>getSelected(month)}
 
             eventPropGetter={(event, start, end, isSelected) => ({
               event,

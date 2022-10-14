@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import {
-    IonApp,
-    IonContent,
-    IonHeader,
     IonIcon,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonMenu,
     IonRouterOutlet,
     IonTabBar,
     IonTabButton,
     IonTabs,
-    IonTitle,
-    IonToolbar
 } from '@ionic/react';
 /** Pages */
 import CardExamples from './tutorial/CardExamples';
@@ -24,14 +15,12 @@ import TextAreaExamples from './tutorial/TextAreaExamples';
 import { SlideExample } from './tutorial/Slides';
 
 // import JournalTextView from '../components/JournalTextView'
-import JournalView from '../components/JournalView';
+import JournalView from './Journal/JournalView';
 // import JournalImageView from '../components/JournalImageView'
 
-import JournalText from './Journal/journaltext'
 import JournalOverview from './Journal/journaloverview';
 import JournalGenerateMood from './Journal/journalgeneratemood';
 import JournalMood from './Journal/journalmood';
-import Question from './Journal/question';
 
 import Loading from './Loading/loading';
 
@@ -48,7 +37,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import calendar from '../theme/icons/calendar.svg'
 import diary from '../theme/icons/diary.svg';
 import chart from '../theme/icons/chart.svg'
-import JournalTextEdit from '../components/JournalTextEdit';
+import JournalTextEdit from './Journal/JournalTextEdit';
 import { SideMenu } from './SideMenu/sidemenu';
 import Settings from './Settings/settings';
 import { settingsOutline } from 'ionicons/icons';
@@ -77,17 +66,11 @@ const TabRoot: React.FC = () => (
             <Route path="/tabs/moodcharts">
                 <MoodChart />
             </Route>
-            <Route path="/tabs/journaltext">
-                <JournalText />
-            </Route>
             <Route path="/tabs/journaltextedit">
                 <JournalTextEdit />
             </Route>
             <Route exact path="/tabs/journalview">
                 <JournalView />
-            </Route>
-            <Route exact path="/tabs/question">
-                <Question />
             </Route>
             <Route exact path="/tabs/journalgeneratemood">
                 <JournalGenerateMood />
@@ -98,7 +81,7 @@ const TabRoot: React.FC = () => (
             <Route exact path="/tabs/loading">
                 <Loading />
             </Route>
-            <Route exact path="/tabs/cardexamples">
+            {/* <Route exact path="/tabs/cardexamples">
                 <CardExamples />
             </Route>
             <Route exact path="/tabs/inputexamples">
@@ -112,7 +95,7 @@ const TabRoot: React.FC = () => (
             </Route>
             <Route exact path="/tabs/slideexamples">
                 <SlideExample />
-            </Route>
+            </Route> */}
             <Route exact path="/tabs/settings">
                 <Settings />
             </Route>
@@ -131,9 +114,9 @@ const TabRoot: React.FC = () => (
                 <IonIcon icon={chart} />
             </IonTabButton>
 
-            <IonTabButton tab="settings" href="/tabs/settings">
+            {/* <IonTabButton tab="settings" href="/tabs/settings">
                 <IonIcon icon={settingsOutline} />
-            </IonTabButton>
+            </IonTabButton> */}
         </IonTabBar>
     </IonTabs>
 );

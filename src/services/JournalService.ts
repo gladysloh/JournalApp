@@ -4,6 +4,16 @@ const instance = axios.create({
     baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
 })
 
+async function getAllJournals(){
+    const response = await instance.get('/getalljournals')
+    return response.data.journals
+}
+
+async function getJournal(journalId: any){
+    const response = await instance.post('/getonejournal', {journalid: journalId})
+    return response.data
+}
+
 async function questionPrompt() {
     const response = await instance.get('/getrandomquestion')
     return response.data
@@ -26,4 +36,9 @@ async function createJournal(newJournalBody: any){
 
 }
 
-export { questionPrompt, getSentiment, editJournal, createJournal }
+async function deleteJournal(journalId: any){
+    const response = await instance.post('/removejournal', { journalid: journalId })
+    return response.data
+}
+
+export { questionPrompt, getSentiment, editJournal, createJournal, getAllJournals, getJournal, deleteJournal }

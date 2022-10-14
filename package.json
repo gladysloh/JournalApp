@@ -45,6 +45,7 @@
     "swiper": "^8.4.2",
     "typescript": "^4.1.3",
     "web-vitals": "^0.2.4",
+    "wordcloud": "^1.2.2",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",
     "workbox-cacheable-response": "^5.1.4",
@@ -86,7 +87,8 @@
   "devDependencies": {
     "@capacitor/cli": "4.1.0",
     "@types/react-big-calendar": "^0.38.1",
-    "@types/react-datepicker": "^4.4.2"
+    "@types/react-datepicker": "^4.4.2",
+    "@types/wordcloud": "^1.1.3"
   },
   "description": "An Ionic project"
 }

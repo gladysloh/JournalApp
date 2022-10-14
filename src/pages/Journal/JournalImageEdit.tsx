@@ -32,10 +32,10 @@ import { textSharp, imageSharp, help, cloudUploadOutline } from 'ionicons/icons'
 
 import './JournalImageEdit.css';
 
-import question from '../theme/icons/question.png';
-import text from '../theme/icons/text.png';
-import image from '../theme/icons/image.png';
-import uploadImage from '../theme/icons/uploadimage.png'
+import question from '../../theme/icons/question.png';
+import text from '../../theme/icons/text.png';
+import image from '../../theme/icons/image.png';
+import uploadImage from '../../theme/icons/uploadimage.png'
 
 export const JournalImageEdit: React.FC = () => {
 
