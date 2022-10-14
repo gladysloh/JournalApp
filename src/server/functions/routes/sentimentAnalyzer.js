@@ -38,6 +38,6 @@ function sentimentAnalyzer(req,res){
 
 
     //return res.status(200).json({ tokenized: filteredJournal })
-}
+} 
 
 module.exports = sentimentAnalyzer
