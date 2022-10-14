@@ -23,9 +23,6 @@ function Mood_Calendar() {
     'en-us': require("date-fns/locale/en-us"),
   }
 
-  // Views:{month:false}
-
-
   const localizer = dateFnsLocalizer({
     format,
     parse,

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IonApp, IonButtons, IonMenuButton, useIonViewWillEnter } from "@ionic/react";
+import { IonApp, IonButtons, IonCol, IonGrid, IonMenuButton, IonRow, useIonViewWillEnter } from "@ionic/react";
 import FusionCharts from "fusioncharts";
 import Charts from "fusioncharts/fusioncharts.charts";
 import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
@@ -9,7 +9,7 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardH
 import axios from "axios";
 import { useHistory } from "react-router";
 import { MONTH_NAMES } from "../../SharedVariables";
-import { getWordCloud } from "../../services/MoodService";
+import { getMonthlyMood, getWordCloud } from "../../services/MoodService";
 import Wordcloud from "wordcloud";
 // Adding the chart and theme as dependency to the core fusioncharts
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -49,48 +49,35 @@ const Moodchart: React.FC = () => {
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
 
-  const canvasPosRef = useRef([]);
-  const canvasNegRef = useRef([]);
+  const canvasPosRef = useRef<HTMLCanvasElement>(null);
+  const canvasNegRef = useRef<HTMLCanvasElement>(null);
   useIonViewWillEnter(() => {
-
-    loadData()
+    loadData(selectedMonth, selectedYear)
   });
 
   useEffect(() => {
     console.log(moods)
     setMonthlyMoods(initialMonthlyMood)
     getMoodChart()
-
     loadWordCloud()
-  }, [isLoad])
 
-  const loadData = () => {
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
+  }, [isLoad, canvasNegRef, canvasPosRef])
 
+  const loadData = async (month: any, year: any) => {
     let body = {
-      month: selectedMonth,
-      year: selectedYear
+      month: month,
+      year: year
     }
 
-    instance.post('/monthlymood', body).then((res) => {
-      console.log(res);
-      setMoods(res.data.moods)
-      setIsLoad(true)
-
-    }).catch((err) => {
-      console.error("ERROR: ", err);
-      if (err.response.status == 401) history.replace("/login")
-    })
+    let result = await getMonthlyMood(body)
+    console.log(result)
+    setMoods(result.moods)
+    setIsLoad(true)
   }
 
   const getMoodChart = () => {
     moods.forEach((j: any) => {
       let sentiment = j['sentiment']
-      console.log(sentiment)
-
       if (sentiment >= -1 && sentiment < -0.6) {
         updateMood(0)
       } else if (sentiment >= -0.6 && sentiment < -0.2) {
@@ -110,7 +97,6 @@ const Moodchart: React.FC = () => {
   }
 
   const updateMood = (id: any) => {
-    console.log(id)
     setMonthlyMoods(
       monthlyMoods.map((item, i) => {
         let value = item.value++;
@@ -129,14 +115,17 @@ const Moodchart: React.FC = () => {
   }
 
   const loadWordCloud = async () => {
-
     let body = {
       month: new Date().getMonth(),
       year: new Date().getFullYear()
     }
+
     let wordcloud = await getWordCloud(body)
 
-    Wordcloud(canvasPosRef.current, {
+    let positiveWC = canvasPosRef.current as HTMLCanvasElement
+    let negativeWC = canvasNegRef.current as HTMLCanvasElement
+
+    Wordcloud(positiveWC, {
       list: wordcloud.positive,
       shape: "circle",
       minRotation: 20,
@@ -145,7 +134,7 @@ const Moodchart: React.FC = () => {
       weightFactor: 10
     });
 
-    Wordcloud(canvasNegRef.current, {
+    Wordcloud(negativeWC, {
       list: wordcloud.negative,
       shape: "circle",
       minRotation: 20,
@@ -154,8 +143,7 @@ const Moodchart: React.FC = () => {
       weightFactor: 5
     });
 
-
-    console.log(wordcloud)
+    // console.log(wordcloud)
   }
 
   return (
@@ -174,20 +162,27 @@ const Moodchart: React.FC = () => {
           <IonCardTitle className="chart-header">MOOD CHART </IonCardTitle>
         </IonCard>
 
-        <IonCard className="wordcloud-pos">
-          <IonCardSubtitle> On your happier days.. </IonCardSubtitle>
-          <div className="wordcloud-div">
-            <canvas ref={canvasPosRef} />
-          </div>
+        <IonGrid>
+          <IonRow className="ion-align-items-center">
+            <IonCol size="12" size-sm>
+              <IonCard className="wordcloud-pos">
+                <IonCardSubtitle> On your happier days.. </IonCardSubtitle>
+                <div className="wordcloud-div">
+                  <canvas ref={canvasPosRef} />
+                </div>
+              </IonCard>
+            </IonCol>
 
-        </IonCard>
-
-        <IonCard className="wordcloud-neg">
-          <IonCardSubtitle> Some other days... </IonCardSubtitle>
-          <div className="wordcloud-div">
-            <canvas ref={canvasNegRef} />
-          </div>
-        </IonCard>
+            <IonCol size="12" size-sm>
+              <IonCard className="wordcloud-neg">
+                <IonCardSubtitle> Some other days... </IonCardSubtitle>
+                <div className="wordcloud-div">
+                  <canvas ref={canvasNegRef} />
+                </div>
+              </IonCard>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
       </IonContent>
     </IonPage>
   )

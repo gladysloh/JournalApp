@@ -2,7 +2,7 @@ import {
   IonRow, IonContent, IonHeader, IonPage, IonTitle,
   IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle,
   IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, IonCheckbox,
-  useIonLoading, useIonToast
+  useIonLoading, useIonToast, useIonAlert
 } from '@ionic/react';
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Link, NavLink, useHistory } from "react-router-dom";
@@ -16,6 +16,8 @@ import logo from "../../../theme/icons/google.png"
 import { closeCircleOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import './signup.css';
 import axios from 'axios';
+import { SignUpDetails } from '../../../interfaces/UserInterface';
+import { signUp } from '../../../services/UserService';
 
 
 const SignUp: React.FC = () => {
@@ -47,7 +49,9 @@ const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
+
   const [presentToast] = useIonToast();
+  const [presentAlert] = useIonAlert();
 
   const toaster = (msg: any, icon: any) => {
     presentToast({
@@ -63,14 +67,11 @@ const SignUp: React.FC = () => {
 
   const onSubmit = async (e: any) => {
 
-    const userDetails = {
+    const userDetails: SignUpDetails = {
       email: e.email,
       displayName: e.displayName,
       password: e.password
     }
-
-    const userjson = JSON.stringify(userDetails)
-    console.log(userjson)
 
     setState(userDetails);
 
@@ -79,30 +80,42 @@ const SignUp: React.FC = () => {
       message: 'Signing Up'
     })
 
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
-
-    instance.post('/register', userDetails).then((res) => {
-      console.log(res);
+    try {
+      let result = await signUp(userDetails)
+      console.log(result);
       dismiss();
       setLoading(false);
       setIsRedirect(true)
-      localStorage.setItem('user', JSON.stringify(res.data))
       toaster("Signed up successfully", checkmarkCircleOutline)
-      
-      history.replace("/tabs/login")
-
-      setState(initialState);
-    }).catch((err) => {
-      toaster("Error! Sign Up not successful", closeCircleOutline)
+      history.replace("/tabs/login");
+    } catch (err: any) {
+      if (err.response.data) {
+        getErrorCode(err.response.data.error.code)
+      }
+      toaster("Error! Sign up unsuccessful.", closeCircleOutline)
       dismiss();
       setLoading(false);
       console.error("ERROR: ", err.response);
-    })
+    }
 
   };
+
+  const getErrorCode = (err: any) => {
+    console.log(err)
+    if (err == 'auth/email-already-in-use') {
+      errorAlert("Email already exists")
+    }
+  }
+
+  const errorAlert = (msg: string) => {
+    presentAlert({
+      header: 'Error!',
+      subHeader: 'Sign Up not successful',
+      message: msg,
+      buttons: ['OK'],
+    })
+
+  }
 
   return (
     <IonPage>

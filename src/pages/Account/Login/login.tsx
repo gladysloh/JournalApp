@@ -1,7 +1,7 @@
 import {
   IonCheckbox, IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard,
   IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel,
-  IonButton, IonInput, IonFooter, useIonLoading, useIonToast, IonRouterOutlet
+  IonButton, IonInput, IonFooter, useIonLoading, useIonToast, IonRouterOutlet, useIonAlert
 } from '@ionic/react';
 // import ExploreContainer from '../../components/ExploreContainer';
 import './login.css';
@@ -19,6 +19,8 @@ import { NavLink, useHistory } from 'react-router-dom';
 
 import JournalOverview from '../../Journal/journaloverview';
 import axios from 'axios';
+import { LoginDetails } from '../../../interfaces/UserInterface';
+import { loginUser } from '../../../services/UserService';
 
 
 
@@ -47,6 +49,7 @@ const Login: React.FC = () => {
   const [present, dismiss] = useIonLoading();
   const [error, setError] = useState(null);
   const [presentToast] = useIonToast();
+  const [presentAlert] = useIonAlert();
 
   const toaster = (msg: any, icon: any) => {
     presentToast({
@@ -62,11 +65,10 @@ const Login: React.FC = () => {
 
   const onSubmit = async (e: any) => {
 
-    const userDetails = {
+    const userDetails: LoginDetails = {
       email: e.email,
       password: e.password
     }
-    const userjson = JSON.stringify(userDetails)
 
     setState(userDetails);
 
@@ -75,32 +77,47 @@ const Login: React.FC = () => {
       message: 'Logging In'
     })
 
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
-
-    instance.post('/login', userDetails).then((res) => {
-      console.log(res);
+    try {
+      let result = await loginUser(userDetails)
+      console.log(result);
       dismiss();
       setLoading(false);
-      setIsRedirect(true);
-
-      localStorage.setItem('user', JSON.stringify(res.data))
+      setIsRedirect(true)
 
       toaster("Logged in successfully", checkmarkCircleOutline)
       history.replace("/tabs/journaloverview");
-      history.go(0)
+      // history.go(0)
       setState(initialState);
 
-    }).catch((err) => {
+    } catch (err: any) {
+      console.log(err)
+      if (err.response.data) {
+        getErrorCode(err.response.data.error.code)
+      }
       toaster("Error! Something went wrong", closeCircleOutline)
       dismiss();
       setLoading(false);
       console.error("ERROR: ", err.response);
-    })
+    }
 
   };
+
+  const getErrorCode = (err: any) => {
+    console.log(err)
+    if (err == 'auth/user-not-found') {
+      errorAlert("User is not found")
+    }
+  }
+
+  const errorAlert = (msg: string) => {
+    presentAlert({
+      header: 'Error!',
+      subHeader: 'Login not successful',
+      message: msg,
+      buttons: ['OK'],
+    })
+
+  }
 
   useEffect(() => {
     if (isRedirect) {

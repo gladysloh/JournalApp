@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -16,7 +16,7 @@ import {
   IonContent,
   IonPage,
   IonButtons,
-  IonMenuButton
+  IonMenuButton, IonSplitPane
 } from '@ionic/react';
 
 import React, { useEffect, useContext } from "react";
@@ -55,27 +55,22 @@ import axios from 'axios';
 import JournalOverview from './pages/Journal/journaloverview';
 import { SideMenu } from './pages/SideMenu/sidemenu';
 import Example from './components/LockScreen/lockscreen';
+import { getUserName } from './services/UserService';
 
 setupIonicReact();
 
 const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState(false);
 
-  const checkUser = () => {
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
+  const checkUser = async () => {
+    let result = await getUserName()
 
-    instance.get('/getuser').then((res) => {
-      console.log("user name: ", res.data.displayname);
+    if(result.displayname){
       setUserStatus(true)
-    })
-      .catch((err) => {
-        console.error("ERROR: ", err);
-        setUserStatus(false)
+    }else{
+      setUserStatus(false)
+    }
 
-      })
   }
 
 
@@ -85,23 +80,42 @@ const App: React.FC = () => {
 
 
   return (
+    // <IonApp>
+    //   <IonReactRouter >
+    //     <SideMenu />
+    //     <IonRouterOutlet>
+    //       <Route path="/login" component={Login} exact={true} />
+    //       <Route path="/signup" component={SignUp} exact={true} />
+    //       <Route path="/tabs" component={TabRoot} exact={true} />
+    //       <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
+
+    //       <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
+    //       <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
+    //       {userStatus ? <TabRoot /> : <Redirect to="/login" />}
+
+    //       <Route path="/lockscreen" component={Example} />
+
+    //     </IonRouterOutlet>
+    //   </IonReactRouter>
+    // </IonApp>
+
     <IonApp>
-      <IonReactRouter >
+      <IonReactRouter>
+        <IonSplitPane contentId="main">
+          <SideMenu />
+          <IonRouterOutlet id="main">
+              <Route path="/login" component={Login} exact={true} />
+              <Route path="/signup" component={SignUp} exact={true} />
+              <Route path="/welcome" component={WelcomeSlides
+              } exact={true} />
+              <Route path="/tabs" component={TabRoot} exact={true} />
+              <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
 
-        <SideMenu />
-        <IonRouterOutlet>
-          <Route path="/login" component={Login} exact={true} />
-          <Route path="/signup" component={SignUp} exact={true} />
-          <Route path="/tabs" component={TabRoot} exact={true} />
-          <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
-
-          <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
-          <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
-          {userStatus ? <TabRoot /> : <Redirect to="/login" />}
-
-          <Route path="/lockscreen" component={Example} />
-
-        </IonRouterOutlet>
+              <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
+              <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
+   
+          </IonRouterOutlet>
+        </IonSplitPane>
       </IonReactRouter>
     </IonApp>
   )

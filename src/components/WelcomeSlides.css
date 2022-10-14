@@ -1,19 +1,48 @@
-.outer-div{
-    height:90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.myswiper{
+    height:100vh;
 }
 
-.inner-div{
-    width:60%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+.slide{
+    display:flex;
+    background-image: linear-gradient(lightblue,white,lightblue);
     justify-content: center;
+    align-items: center;
 }
 
-h1.welcome{
-    font-weight:bold;
+.slidecard{
+    margin:0px;
+    background-image: linear-gradient(rgb(233, 159, 145) ,rgb(225, 200, 200) ,white);
+    border-color: black;
+    height: 100%;
+    width:100%;
+    justify-content:center;
+    align-items:center;
+    display:flex;
+    flex-direction:column;
+    
+}
 
+.slide1cc{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.header{
+    font-weight:bolder;
+    font-size: 25px
+    
+}
+
+.ion-foot{
+    opacity:40%;
+}
+
+.button{
+    
+ 
+    
 }

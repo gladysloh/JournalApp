@@ -17,8 +17,8 @@ const Settings: React.FC = () => {
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
+            <IonHeader class="ion-no-border">
+                <IonToolbar class="custom-toolbar">
                     <IonButtons slot='start'>
                         <IonMenuButton></IonMenuButton>
                     </IonButtons>
