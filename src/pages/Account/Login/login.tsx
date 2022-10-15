@@ -86,7 +86,7 @@ const Login: React.FC = () => {
 
       toaster("Logged in successfully", checkmarkCircleOutline)
       history.replace("/tabs/journaloverview");
-      // history.go(0)
+      history.go(0)
       setState(initialState);
 
     } catch (err: any) {

@@ -18,8 +18,7 @@ let dataSource = {
     caption: "INSERT MONTH",
     theme: "fusion",
     "palettecolors": "f2726f",
-    "showValues": "1",
-    "numberSuffix": "%",
+    "showValues": "1"
   },
   data: [{}]
 };
@@ -46,21 +45,22 @@ const Moodchart: React.FC = () => {
   const [moods, setMoods] = useState([]);
   const [monthlyMoods, setMonthlyMoods] = useState(initialMonthlyMood)
   const [isLoad, setIsLoad] = useState(false)
+  
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
 
   const canvasPosRef = useRef<HTMLCanvasElement>(null);
   const canvasNegRef = useRef<HTMLCanvasElement>(null);
+  
   useIonViewWillEnter(() => {
     loadData(selectedMonth, selectedYear)
   });
 
   useEffect(() => {
     console.log(moods)
-    setMonthlyMoods(initialMonthlyMood)
     getMoodChart()
     loadWordCloud()
-
+    console.log('i fire once');
   }, [isLoad, canvasNegRef, canvasPosRef])
 
   const loadData = async (month: any, year: any) => {
@@ -75,39 +75,86 @@ const Moodchart: React.FC = () => {
     setIsLoad(true)
   }
 
+  let sentimentarray: any = []
+  let newmoodarray: any = []
+
   const getMoodChart = () => {
-    moods.forEach((j: any) => {
-      let sentiment = j['sentiment']
-      if (sentiment >= -1 && sentiment < -0.6) {
-        updateMood(0)
-      } else if (sentiment >= -0.6 && sentiment < -0.2) {
-        updateMood(1)
-      } else if (sentiment >= -0.2 && sentiment < 0.2) {
-        updateMood(2)
-      } else if (sentiment >= 0.2 && sentiment < 0.6) {
-        updateMood(3)
-      } else if (sentiment >= 0.6 && sentiment <= 1) {
-        updateMood(4)
+    sentimentarray = []
+    moods.forEach((moodObj: any) => {
+      sentimentarray.push(moodObj.sentiment)
+    })
+  
+    newmoodarray = [0,0,0,0,0]
+    //map each sentiment value in the sentiment array to the correct index in the monthlyMoods and store in newmoodsarray
+    sentimentarray.forEach((item: any) => {
+      if (item >= -1 && item < -0.6) {
+        newmoodarray[0]++
+      }
+      else if (item >= -0.6 && item < -0.2) {
+        newmoodarray[1]++
+      }
+      else if (item >= -0.2 && item < 0.2) {
+        newmoodarray[2]++
+      }
+      else if (item >= 0.2 && item < 0.6) {
+        newmoodarray[3]++
+      }
+      else {
+        newmoodarray[4]++
       }
     })
+
+    newmoodarray.forEach((item: any, i: any) => {
+      updateMood(item, i)
+    })
+
     dataSource.chart.caption = getJournalMonth()
     dataSource.data = monthlyMoods
-
-    console.log(monthlyMoods)
   }
 
-  const updateMood = (id: any) => {
-    setMonthlyMoods(
-      monthlyMoods.map((item, i) => {
-        let value = item.value++;
-        if (i === id) {
-          return { ...item, value: value };
-        } else {
-          return item;
-        }
-      })
-    );
-  };
+  
+
+  function updateMood(val: number, i: any) {
+    setMonthlyMoods((Mooo) => {
+      Mooo[i].value = val
+      return [...Mooo]
+    })
+  }
+
+
+  // const getMoodChart = () => {
+  //   moods.forEach((j: any) => {
+  //     let sentiment = j['sentiment']
+  //     if (sentiment >= -1 && sentiment < -0.6) {
+  //       updateMood(0)
+  //     } else if (sentiment >= -0.6 && sentiment < -0.2) {
+  //       updateMood(1)
+  //     } else if (sentiment >= -0.2 && sentiment < 0.2) {
+  //       updateMood(2)
+  //     } else if (sentiment >= 0.2 && sentiment < 0.6) {
+  //       updateMood(3)
+  //     } else if (sentiment >= 0.6 && sentiment <= 1) {
+  //       updateMood(4)
+  //     }
+  //   })
+  //   dataSource.chart.caption = getJournalMonth()
+  //   dataSource.data = monthlyMoods
+
+  //   console.log(monthlyMoods)
+  // }
+
+  // const updateMood = (id: any) => {
+  //   setMonthlyMoods(
+  //     monthlyMoods.map((item, i) => {
+  //       let value = item.value++;
+  //       if (i === id) {
+  //         return { ...item, value: value };
+  //       } else {
+  //         return item;
+  //       }
+  //     })
+  //   );
+  // };
 
   const getJournalMonth = () => {
     let date = new Date().getMonth()
@@ -151,7 +198,7 @@ const Moodchart: React.FC = () => {
       <IonHeader class="ion-no-border">
         <IonToolbar class="custom-toolbar">
           <IonButtons slot="start">
-            <IonMenuButton auto-hide="false"></IonMenuButton>
+            <IonMenuButton auto-hide="false" color="medium"></IonMenuButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -164,7 +211,7 @@ const Moodchart: React.FC = () => {
 
         <IonGrid>
           <IonRow className="ion-align-items-center">
-            <IonCol size="12" size-sm>
+            <IonCol>
               <IonCard className="wordcloud-pos">
                 <IonCardSubtitle> On your happier days.. </IonCardSubtitle>
                 <div className="wordcloud-div">
@@ -173,7 +220,7 @@ const Moodchart: React.FC = () => {
               </IonCard>
             </IonCol>
 
-            <IonCol size="12" size-sm>
+            <IonCol>
               <IonCard className="wordcloud-neg">
                 <IonCardSubtitle> Some other days... </IonCardSubtitle>
                 <div className="wordcloud-div">
@@ -190,5 +237,3 @@ const Moodchart: React.FC = () => {
 };
 
 export default Moodchart;
-
-

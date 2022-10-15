@@ -123,6 +123,7 @@ export const JournalTextEdit: React.FC = () => {
 
     useIonViewWillEnter(() => {
         setIsLoad(false)
+        setQns([])
         let params = new URLSearchParams(history.location.search)
         console.log("enter journal edit")
         let jid = params.get("id") || ''
@@ -404,7 +405,21 @@ export const JournalTextEdit: React.FC = () => {
                                     <IonRow>
                                         <IonCard className='journalEntryCard'>
                                             <IonCardContent>
-                                                <IonGrid>
+                                                <IonGrid className="journalEntryGrid">
+                                                    <IonRow className="nomargin">
+                                                        <IonCol className="selectModeBackground">
+                                                            <IonSelect
+                                                                className="selectMode"
+                                                                interface="popover"
+                                                                placeholder="Select mode"
+                                                                name="mode"
+                                                                value={val} onIonChange={handleChange}>
+                                                                <IonSelectOption className="selectMode" value="view" disabled={disabled}>VIEW MODE</IonSelectOption>
+
+                                                                <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
+                                                            </IonSelect>
+                                                        </IonCol>
+                                                    </IonRow>
                                                     <IonRow className="titleInputBackground">
                                                         <IonCol>
                                                             <IonCardSubtitle>
@@ -418,18 +433,6 @@ export const JournalTextEdit: React.FC = () => {
                                                                     autocapitalize="true">
                                                                 </IonInput>
                                                             </IonCardSubtitle>
-                                                        </IonCol>
-                                                        <IonCol size='5'>
-                                                            <IonSelect
-                                                                className="selectMode"
-                                                                interface="popover"
-                                                                placeholder="Select mode"
-                                                                name="mode"
-                                                                value={val} onIonChange={handleChange}>
-                                                                <IonSelectOption className="selectMode" value="view" disabled={disabled}>VIEW MODE</IonSelectOption>
-
-                                                                <IonSelectOption className="selectMode" value="edit">EDIT MODE</IonSelectOption>
-                                                            </IonSelect>
                                                         </IonCol>
                                                     </IonRow>
                                                     <IonRow className="bodyInputBackground">

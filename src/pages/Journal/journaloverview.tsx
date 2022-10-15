@@ -191,7 +191,7 @@ const JournalOverview: React.FC = () => {
             <IonHeader class="ion-no-border">
                 <IonToolbar class="custom-toolbar">
                     <IonButtons slot="start">
-                        <IonMenuButton auto-hide="false"></IonMenuButton>
+                        <IonMenuButton auto-hide="false" color="medium"></IonMenuButton>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>

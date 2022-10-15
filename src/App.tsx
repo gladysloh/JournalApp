@@ -101,7 +101,7 @@ const App: React.FC = () => {
 
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
+        <IonSplitPane contentId="main" when="(min-width: 20000px)">
           <SideMenu />
           <IonRouterOutlet id="main">
               <Route path="/login" component={Login} exact={true} />

@@ -176,19 +176,14 @@ export const JournalView: React.FC = () => {
                             <IonCol>
                                 <IonCard className='journalEditCard'>
                                     <IonCardContent>
-                                        <IonGrid>
+                                        <IonGrid className="journalEntryGrid">
                                             <IonRow>
                                                 <IonCol>
                                                     <IonCardSubtitle className="editTimestamp">  {viewJournal.editTime ? getEditTimestamp(viewJournal.editTime?._seconds) : false}</IonCardSubtitle>
                                                 </IonCol>
                                             </IonRow>
-                                            <IonRow className="titleInputBackground">
-                                                <IonCol>
-                                                    <IonCardSubtitle>
-                                                        {viewJournal.title}
-                                                    </IonCardSubtitle>
-                                                </IonCol>
-                                                <IonCol size='5'>
+                                            <IonRow className="nomargin">
+                                                <IonCol className="selectModeBackground">
                                                     <IonSelect
                                                         className="selectMode"
                                                         interface="popover"
@@ -197,6 +192,13 @@ export const JournalView: React.FC = () => {
                                                         <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
                                                         <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
                                                     </IonSelect>
+                                                </IonCol>
+                                            </IonRow>
+                                            <IonRow className="titleInputBackground">
+                                                <IonCol>
+                                                    <IonCardSubtitle>
+                                                        {viewJournal.title}
+                                                    </IonCardSubtitle>
                                                 </IonCol>
                                             </IonRow>
                                             <IonRow className="bodyInputBackground" >
@@ -221,7 +223,7 @@ export const JournalView: React.FC = () => {
                             <div className="lds-dual-ring"></div>
                         </div>
                 }
-                 
+
 
             </IonContent>
         </IonPage>

@@ -6,13 +6,13 @@ const instance = axios.create({
 
 async function getMonthlyMood(body: any){
     const response = await instance.post('/monthlymood', body)
-    console.log(response)
+    // console.log(response)
     return response.data
 }
 
 async function getWordCloud(body: any){
     const response = await instance.post('/wordcloud', body)
-    console.log(response)
+    // console.log(response)
     return response.data
 }
 
