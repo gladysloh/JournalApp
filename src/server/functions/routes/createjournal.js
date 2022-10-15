@@ -3,7 +3,6 @@ const admin = require('firebase-admin')
 const uploadimage = require('./uploadimage')
 require('firebase/storage')
 const bucket = admin.storage().bucket()
-const JournalEntry = require('../../../model/journalEntry')
 global.XMLHttpRequest = require('xhr2')
 
 async function createjournal(req, res) {
