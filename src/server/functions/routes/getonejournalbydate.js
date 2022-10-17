@@ -1,7 +1,7 @@
 const firestore = require('firebase-admin').firestore()
 const moment = require('moment')
 
-async function getjournalbydate(req, res){
+async function getonejournalbydate(req, res){
     const uid = req.body.uid
     if (!(req.body.year && req.body.month && req.body.date)){
         return res.status(400).json({
@@ -45,4 +45,4 @@ async function getjournalbydate(req, res){
 
 }
 
-module.exports = getjournalbydate
+module.exports = getonejournalbydate

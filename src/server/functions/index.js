@@ -43,7 +43,7 @@ const removejournal = require("./routes/removejournal");
 const justsentiment = require("./routes/justsentiment");
 const wordcloud = require("./routes/wordcloud");
 const getonejournalbyid = require("./routes/getonejournalbyid");
-const getjournalbydate = require("./routes/getjournalbydate");
+const getonejournalbydate = require("./routes/getonejournalbydate");
 const app = express()
 app.use(session({
     store: new FirestoreStore({
@@ -95,7 +95,7 @@ app.post('/getalljournals', firebaseAuth, getalljournal)
 app.post('/justsentiment', firebaseAuth, justsentiment)
 app.post('/getonejournal', firebaseAuth, getonejournalbyid)
 app.post('/wordcloud', firebaseAuth, wordcloud)
-app.post('/getjournalbydate', firebaseAuth, getjournalbydate)
+app.post('/getonejournalbydate', firebaseAuth, getonejournalbydate)
 
 // app.get('/googlesignin', googlesignin)
 exports.api = functions.https.onRequest(app);
