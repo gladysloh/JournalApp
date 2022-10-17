@@ -1,6 +1,6 @@
 const firestore = require('firebase-admin').firestore()
 
-async function getonejournal(req, res){
+async function getonejournalbyid(req, res){
     const uid = req.body.uid
     const journalid = req.body.journalid
 
@@ -17,4 +17,4 @@ async function getonejournal(req, res){
     })
 }
 
-module.exports = getonejournal
+module.exports = getonejournalbyid
