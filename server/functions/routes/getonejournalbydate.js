@@ -35,9 +35,12 @@ async function getonejournalbydate(req, res){
             })
         }
         querysnapshot.forEach((doc) => {
+            console.log(doc)
             return res.status(200).json({
                 success: true,
-                journal: doc.data()
+                journal: doc.data(),
+                id: doc.id,
+                
             })
         })
     })

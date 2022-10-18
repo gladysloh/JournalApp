@@ -270,3 +270,7 @@
     margin-bottom:30px;
 } */
 
+ion-datetime{
+    /* --background: #F5B7B1; */
+    color: black;
+}

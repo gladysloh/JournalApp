@@ -77,13 +77,30 @@ http://ionicframework.com/docs/theming/ */
 
   /** greybutton **/
   --ion-color-greybutton: #CAC4C5;
-	--ion-color-greybutton-rgb: 202, 196, 197;
-	--ion-color-greybutton-contrast: #FFFFFF;
-	--ion-color-greybutton-contrast-rgb: 255, 255, 255;
-	--ion-color-greybutton-shade: #b2acad;
-	--ion-color-greybutton-tint: #cfcacb;
-  
+  --ion-color-greybutton-rgb: 202, 196, 197;
+  --ion-color-greybutton-contrast: #FFFFFF;
+  --ion-color-greybutton-contrast-rgb: 255, 255, 255;
+  --ion-color-greybutton-shade: #b2acad;
+  --ion-color-greybutton-tint: #cfcacb;
+
+  --ion-color-original: #F5B7B1;
+  --ion-color-original-rgb: 245, 183, 177;
+  --ion-color-original-contrast: #000000;
+  --ion-color-original-contrast-rgb: 0, 0, 0;
+  --ion-color-original-shade: #d8a19c;
+  --ion-color-original-tint: #f6beb9;
 }
+
+.ion-color-original {
+  --ion-color-base: var(--ion-color-original);
+  --ion-color-base-rgb: var(--ion-color-original-rgb);
+  --ion-color-contrast: var(--ion-color-original-contrast);
+  --ion-color-contrast-rgb: var(--ion-color-original-contrast-rgb);
+  --ion-color-shade: var(--ion-color-original-shade);
+  --ion-color-tint: var(--ion-color-original-tint);
+}
+
+
 
 .ion-color-greybutton {
   --ion-color-base: var(--ion-color-greybutton);
@@ -110,8 +127,8 @@ ion-toolbar.custom-toolbar {
   --ion-color-base: transparent !important;
 }
 
-.spacer{
-  margin:50px;
+.spacer {
+  margin: 50px;
 }
 
 @font-face {
@@ -201,12 +218,12 @@ ion-toolbar.custom-toolbar {
 }
 
 /* @media (prefers-color-scheme: dark) { */
-  /*
+/*
    * Dark Colors
    * -------------------------------------------
    */
 
-  /* body {
+/* body {
     --ion-color-primary: #428cff;
     --ion-color-primary-rgb: 66,140,255;
     --ion-color-primary-contrast: #ffffff;
@@ -271,12 +288,12 @@ ion-toolbar.custom-toolbar {
     --ion-color-light-tint: #383a3e;
   } */
 
-  /*
+/*
    * iOS Dark Theme
    * -------------------------------------------
    */
 
-  /* .ios body {
+/* .ios body {
     --ion-background-color: #000000;
     --ion-background-color-rgb: 0,0,0;
 
@@ -315,12 +332,12 @@ ion-toolbar.custom-toolbar {
   } */
 
 
-  /*
+/*
    * Material Design Dark Theme
    * -------------------------------------------
    */
 
-  /* .md body {
+/* .md body {
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18,18,18;
 

@@ -1,8 +1,27 @@
-import React from 'react';
-import { IonButton, IonCard, IonCol, useIonPicker } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
+import { IonButton, IonCard, IonCol, useIonPicker, useIonViewWillEnter } from '@ionic/react';
 
-function DatePicker() {
+function DatePicker({selectDate}: any) {
     const [present] = useIonPicker();
+
+    const [isMonth, setMonth] = useState(new Date().getMonth())
+    const [isYear, setYear] = useState(new Date().getFullYear())
+
+    const [isLoad, setIsLoading] = useState(false)
+    let currMonth = new Date().getMonth()
+    let currYear = new Date().getFullYear()
+    
+    useIonViewWillEnter(()=>{
+        setMonth(new Date().getMonth())
+        setYear(new Date().getFullYear())
+
+        console.log(isMonth, isYear)
+
+        
+
+    })
+
+
 
     let monthsOptions = [
         {
@@ -82,7 +101,10 @@ function DatePicker() {
                 {
                     text: 'Confirm',
                     handler: (value) => {
-                        window.alert(`You selected: ${value.months.value}`);
+                        currMonth = value.months.value
+                        sendSelectedDate()
+                        
+                        // window.alert(`You selected: ${value .months.value}`);
                     },
                 },
             ],
@@ -105,22 +127,35 @@ function DatePicker() {
                 {
                     text: 'Confirm',
                     handler: (value) => {
-                        window.alert(`You selected: ${value.years.value}`);
+                        currYear = value.years.value
+                        sendSelectedDate()
+                        
+                        // window.alert(`You selected: ${value.years.value}`);
                     },
                 },
             ],
         });
     }
 
+    const sendSelectedDate = () =>{
+        setYear(currYear)
+        setMonth(currMonth)
+    }
+
+    useEffect(()=>{
+        console.log({month: isMonth, year: isYear})
+        selectDate({month: isMonth, year: isYear})
+    },[isMonth])
+
     return (<>
         <IonCol className="dayBackground">
             <IonCard className="day">
-                <IonButton onClick={openPickerMonth}>{monthsOptions[new Date().getMonth()].text}</IonButton>
+                <IonButton onClick={openPickerMonth} >{ monthsOptions[isMonth].text}</IonButton>
             </IonCard>
         </IonCol >
         <IonCol className="entryBackground">
             <IonCard className="day">
-                <IonButton onClick={openPickerYear}>year</IonButton>
+                <IonButton onClick={openPickerYear}>{isYear}</IonButton>
             </IonCard>
             </IonCol>
             </>);

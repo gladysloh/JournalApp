@@ -185,6 +185,14 @@
     justify-content: center;
 }
 
+.loader-small-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .lds-dual-ring {
     display: inline-block;
     width: 80px;
