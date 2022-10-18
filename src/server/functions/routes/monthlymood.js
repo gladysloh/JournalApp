@@ -12,7 +12,7 @@ async function monthlymood(req, res){
     // const currentMonth = currentDate[1]
     // const currentYear = currentDate[2]
     const target = moment().set({'year': req.body.year, 'month': req.body.month}).format("MM-YYYY").split("-")
-    const targetplusone = moment().add(1, 'month').format("MM-YYYY").split("-")
+    const targetplusone = moment(target, "MM-YYYY").add(1, 'month').format("MM-YYYY").split("-")
     const targetMonth = target[0]
     const targetYear = target[1]
     const nextMonth = targetplusone[0]
