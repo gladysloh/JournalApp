@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton } from '@ionic/react';
+import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -19,6 +19,7 @@ import { Link, Redirect, RouteComponentProps, useHistory } from 'react-router-do
 import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 import { getAllJournals } from '../../services/JournalService';
 import { UserJournal } from '../../interfaces/JournalInterface';
+import DatePicker from '../../components/DatePicker'
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
@@ -32,6 +33,7 @@ const JournalOverview: React.FC = () => {
     const [entry, setEntry] = useState(false);
 
     const [loading, setLoading] = useState(false);
+    const [isLoad, setIsLoad] = useState(false)
 
     const getJournalInfo = async () => {
         console.log("getting all journals")
@@ -44,7 +46,7 @@ const JournalOverview: React.FC = () => {
 
             setJournals(j);
             setLoading(false); // Stop loading
-
+            setIsLoad(true)
 
         }).catch((err) => {
             setLoading(false); // Stop loading
@@ -184,8 +186,6 @@ const JournalOverview: React.FC = () => {
         return percentage + "%";
 
     }
-
-
     return (
         <IonPage>
             <IonHeader class="ion-no-border">
@@ -196,8 +196,7 @@ const JournalOverview: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ioncontent" fullscreen>
-
-                <IonGrid>
+                {isLoad ? <IonGrid>
                     <IonRow className="statusBar">
                         <IonCol size="12">
                             <IonCard className='card1'>
@@ -268,16 +267,7 @@ const JournalOverview: React.FC = () => {
                         </IonModal>
                     </IonRow> */}
                     <IonRow className='type'>
-                        <IonCol className="dayBackground" size='2'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>DAY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
-                        <IonCol className="entryBackground" size='3'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>ENTRY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
+                        <DatePicker />
                         <IonCol className="chooseDate" size='6'>
                             <div>
                                 <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
@@ -352,6 +342,12 @@ const JournalOverview: React.FC = () => {
                     {/* <IonButton expand="block">LOG OUT</IonButton> */}
 
                 </IonGrid>
+                    :
+                    <div className="loader-container">
+                        <div className="lds-dual-ring"></div>
+                    </div>
+
+                }
 
             </IonContent >
 
