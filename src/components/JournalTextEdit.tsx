@@ -79,9 +79,9 @@ export const JournalTextEdit: React.FC = () => {
                             </IonRow>
                         </IonGrid>
                     </IonRow>
-                    <IonRow>
+                    {/* <IonRow>
                         <p>{handlerMessage}</p>
-                    </IonRow>
+                    </IonRow> */}
                     <IonRow>
                         <IonCard className='journalEntryCard'>
                             <IonCardContent>
@@ -125,25 +125,35 @@ export const JournalTextEdit: React.FC = () => {
                                             maxlength={1500}>
                                         </IonTextarea>
                                     </IonRow>
-                                    <IonRow>
-                                        <IonCol className="inputTypeBackground">
-                                            <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
-                                                <IonSegmentButton className='inputTypes' value="text">
-                                                    <IonLabel>
-                                                        <IonImg src={text} />
-                                                    </IonLabel>
-                                                </IonSegmentButton>
-                                                <IonSegmentButton className='inputTypes' value="image">
-                                                    <IonLabel>
-                                                        <IonImg src={image} />
-                                                    </IonLabel>
-                                                </IonSegmentButton>
-                                            </IonSegment>
-                                        </IonCol>
-                                    </IonRow>
                                 </IonGrid>
                             </IonCardContent>
                         </IonCard>
+                        <IonGrid className="buttonsGrid">
+                            <IonRow className="nomargin">
+                                <IonCol className="saveDeleteBackground" size="6">
+                                    <IonButton className="saveDeleteBtn">
+                                        <p className="saveDeleteLabel">SAVE</p>
+                                    </IonButton>
+                                    <IonButton className="saveDeleteBtn">
+                                        <p className="saveDeleteLabel">DELETE</p>
+                                    </IonButton>
+                                </IonCol>
+                                <IonCol className="inputTypeBackground" size="6">
+                                    <IonSegment className='inputType' onIonChange={e => console.log('Segment selected', e.detail.value)} value="text">
+                                        <IonSegmentButton className='inputTypes' value="text">
+                                            <IonLabel>
+                                                <IonImg src={text} />
+                                            </IonLabel>
+                                        </IonSegmentButton>
+                                        <IonSegmentButton className='inputTypes' value="image">
+                                            <IonLabel>
+                                                <IonImg src={image} />
+                                            </IonLabel>
+                                        </IonSegmentButton>
+                                    </IonSegment>
+                                </IonCol>
+                            </IonRow>
+                        </IonGrid>
                     </IonRow>
                 </IonGrid>
             </IonContent>

@@ -13,7 +13,7 @@ const JournalText: React.FC = () => {
               </IonButtons>
           </IonToolbar>
       </IonHeader>
-      <IonContent className="ioncontent" fullscreen>
+      <IonContent className="ioncontent">
         <JournalTextEdit />
       </IonContent>
     </IonPage>

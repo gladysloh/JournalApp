@@ -100,8 +100,6 @@
 
     background: radial-gradient(100% 1969.14% at 100% 0%, #FFFFFF 0%, rgba(255, 255, 255, 0.8) 31.93%, rgba(255, 255, 255, 0.6) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
     box-shadow: 8px 8px 5px -1px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(40px);
-    /* Note: backdrop-filter has minimal browser support */
     border-radius: 18px;
 
     display: flex;

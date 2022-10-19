@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonMenu, IonMenuButton, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonActionSheet } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import './journaloverview.css';
 
@@ -9,8 +9,13 @@ import happy from '../../theme/icons/happy.png';
 import text from '../../theme/icons/text.png';
 import image from '../../theme/icons/image.png';
 import clock from '../../theme/icons/clock.png';
+import { useState } from 'react';
+import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 
 const JournalOverview: React.FC = () => {
+    const [present] = useIonActionSheet();
+    const [result, setResult] = useState<OverlayEventDetail>();
+
     return (
         <IonPage>
             <IonHeader class="ion-no-border">
@@ -89,27 +94,47 @@ const JournalOverview: React.FC = () => {
                             showDefaultButtons={true}></IonDatetime>
                         </IonModal>
                     </IonRow> */}
-                    <IonRow className='type'>
-                        <IonCol className="dayBackground" size='2'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>DAY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
-                        <IonCol className="entryBackground" size='3'>
-                            <IonCard className="day">
-                                <IonCardSubtitle>ENTRY</IonCardSubtitle>
-                            </IonCard>
-                        </IonCol>
-                        <IonCol className="chooseDate" size='6'>
-                            <div>
-                                <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
-                            </div>
-                            <IonModal keepContentsMounted={true}>
-                                <IonDatetime 
-                                id="datetime" 
-                                presentation="date"
-                                showDefaultButtons={true}></IonDatetime>
-                            </IonModal>
+                    <IonRow className='selectEntryBackground'>
+                        <IonCol className="selectEntryButtonBackground">
+                            <IonButton
+                                className="filterEntryBtn"
+                                shape="round"
+                                onClick={() =>
+                                present({
+                                    header: 'FILTER ENTRIES',
+                                    buttons: [
+                                    {
+                                        text: 'Today',
+                                        data: {
+                                        action: 'today',
+                                        },
+                                    },
+                                    {
+                                        text: 'By Date',
+                                        data: {
+                                        action: 'date',
+                                        },
+                                    },
+                                    {
+                                        text: 'By Month/Year',
+                                        data: {
+                                        action: 'monthyear',
+                                        },
+                                    },
+                                    {
+                                        text: 'Cancel',
+                                        role: 'cancel',
+                                        data: {
+                                        action: 'cancel',
+                                        },
+                                    },
+                                    ],
+                                    onDidDismiss: ({ detail }) => setResult(detail),
+                                })
+                                }
+                            >
+                                <p className="selectEntryLabel">FILTER ENTRIES</p>
+                            </IonButton>
                         </IonCol>
                     </IonRow>
                     <IonRow className="entries">
