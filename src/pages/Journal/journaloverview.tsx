@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker } from '@ionic/react';
+import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -35,13 +35,13 @@ const JournalOverview: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [isLoad, setIsLoad] = useState(false)
 
-    let currBody = {
+    let initialBody = {
         month: new Date().getMonth(),
         year: new Date().getFullYear()
     }
-
-    // const [selectedMY, setMY] = useState({month: new Date().getMonth(), year: 2022});
-
+    const [currBody, setCurrBody] =  useState({initialBody})
+    let initialDate = new Date().toISOString()
+    const [currDate, setCurrDate] =  useState(initialDate)
     const getJournalInfo = async () => {
         console.log("getting all journals")
         setLoading(true); // Set loading before sending API request
@@ -56,32 +56,53 @@ const JournalOverview: React.FC = () => {
             setLoading(false); // Stop loading
             setIsLoad(true)
 
-
         }).catch((err) => {
             setLoading(false); // Stop loading
-
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
         })
 
     };
 
+    /**
+     * Load function when user enter page
+     */
+    // useIonViewWillEnter(() => {
+    //     console.log("ion view enter")
+    //     getJournalInfo()
+    // }, []);
 
-    const selectDate = (data: any) => {
-        // setMY(data)
-        currBody = data
+    /**
+     * Load function everytime `currBody` is updated
+     */
+    useEffect(()=>{
         console.log(currBody)
         getJournalInfo()
+    }, [currBody])
+
+
+    const selectDate = (data: any) => {
+        setCurrBody(data)
     }
 
+    /**
+     * 
+     * @param value 
+     * 
+     * When user selects a single date
+     */
     const getUserDate = (value: any) => {
         console.log(value)
+
         let singleDate = new Date(value);
+        setCurrDate(value)
+
         let singleBody = {
             month: singleDate.getMonth(),
             year: singleDate.getFullYear(),
             date: singleDate.getDate()
         }
+
         setLoading(true);
         getSingleDateJournal(singleBody).then((res) => {
             console.log(res);
@@ -102,14 +123,11 @@ const JournalOverview: React.FC = () => {
             if (err.response.status == 401) history.replace("/login")
         })
 
-
     }
 
-
-    useIonViewWillEnter(() => {
-        console.log("ion view enter")
-        getJournalInfo()
-    }, []);
+    // useIonViewDidLeave(()=>{
+    //     setCurrDate(initialDate)
+    // })
 
     const checkJournals = () => {
         if (journals.length != 0) {
@@ -323,9 +341,11 @@ const JournalOverview: React.FC = () => {
                             </div>
                             <IonModal keepContentsMounted={true}>
                                 <IonDatetime
+                                    value={currDate}
                                     id="datetime"
                                     presentation="date"
-                                    showDefaultButtons={true} color="original" onIonChange={(val) => getUserDate(val.detail.value)} max={new Date(Date.now() + (3600 * 1000 * 24)).toISOString()}></IonDatetime>
+                                    showDefaultButtons={true} color="original" onIonChange={(val) => getUserDate(val.detail.value)} 
+                                    max={new Date().toISOString()}></IonDatetime>
                             </IonModal>
                         </IonCol>
                     </IonRow>
@@ -335,7 +355,6 @@ const JournalOverview: React.FC = () => {
                         <IonCol>
 
                             {
-
                                 checkJournals() ?
                                     <IonRow></IonRow> :
                                     <IonRow onClick={() => handleCreateJournal()}>

@@ -33,8 +33,8 @@ function Mood_Calendar() {
 
   const initialState = [{
     title: '',
-    start: new Date(),
-    end: new Date()
+    start: new Date(0),
+    end: new Date(0)
   }]
   const [events, setEvents] = useState(initialState)
   const [isEvent, setIsEvent] = useState(false)
@@ -66,6 +66,7 @@ function Mood_Calendar() {
   }
 
   useEffect(()=>{
+    setEvents(initialState)
     moods.forEach((el, i) => {
       let title = getEmotion(el['sentiment']).emoji
       let start = getJournalDate(el['timestamp'])
@@ -107,6 +108,7 @@ function Mood_Calendar() {
     setMonth(currDate)
     setYear(currYear)
     getMood(currDate, currYear)
+    setIsEvent(false)
 
   }
 

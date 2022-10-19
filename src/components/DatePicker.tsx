@@ -143,7 +143,7 @@ function DatePicker({selectDate}: any) {
     }
 
     useEffect(()=>{
-        console.log({month: isMonth, year: isYear})
+        // console.log({month: isMonth, year: isYear})
         selectDate({month: isMonth, year: isYear})
     },[isMonth])
 
