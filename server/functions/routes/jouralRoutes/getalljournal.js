@@ -4,7 +4,7 @@ const moment = require('moment')
 
 
 async function getalljournal(req, res) {
-
+    console.log('within get all journals')
     const uid = req.body.uid
     const journals = []
     var target, targetplusone, targetMonth, targetYear, nextMonth, nextMonthYear;
