@@ -8,7 +8,7 @@ router.get('/getalljournals', firebaseAuth, require('./getalljournal'))
 router.post('/getonejournalbydate', firebaseAuth, require('./getonejournalbydate'))
 router.post('/getonejournalbyid', firebaseAuth, require('./getonejournalbyid'))
 router.post('/removejournal', firebaseAuth, require('./removejournal'))
-router.get('/getrandomquestion', require('./getrandomquestion'))
+router.get('/randomq', require('./getrandomquestion'))
 
 
 module.exports = router
