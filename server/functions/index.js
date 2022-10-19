@@ -26,24 +26,6 @@ admin.initializeApp({
 })
 initializeApp(firebaseConfig)
 
-// const register = require('./routes/register')
-// const login = require('./routes/login')
-// const firebaseAuth = require('./routes/middleware/firebase-auth')
-// const getUser = require('./routes/userRoutes/get-user')
-// const googlesignin = require('./routes/googlesignup');
-// const createjournal = require("./routes/jouralRoutes/createjournal");
-// const getalljournal = require('./routes/getalljournal');
-// const getRandomQuestion = require("./routes/getrandomquestion");
-// const editjournal = require('./routes/jouralRoutes/editjournal')
-// const logout = require('./routes/logout')
-// const sentimentAnalyzer = require('./routes/jouralRoutes/sentimentAnalyzer');
-// const googlelogin = require("./routes/googlesignup");
-// const monthlymood = require('./routes/monthlymood');
-// const removejournal = require("./routes/removejournal");
-// const justsentiment = require("./routes/justsentiment");
-// const wordcloud = require("./routes/wordcloud");
-// const getonejournalbyid = require("./routes/getonejournalbyid");
-// const getonejournalbydate = require("./routes/getonejournalbydate");
 const app = express()
 app.use(session({
     store: new FirestoreStore({
@@ -58,7 +40,7 @@ app.use(session({
         maxAge: 3600000,
         expires: new Date(Date.now() + 3600000) 
     }
-}))//what the fuck
+}))
 app.use(cors({
     // origin: true,
     credentials: true,
@@ -77,24 +59,6 @@ app.use((req, res, next) => {
 app.use(cookieparser())
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: true}))
-
-
-// app.post('/login', validateEmailAndPassword, login)
-// app.post('/register', validateEmailAndPassword, register)
-// app.get('/getuser', firebaseAuth, getUser)
-// app.post('/createjournal', firebaseAuth, createjournal)
-// app.get('/getrandomquestion', getRandomQuestion)
-// app.post('/editjournal', firebaseAuth, editjournal)
-// app.get('/randomq', getRandomQuestion)
-// app.post('/sentimentanalyzer', sentimentAnalyzer)
-// app.post('/googlelogin', googlelogin)
-// app.post('/monthlymood', firebaseAuth, monthlymood)
-// app.post('/removejournal', firebaseAuth, removejournal)
-// app.post('/getalljournals', firebaseAuth, getalljournal)
-// app.post('/justsentiment', firebaseAuth, justsentiment)
-// app.post('/getonejournal', firebaseAuth, getonejournalbyid)
-// app.post('/wordcloud', firebaseAuth, wordcloud)
-// app.post('/getonejournalbydate', firebaseAuth, getonejournalbydate)
 
 const routes = require('./routes')
 app.use('/', routes)
