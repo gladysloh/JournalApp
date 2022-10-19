@@ -3,7 +3,7 @@ const admin = require('firebase-admin')
 const moment = require('moment')
 const countwords = require('count-words')
 const SW = require('stopword')
-const preprocess = require('./preprocessText')
+const preprocess = require('../util/preprocessText')
 
 
 async function wordcloud(req, res){
