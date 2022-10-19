@@ -42,6 +42,7 @@ const JournalOverview: React.FC = () => {
     const [currBody, setCurrBody] =  useState({initialBody})
     let initialDate = new Date().toISOString()
     const [currDate, setCurrDate] =  useState(initialDate)
+    
     const getJournalInfo = async () => {
         console.log("getting all journals")
         setLoading(true); // Set loading before sending API request
