@@ -17,11 +17,7 @@ function DatePicker({selectDate}: any) {
 
         console.log(isMonth, isYear)
 
-        
-
     })
-
-
 
     let monthsOptions = [
         {

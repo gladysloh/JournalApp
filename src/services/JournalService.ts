@@ -6,7 +6,8 @@ const instance = axios.create({
 
 async function getAllJournals(body: any){
     const response = await instance.post('/journal/getalljournals', body)
-    return response.data.journals
+    console.log(response)
+    return { journals: response.data.journals, status: response.status}
 }
 
 async function getSingleDateJournal(body: any){

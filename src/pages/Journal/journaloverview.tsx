@@ -1,6 +1,9 @@
-import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, 
-    IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, 
-    useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave, useIonActionSheet } from '@ionic/react';
+import {
+    IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader,
+    IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading,
+    useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave, useIonActionSheet,
+    useIonModal
+} from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -23,6 +26,7 @@ import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
 import { getAllJournals, getSingleDateJournal } from '../../services/JournalService';
 import { UserJournal } from '../../interfaces/JournalInterface';
 import DatePicker from '../../components/DatePicker'
+import DateFilterModal from '../../components/DateFilterModal';
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
@@ -31,8 +35,6 @@ const JournalOverview: React.FC = () => {
 
     const [journals, setJournals] = useState<any[]>([]);
 
-    const [entry, setEntry] = useState(false);
-
     const [loading, setLoading] = useState(false);
     const [isLoad, setIsLoad] = useState(false)
 
@@ -40,52 +42,72 @@ const JournalOverview: React.FC = () => {
         month: new Date().getMonth(),
         year: new Date().getFullYear()
     }
+    const [currBody, setCurrBody] = useState({ month: 0, year: 0 })
 
-    const [currBody, setCurrBody] =  useState(initialBody)
     let initialDate = new Date().toISOString()
-    const [currDate, setCurrDate] =  useState(initialDate)
-    
+    const [currDate, setCurrDate] = useState(initialDate)
+
+    /**
+     * Get all journals by the month/year
+     */
     const getJournalInfo = async () => {
-        console.log("getting all journals")
+        console.log("getting all journals by month/year")
         setLoading(true); // Set loading before sending API request
 
-        console.log(currBody)
-        getAllJournals(currBody).then((res) => {
-            console.log(res);
-            let j: [] = res
-            j.sort((a, b) => b['createdTimestamp']['_seconds'] - a['createdTimestamp']['_seconds']);
+        try {
+            let result = await getAllJournals(currBody)
+            console.log(result)
 
-            setJournals(j);
-            setLoading(false); // Stop loading
-            setIsLoad(true)
-
-        }).catch((err) => {
-            setLoading(false); // Stop loading
-            console.error("ERROR: ", err);
-            if (err.response.status == 401) history.replace("/login")
-        })
-
+            if (result.status == 200) {
+                let j: [] = result.journals
+                j.sort((a, b) => b['createdTimestamp']['_seconds'] - a['createdTimestamp']['_seconds']);
+                setJournals(j);
+                setLoading(false); // Stop loading
+                setIsLoad(true)
+            } else if (result.status == 400) {
+                setLoading(false); // Stop loading
+            }
+        } catch (err) {
+            console.log(err)
+            history.replace("/login")
+        }
     };
 
     /**
      * Load function when user enter page
      */
-    // useIonViewWillEnter(() => {
-    //     console.log("ion view enter")
-    //     getJournalInfo()
-    // }, []);
+    useIonViewWillEnter(() => {
+        console.log("ion view enter")
+        setCurrBody(initialBody)
+    }, []);
 
     /**
      * Load function everytime `currBody` is updated
      */
-    useEffect(()=>{
+    useEffect(() => {
         console.log(currBody)
         getJournalInfo()
     }, [currBody])
 
 
+    /**
+     * 
+     * @param data 
+     * 
+     * Parent function for DateFilterModal
+     */
     const selectDate = (data: any) => {
-        setCurrBody(data)
+        if (data.choice == "monthyear") {
+            let tempDate = new Date(data.value)
+            let body = {
+                month: tempDate.getMonth(),
+                year: tempDate.getFullYear()
+            }
+            setCurrBody(body)
+            console.log(body)
+        }else if(data.choice === 'today' || data.choice ==='date'){
+            getUserDate(data.value)
+        }
     }
 
     /**
@@ -110,7 +132,7 @@ const JournalOverview: React.FC = () => {
         getSingleDateJournal(singleBody).then((res) => {
             console.log(res);
             let j = [];
-            if(res.success){
+            if (res.success) {
                 let temp = res.journal
                 temp.id = res.id
                 j.push(temp)
@@ -118,7 +140,7 @@ const JournalOverview: React.FC = () => {
 
             setJournals(j);
             setLoading(false); // Stop loading
-            
+
         }).catch((err) => {
             setLoading(false); // Stop loading
 
@@ -128,24 +150,32 @@ const JournalOverview: React.FC = () => {
 
     }
 
-    // useIonViewDidLeave(()=>{
-    //     setCurrDate(initialDate)
-    // })
-
+    /**
+     * Check if user has written a journal entry for TODAY/current date
+     */
     const checkJournals = () => {
         if (journals.length != 0) {
             if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
             else return false
         }
-
     }
 
+    /**
+     * 
+     * @param timestamp 
+     * Display user-friendly time
+     */
     const getJournalTime = (timestamp: any) => {
         let seconds = timestamp._seconds;
         const result = new Date(seconds * 1000).toLocaleTimeString().slice(0, 5);
         return result;
     }
 
+    /**
+     * 
+     * @param timestamp 
+     * Display user-friendly date
+     */
     const getJournalDate = (timestamp: any) => {
         let seconds = timestamp._seconds;
         const date = new Date(seconds * 1000).getDate()
@@ -153,6 +183,11 @@ const JournalOverview: React.FC = () => {
         return date + " " + MONTH_NAMES[month];
     }
 
+    /**
+     * 
+     * @param timestamp 
+     * Display the day of journal posted
+     */
     const getJournalDay = (timestamp: any) => {
         let seconds = timestamp._seconds;
         const day = new Date(seconds * 1000).getDay()
@@ -257,10 +292,6 @@ const JournalOverview: React.FC = () => {
 
     }
 
-
-    const [dateSheet] = useIonActionSheet();
-    const [result, setResult] = useState<OverlayEventDetail>();
-
     return (
         <IonPage>
             <IonHeader class="ion-no-border">
@@ -330,58 +361,16 @@ const JournalOverview: React.FC = () => {
                             </IonCard>
                         </IonCol>
                     </IonRow>
-                    {/* <IonRow className="chooseDate">
-                        <div>
-                            <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
-                        </div>
-                        <IonModal keepContentsMounted={true}>
-                            <IonDatetime
-                                id="datetime"
-                                presentation="date"
-                                showDefaultButtons={true}></IonDatetime>
-                        </IonModal>
-                    </IonRow> */}
+                
                     <IonRow className='selectEntryBackground'>
                         <IonCol className="selectEntryButtonBackground">
                             <IonButton
                                 className="filterEntryBtn"
                                 shape="round"
-                                onClick={() =>
-                                    dateSheet({
-                                    header: 'FILTER ENTRIES',
-                                    buttons: [
-                                    {
-                                        text: 'Today',
-                                        data: {
-                                        action: 'today',
-                                        },
-                                    },
-                                    {
-                                        text: 'By Date',
-                                        data: {
-                                        action: 'date',
-                                        },
-                                    },
-                                    {
-                                        text: 'By Month/Year',
-                                        data: {
-                                        action: 'monthyear',
-                                        },
-                                    },
-                                    {
-                                        text: 'Cancel',
-                                        role: 'cancel',
-                                        data: {
-                                        action: 'cancel',
-                                        },
-                                    },
-                                    ],
-                                    onDidDismiss: ({ detail }) => setResult(detail),
-                                })
-                                }
-                            >
+                                id="open-modal">
                                 <p className="selectEntryLabel">FILTER ENTRIES</p>
                             </IonButton>
+                            <DateFilterModal selectChoice={selectDate} />
                         </IonCol>
                     </IonRow>
 
@@ -441,7 +430,7 @@ const JournalOverview: React.FC = () => {
                                         /**
                                          * Add a description when there are no journals 
                                          */
-                                        <p> no journals written this month </p>
+                                        <p> no journals </p>
                                     :
                                     <div className="loader-small-container">
                                         <div className="lds-dual-ring"></div>
