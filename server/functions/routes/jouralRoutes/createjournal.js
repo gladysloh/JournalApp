@@ -1,6 +1,6 @@
 const firestore = require('firebase-admin').firestore()
 const admin = require('firebase-admin')
-const uploadimage = require('./uploadimage')
+const uploadimage = require('../util/uploadimage')
 require('firebase/storage')
 const bucket = admin.storage().bucket()
 // const JournalEntry = require('../../../model/journalEntry')

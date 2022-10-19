@@ -4,7 +4,7 @@ const aposToLexForm = require('apos-to-lex-form')
 const SpellCorrector = require('spelling-corrector')
 const SW = require('stopword')
 const vader = require('vader-sentiment')
-const preprocess = require('./preprocessText')
+const preprocess = require('../util/preprocessText')
 
 const spellCorrector = new SpellCorrector()
 spellCorrector.loadDictionary()

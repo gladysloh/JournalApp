@@ -15,13 +15,14 @@ async function editprofile(req, res){
 
     try{
         await firestore
-            .collection('user')
+            .collection('users')
             .doc(uid)
             .update({
                 displayname: new_displayname
             })
             res.status(200).json({
-                success: true
+                success: true,
+                new_displayname: new_displayname
             })
     } catch(err){
         res.status(400).json({
@@ -30,3 +31,5 @@ async function editprofile(req, res){
         })
     } 
 }
+
+module.exports = editprofile
