@@ -105,7 +105,7 @@ http://ionicframework.com/docs/theming/ */
 .saveDeleteBtn {
   box-sizing: border-box;
 
-  width: 100px;
+  width: 80px;
   height: 40px;
 
   --background: linear-gradient(166.68deg, #FFF4EB 1.06%, rgba(255, 255, 255, 0.5) 1.07%, #FFFFFF 39.99%, #FFFFFF 65.31%, #FFF4EB 95.98%, rgba(255, 255, 255, 0.2) 95.98%);
