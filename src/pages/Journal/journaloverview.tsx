@@ -1,4 +1,6 @@
-import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave } from '@ionic/react';
+import { IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader, 
+    IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading, 
+    useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave, useIonActionSheet } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
@@ -14,6 +16,7 @@ import happy from '../../theme/icons/happy.png';
 import text from '../../theme/icons/text.png';
 import image from '../../theme/icons/image.png';
 import clock from '../../theme/icons/clock.png';
+import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 
 import { Link, Redirect, RouteComponentProps, useHistory } from 'react-router-dom';
 import { DAY_NAMES, MONTH_NAMES } from '../../SharedVariables';
@@ -23,8 +26,6 @@ import DatePicker from '../../components/DatePicker'
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
-
-    const [present, dismiss] = useIonLoading();
 
     const current = new Date();
 
@@ -39,7 +40,8 @@ const JournalOverview: React.FC = () => {
         month: new Date().getMonth(),
         year: new Date().getFullYear()
     }
-    const [currBody, setCurrBody] =  useState({initialBody})
+
+    const [currBody, setCurrBody] =  useState(initialBody)
     let initialDate = new Date().toISOString()
     const [currDate, setCurrDate] =  useState(initialDate)
     
@@ -254,6 +256,11 @@ const JournalOverview: React.FC = () => {
         return percentage + "%";
 
     }
+
+
+    const [dateSheet] = useIonActionSheet();
+    const [result, setResult] = useState<OverlayEventDetail>();
+
     return (
         <IonPage>
             <IonHeader class="ion-no-border">
@@ -334,20 +341,47 @@ const JournalOverview: React.FC = () => {
                                 showDefaultButtons={true}></IonDatetime>
                         </IonModal>
                     </IonRow> */}
-                    <IonRow className='type'>
-                        <DatePicker selectDate={selectDate} />
-                        <IonCol className="chooseDate" size='6'>
-                            <div>
-                                <IonDatetimeButton className="dateTimeButton" datetime="datetime" slot="end"></IonDatetimeButton>
-                            </div>
-                            <IonModal keepContentsMounted={true}>
-                                <IonDatetime
-                                    value={currDate}
-                                    id="datetime"
-                                    presentation="date"
-                                    showDefaultButtons={true} color="original" onIonChange={(val) => getUserDate(val.detail.value)} 
-                                    max={new Date().toISOString()}></IonDatetime>
-                            </IonModal>
+                    <IonRow className='selectEntryBackground'>
+                        <IonCol className="selectEntryButtonBackground">
+                            <IonButton
+                                className="filterEntryBtn"
+                                shape="round"
+                                onClick={() =>
+                                    dateSheet({
+                                    header: 'FILTER ENTRIES',
+                                    buttons: [
+                                    {
+                                        text: 'Today',
+                                        data: {
+                                        action: 'today',
+                                        },
+                                    },
+                                    {
+                                        text: 'By Date',
+                                        data: {
+                                        action: 'date',
+                                        },
+                                    },
+                                    {
+                                        text: 'By Month/Year',
+                                        data: {
+                                        action: 'monthyear',
+                                        },
+                                    },
+                                    {
+                                        text: 'Cancel',
+                                        role: 'cancel',
+                                        data: {
+                                        action: 'cancel',
+                                        },
+                                    },
+                                    ],
+                                    onDidDismiss: ({ detail }) => setResult(detail),
+                                })
+                                }
+                            >
+                                <p className="selectEntryLabel">FILTER ENTRIES</p>
+                            </IonButton>
                         </IonCol>
                     </IonRow>
 

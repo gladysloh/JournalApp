@@ -163,13 +163,38 @@
     color: rgba(0, 0, 0, 0.75);
 }
 
+.buttonsGrid {
+    margin: 0px 25px 40px 25px;
+    padding: 0px;
+}
+
+.saveDeleteBackground {
+    padding: 0px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.saveDeleteLabel {
+    font-family: 'Raleway-Bold';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    /* identical to box height */
+
+    color: rgba(0, 0, 0, 0.55);
+}
+
 .inputTypeBackground {
     height: 50px;
     margin: 0px;
     padding: 0px;
 
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 }
 

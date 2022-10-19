@@ -120,8 +120,6 @@
     width: 355px;
 
     background: linear-gradient(103.96deg, rgba(255, 255, 255, 0.6) 47.03%, rgba(255, 255, 255, 0.3) 108.98%);
-    backdrop-filter: blur(40px);
-    /* Note: backdrop-filter has minimal browser support */
     border-radius: 28px;
 }
 

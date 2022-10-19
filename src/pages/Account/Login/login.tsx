@@ -91,7 +91,7 @@ const Login: React.FC = () => {
 
     } catch (err: any) {
       console.log(err)
-      if (err.response.data) {
+      if (err.response.status!=404) {
         getErrorCode(err.response.data.error.code)
       }
       toaster("Error! Something went wrong", closeCircleOutline)
