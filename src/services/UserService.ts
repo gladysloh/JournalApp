@@ -8,17 +8,17 @@ const instance = axios.create({
 
 
 async function loginUser(loginDetails: any ){
-  const response = await instance.post('/login', loginDetails)
+  const response = await instance.post('/user/login', loginDetails)
   return response.data
 }
 
 async function signUp(signUpDetails: any){
-  const response = await instance.post('/register', signUpDetails)
+  const response = await instance.post('/user/register', signUpDetails)
   return response.data
 }
 
 async function getUserName(){
-    const response = await instance.get('/getuser')
+    const response = await instance.get('/user/getuser')
     return response.data
 }
 
