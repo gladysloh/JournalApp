@@ -69,7 +69,7 @@ const JournalOverview: React.FC = () => {
             }
         } catch (err) {
             console.log(err)
-            history.replace("/login")
+            // history.replace("/login")
         }
     };
 
