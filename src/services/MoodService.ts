@@ -16,6 +16,11 @@ async function getWordCloud(body: any){
     return response.data
 }
 
-export {getMonthlyMood, getWordCloud}
+async function updateSentiment(body: any){
+    const response = await instance.post('/sentiment/justsentiment', body)
+    return response.data
+}
+
+export {getMonthlyMood, getWordCloud, updateSentiment}
 
 

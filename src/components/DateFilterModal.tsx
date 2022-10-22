@@ -35,7 +35,7 @@ const DateFilterModal = ({ selectChoice }: any) => {
     useEffect(() => {
         // selectChoice(userDate)
         if (choice === "today") {
-            selectChoice({ choice: 'today', value: new Date().toISOString() })
+            selectChoice({ choice: 'today', value: new Date().toLocaleString('sv').replace(' ', 'T')})
             modal.current?.dismiss();
         } else if (choice === "date" && isUserDate) {
             selectChoice({ choice: 'date', value: userDate })

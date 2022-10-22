@@ -7,19 +7,24 @@ const instance = axios.create({
   })
 
 
-async function loginUser(loginDetails: any ){
+async function loginUser(loginDetails: LoginDetails ){
   const response = await instance.post('/user/login', loginDetails)
   return response.data
 }
 
-async function signUp(signUpDetails: any){
+async function signUp(signUpDetails: SignUpDetails){
   const response = await instance.post('/user/register', signUpDetails)
   return response.data
 }
 
 async function getUserName(){
+  try{
     const response = await instance.get('/user/getuser')
     return response.data
+  }catch(e: any){
+    console.error(e);
+  }
+    
 }
 
 export {getUserName, loginUser, signUp}

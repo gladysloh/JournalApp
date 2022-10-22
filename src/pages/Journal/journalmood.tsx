@@ -13,6 +13,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
+import { updateSentiment } from '../../services/MoodService';
 
 const JournalMood: React.FC = () => {
 
@@ -86,20 +87,12 @@ const JournalMood: React.FC = () => {
 
   const updateMood = (s: number) => {
 
-
-    const instance = axios.create({
-      withCredentials: true,
-      baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-    })
-
     let body = {
       sentiment: s,
       journalid: journalId,
     }
 
-    console.log(body)
-
-    instance.post('/justsentiment', body).then((res) => {
+    updateSentiment(body).then((res) => {
       console.log(res);
       dismiss();
       setLoading(false);
@@ -169,7 +162,7 @@ const JournalMood: React.FC = () => {
                       </IonCol>
                     </IonRow>
                     <IonRow>
-                      <IonButton className="greybutton" color="greybutton" onClick={()=>goToOverview()}>SKIP</IonButton>
+                      <IonButton className="greybutton" color="original" onClick={()=>goToOverview()}>SKIP</IonButton>
                       {/* <IonButton className="greybutton" color="greybutton">NEXT</IonButton> */}
                     </IonRow>
                   </IonGrid>

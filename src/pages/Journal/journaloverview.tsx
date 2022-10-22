@@ -2,7 +2,7 @@ import {
     IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader,
     IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading,
     useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave, useIonActionSheet,
-    useIonModal
+    useIonModal, useIonToast
 } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
@@ -27,6 +27,7 @@ import { getAllJournals, getSingleDateJournal } from '../../services/JournalServ
 import { UserJournal } from '../../interfaces/JournalInterface';
 import DatePicker from '../../components/DatePicker'
 import DateFilterModal from '../../components/DateFilterModal';
+import { closeCircleOutline } from 'ionicons/icons';
 
 const JournalOverview: React.FC = () => {
     const history = useHistory();
@@ -42,10 +43,23 @@ const JournalOverview: React.FC = () => {
         month: new Date().getMonth(),
         year: new Date().getFullYear()
     }
-    const [currBody, setCurrBody] = useState({ month: 0, year: 0 })
+    const [currBody, setCurrBody] = useState(initialBody)
 
     let initialDate = new Date().toISOString()
     const [currDate, setCurrDate] = useState(initialDate)
+
+    const [isWritten, setIsWritten] = useState(false)
+
+    const [presentToast] = useIonToast();
+    const toaster = (msg: any, icon: any) => {
+        presentToast({
+            message: msg,
+            duration: 1500,
+            position: 'bottom',
+            cssClass: 'custom-toast',
+            icon: icon
+        });
+    };
 
     /**
      * Get all journals by the month/year
@@ -53,23 +67,27 @@ const JournalOverview: React.FC = () => {
     const getJournalInfo = async () => {
         console.log("getting all journals by month/year")
         setLoading(true); // Set loading before sending API request
-
+        console.log(currBody)
         try {
             let result = await getAllJournals(currBody)
             console.log(result)
-
             if (result.status == 200) {
                 let j: [] = result.journals
                 j.sort((a, b) => b['createdTimestamp']['_seconds'] - a['createdTimestamp']['_seconds']);
                 setJournals(j);
+                checkJournals(); //check is user has written journal today
                 setLoading(false); // Stop loading
                 setIsLoad(true)
             } else if (result.status == 400) {
                 setLoading(false); // Stop loading
             }
-        } catch (err) {
+        } catch (err: any) {
             console.log(err)
-            // history.replace("/login")
+            toaster(err.message, closeCircleOutline)
+            getJournalInfo()
+            //when user is unauthorized
+            if(err.response.status === 401)
+                history.replace("/login")
         }
     };
 
@@ -77,8 +95,8 @@ const JournalOverview: React.FC = () => {
      * Load function when user enter page
      */
     useIonViewWillEnter(() => {
-        console.log("ion view enter")
-        setCurrBody(initialBody)
+        console.log("ion view enter ")
+        // getJournalInfo()
     }, []);
 
     /**
@@ -87,8 +105,8 @@ const JournalOverview: React.FC = () => {
     useEffect(() => {
         console.log(currBody)
         getJournalInfo()
-    }, [currBody])
-
+        checkJournals(); 
+    }, [currBody, isLoad])
 
     /**
      * 
@@ -104,8 +122,7 @@ const JournalOverview: React.FC = () => {
                 year: tempDate.getFullYear()
             }
             setCurrBody(body)
-            console.log(body)
-        }else if(data.choice === 'today' || data.choice ==='date'){
+        } else if (data.choice === 'today' || data.choice === 'date') {
             getUserDate(data.value)
         }
     }
@@ -130,7 +147,7 @@ const JournalOverview: React.FC = () => {
 
         setLoading(true);
         getSingleDateJournal(singleBody).then((res) => {
-            console.log(res);
+            // console.log(res);
             let j = [];
             if (res.success) {
                 let temp = res.journal
@@ -154,9 +171,14 @@ const JournalOverview: React.FC = () => {
      * Check if user has written a journal entry for TODAY/current date
      */
     const checkJournals = () => {
+        // console.log("check journals: ", journals)
         if (journals.length != 0) {
-            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) return true
-            else return false
+            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)){ 
+                setIsWritten(true)
+            }
+            else{ 
+                setIsWritten(false)
+            }
         }
     }
 
@@ -229,7 +251,7 @@ const JournalOverview: React.FC = () => {
         let count = 0
 
         journals.forEach((el, i) => {
-            if (!checkJournals()) {
+            if (!isWritten) {
                 i++
             }
 
@@ -361,7 +383,7 @@ const JournalOverview: React.FC = () => {
                             </IonCard>
                         </IonCol>
                     </IonRow>
-                
+
                     <IonRow className='selectEntryBackground'>
                         <IonCol className="selectEntryButtonBackground">
                             <IonButton
@@ -375,70 +397,71 @@ const JournalOverview: React.FC = () => {
                     </IonRow>
 
 
-                    <IonRow className="entries">
-                        <IonCol>
+                    {
+                        !loading ?
+                            <IonRow className="entries">
+                                <IonCol>
+                                    {
+                                        isWritten ?
+                                            <IonRow></IonRow> :
+                                            <IonRow onClick={() => handleCreateJournal()}>
+                                                <IonCol className="entryDateDay" size='2'>
+                                                    <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
+                                                    <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
+                                                </IonCol>
+                                                <IonCol className="entryList" size='10'>
+                                                    <IonCard className="entryListCard">
+                                                        <IonCardContent>
+                                                            <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
 
-                            {
-                                checkJournals() ?
-                                    <IonRow></IonRow> :
-                                    <IonRow onClick={() => handleCreateJournal()}>
-                                        <IonCol className="entryDateDay" size='2'>
-                                            <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
-                                            <p className="entryDay">{DAY_NAMES[current.getDay()]}</p>
-                                        </IonCol>
-                                        <IonCol className="entryList" size='10'>
-                                            <IonCard className="entryListCard">
-                                                <IonCardContent>
-                                                    <IonCardSubtitle className="entryTitle">TITLE</IonCardSubtitle>
+                                                            <p className="entryText">Begin your day here...</p>
+                                                        </IonCardContent>
+                                                    </IonCard>
+                                                </IonCol>
+                                            </IonRow>
+                                    }
 
-                                                    <p className="entryText">Begin your day here...</p>
-                                                </IonCardContent>
-                                            </IonCard>
-                                        </IonCol>
-                                    </IonRow>
-                            }
+                                    {
+                                        journals.length > 0 ? journals.map(item => {
+                                            return (
+                                                <>
+                                                    <div>
+                                                        <IonRow onClick={() => handleViewJournal(item)}>
+                                                            <IonCol className="entryDateDay" size='2'>
+                                                                <p className="entryDate">{getJournalDate(item['createdTimestamp'])}</p>
+                                                                <p className="entryDay">{getJournalDay(item['createdTimestamp'])}</p>
+                                                            </IonCol>
+                                                            <IonCol className="entryList" size='10'>
+                                                                <IonCard className="entryListCard">
+                                                                    <IonCardContent>
+                                                                        <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                                        <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
+                                                                        <p className="entryText">{item['body']}</p>
+                                                                        {item['url'] ?
+                                                                            <div > <img src={item['url']} /> </div> :
+                                                                            <div> </div>}
 
-                            {
-                                !loading ?
-                                    journals.length > 0 ? journals.map(item => {
-                                        return (
-                                            <>
-                                                <div>
-                                                    <IonRow onClick={() => handleViewJournal(item)}>
-                                                        <IonCol className="entryDateDay" size='2'>
-                                                            <p className="entryDate">{getJournalDate(item['createdTimestamp'])}</p>
-                                                            <p className="entryDay">{getJournalDay(item['createdTimestamp'])}</p>
-                                                        </IonCol>
-                                                        <IonCol className="entryList" size='10'>
-                                                            <IonCard className="entryListCard">
-                                                                <IonCardContent>
-                                                                    <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
-                                                                    <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
-                                                                    <p className="entryText">{item['body']}</p>
-                                                                    {item['url'] ?
-                                                                        <div > <img src={item['url']} /> </div> :
-                                                                        <div> </div>}
+                                                                    </IonCardContent>
+                                                                </IonCard>
+                                                            </IonCol>
+                                                        </IonRow>
+                                                    </div>
+                                                </>
+                                            )
+                                        }) :
+                                            /**
+                                             * Add a description when there are no journals 
+                                             */
+                                            <p> no journals </p>
+                                    }
 
-                                                                </IonCardContent>
-                                                            </IonCard>
-                                                        </IonCol>
-                                                    </IonRow>
-                                                </div>
-                                            </>
-                                        )
-                                    }) :
-                                        /**
-                                         * Add a description when there are no journals 
-                                         */
-                                        <p> no journals </p>
-                                    :
-                                    <div className="loader-small-container">
-                                        <div className="lds-dual-ring"></div>
-                                    </div>
-                            }
-
-                        </IonCol>
-                    </IonRow>
+                                </IonCol>
+                            </IonRow>
+                            :
+                            <div className="loader-small-container">
+                                <div className="lds-dual-ring"></div>
+                            </div>
+                    }
 
                     {/* <IonButton expand="block">LOG OUT</IonButton> */}
 

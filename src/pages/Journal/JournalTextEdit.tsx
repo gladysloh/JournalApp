@@ -29,7 +29,7 @@ import {
     IonFabList,
     IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave, IonActionSheet, useIonAlert
 } from '@ionic/react';
-import { textSharp, imageSharp, help, closeCircleOutline, trash, close } from 'ionicons/icons';
+import { textSharp, imageSharp, help, closeCircleOutline, trash, close, chevronBack } from 'ionicons/icons';
 
 import './JournalTextEdit.css';
 
@@ -246,17 +246,16 @@ export const JournalTextEdit: React.FC = () => {
                 newtitle: editBody.title,
                 filename: editBody.filename,
                 newimage: tempImg != '' ? tempImg.split(",").pop() : false,
-                sentiment: sentimentVal
+                sentiment: sentimentVal.compound
             }
 
             setEdit(newEditBody)
             console.log(editBody)
 
             editJournal(newEditBody).then((res) => {
-                console.log(res);
                 dismiss();
                 setLoading(false);
-                goToSentiment(sentimentVal, newEditBody.journalid)
+                goToSentiment(newEditBody.sentiment, newEditBody.journalid)
             }).catch((err) => {
                 dismiss();
                 setLoading(false);
@@ -296,10 +295,15 @@ export const JournalTextEdit: React.FC = () => {
                 dismiss();
                 setLoading(false);
                 goToSentiment(createBody.sentiment, res.id)
-            }).catch((err) => {
+            }).catch((err: any) => {
                 dismiss();
                 setLoading(false);
-                toaster("Error! Something went wrong", closeCircleOutline)
+                if (err.response.status == 400 && err.response.data.message == "journal already exists today") {
+                    toaster("Journal already exists today", closeCircleOutline)
+                    goToOverview()
+                } else {
+                    toaster("Error! Something went wrong", closeCircleOutline)
+                }
                 console.error("ERROR: ", err);
             })
 
@@ -322,6 +326,7 @@ export const JournalTextEdit: React.FC = () => {
         }).catch((err) => {
             dismiss();
             setLoading(false);
+            toaster("Error! Something went wrong", closeCircleOutline)
             console.error("ERROR: ", err);
         })
     };
@@ -353,7 +358,6 @@ export const JournalTextEdit: React.FC = () => {
         });
     }
 
-
     return (
 
         <IonPage>
@@ -363,19 +367,21 @@ export const JournalTextEdit: React.FC = () => {
                         <IonGrid className="ionGrid">
                             <IonRow>
                                 <IonGrid className="headingBackground">
-                                    <IonRow className="heading">
-                                        <IonCol size='2'>
-                                            <IonRow className="dayBackground" >
-                                                <IonCardSubtitle className="dayNo"> {getJournalDay()} </IonCardSubtitle>
-                                            </IonRow>
+                                    <IonRow class="ion-align-items-center">
+                                        <IonCol size="1" >
+                                            <IonIcon onClick={()=>handleViewJournal()} icon={chevronBack} className="back-btn" size="large" />
                                         </IonCol>
-                                        <IonCol size='8'>
-                                            <IonRow>
-                                                <IonCardSubtitle className="year">{getJournalYear()}</IonCardSubtitle>
-                                            </IonRow>
-                                            <IonRow>
-                                                <IonCardTitle className="month">{getJournalMonth()}</IonCardTitle>
-                                            </IonRow>
+
+                                        <IonCol size="8">
+                                            <div className="outer-div">
+                                                <div className="inner-div">
+                                                    <span className="dayNo">{getJournalDay()}</span>
+                                                </div>
+                                                <div className="inner-div">
+                                                    <span className="year">{getJournalYear()}</span>
+                                                    <span className="month">{getJournalMonth()}</span>
+                                                </div>
+                                            </div>
                                         </IonCol>
                                         <IonCol className="questionMarkBackground" size='2'>
                                             <IonButton className="questionMark" size="small" color="light" onClick={() => getQuestion()}>
@@ -477,7 +483,7 @@ export const JournalTextEdit: React.FC = () => {
                                 }
 
 
-                                <IonRow>
+                                {/* <IonRow>
                                     <IonCol size="6">
                                         <IonButton onClick={handleSubmit} > SAVE JOURNAL </IonButton>
                                         {mode == 'edit' ? <IonButton onClick={() => deleteCurrJournal()} color="danger"> DELETE JOURNAL </IonButton> : <span></span>}
@@ -497,7 +503,35 @@ export const JournalTextEdit: React.FC = () => {
                                             </IonSegmentButton>
                                         </IonSegment>
                                     </IonCol>
-                                </IonRow>
+                                </IonRow> */}
+
+                                <IonGrid className="buttonsGrid">
+                                    <IonRow className="nomargin">
+                                        <IonCol className="saveDeleteBackground" size="6">
+                                            <IonButton className="saveDeleteBtn" onClick={handleSubmit}>
+                                                <p className="saveDeleteLabel">SAVE</p>
+                                            </IonButton>
+                                            {mode == 'edit' ? <IonButton className="saveDeleteBtn" onClick={() => deleteCurrJournal()}>
+                                                <p className="saveDeleteLabel">DELETE</p>
+                                            </IonButton> : <span></span>}
+
+                                        </IonCol>
+                                        <IonCol className="inputTypeBackground" size="6">
+                                            <IonSegment className='inputType' onIonChange={e => handleSegment(e.detail.value)} value={segment}>
+                                                <IonSegmentButton className='inputTypes' value="text">
+                                                    <IonLabel>
+                                                        <IonImg src={text} />
+                                                    </IonLabel>
+                                                </IonSegmentButton>
+                                                <IonSegmentButton className='inputTypes' value="image">
+                                                    <IonLabel>
+                                                        <IonImg src={image} />
+                                                    </IonLabel>
+                                                </IonSegmentButton>
+                                            </IonSegment>
+                                        </IonCol>
+                                    </IonRow>
+                                </IonGrid>
                             </form>
 
 

@@ -8,11 +8,11 @@ import {
     IonTabs,
 } from '@ionic/react';
 /** Pages */
-import CardExamples from './tutorial/CardExamples';
-import InputExamples from './tutorial/InputExamples';
-import SegmentExamples from './tutorial/SegmentExamples';
-import TextAreaExamples from './tutorial/TextAreaExamples';
-import { SlideExample } from './tutorial/Slides';
+// import CardExamples from './tutorial/CardExamples';
+// import InputExamples from './tutorial/InputExamples';
+// import SegmentExamples from './tutorial/SegmentExamples';
+// import TextAreaExamples from './tutorial/TextAreaExamples';
+// import { SlideExample } from './tutorial/Slides';
 
 // import JournalTextView from '../components/JournalTextView'
 import JournalView from './Journal/JournalView';

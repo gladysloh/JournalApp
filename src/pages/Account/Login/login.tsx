@@ -77,28 +77,50 @@ const Login: React.FC = () => {
       message: 'Logging In'
     })
 
-    try {
-      let result = await loginUser(userDetails)
+    loginUser(userDetails).then((result: any) => {
       console.log(result);
       dismiss();
       setLoading(false);
       setIsRedirect(true)
 
       toaster("Logged in successfully", checkmarkCircleOutline)
-      history.replace("/tabs/journaloverview");
-      
+      // history.push("/tabs/journaloverview");
+      history.go(0); //refresh
       setState(initialState);
-
-    } catch (err: any) {
+    }).catch((err: any) => {
       console.log(err)
-      if (err.response.status!=404) {
+      if (err.response.status != 404 && err.response.data) {
         getErrorCode(err.response.data.error.code)
       }
       toaster("Error! Something went wrong", closeCircleOutline)
       dismiss();
       setLoading(false);
       console.error("ERROR: ", err.response);
-    }
+    })
+
+    // try {
+    //   let result = await loginUser(userDetails).
+
+
+    //   console.log(result);
+    //   dismiss();
+    //   setLoading(false);
+    //   setIsRedirect(true)
+
+    //   toaster("Logged in successfully", checkmarkCircleOutline)
+    //   history.push("/tabs/journaloverview");
+    //   // history.go(0); //refresh
+    //   setState(initialState);
+    // } catch (err: any) {
+    //   console.log(err)
+    //   if (err.response.status!=404 && err.response.data) {
+    //     getErrorCode(err.response.data.error.code)
+    //   }
+    //   toaster("Error! Something went wrong", closeCircleOutline)
+    //   dismiss();
+    //   setLoading(false);
+    //   console.error("ERROR: ", err.response);
+    // }
 
   };
 
@@ -106,6 +128,8 @@ const Login: React.FC = () => {
     console.log(err)
     if (err == 'auth/user-not-found') {
       errorAlert("User is not found")
+    } else if (err == 'auth/wrong-password') {
+      errorAlert("Wrong password")
     }
   }
 
@@ -120,11 +144,12 @@ const Login: React.FC = () => {
   }
 
   useEffect(() => {
+    console.log(isRedirect)
     if (isRedirect) {
       history.replace("/tabs/journaloverview");
     }
 
-  }, [isRedirect, history])
+  }, [isRedirect])
 
   return (
     <IonPage>

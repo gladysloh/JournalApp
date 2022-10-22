@@ -5,6 +5,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import {setupIonicReact} from '@ionic/react'
+
 setupIonicReact({
   rippleEffect: false,
   mode: 'ios',

@@ -27,9 +27,9 @@ import {
     IonFab,
     IonFabButton,
     IonFabList,
-    IonImg, useIonViewDidEnter, useIonViewDidLeave
+    IonImg, useIonViewDidEnter, useIonViewDidLeave, IonButtons, IonBackButton
 } from '@ionic/react';
-import { textSharp, imageSharp, help, journal } from 'ionicons/icons';
+import { textSharp, imageSharp, help, journal, personCircle, arrowBack, chevronBack } from 'ionicons/icons';
 
 import './JournalView.css';
 
@@ -39,6 +39,12 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { MONTH_NAMES } from '../../SharedVariables';
 import { UserJournal } from '../../interfaces/JournalInterface';
 import { createJournal, getJournal } from '../../services/JournalService';
+
+import elated from '../../theme/icons/elated.png';
+import smiling from '../../theme/icons/smiling.png';
+import neutral from '../../theme/icons/neutral.png';
+import sad from '../../theme/icons/sad.png';
+import verysad from '../../theme/icons/verysad.png';
 
 export const JournalView: React.FC = () => {
     const [val, setVal] = useState('view');
@@ -60,6 +66,9 @@ export const JournalView: React.FC = () => {
 
     const [loading, setLoading] = useState(false);
     const [isLoad, setIsLoad] = useState(false)
+
+
+    const [sentiment, setSentiment] = useState(0)
 
     let params = new URLSearchParams(history.location.search)
     const jid = params.get("id") || ''
@@ -89,6 +98,7 @@ export const JournalView: React.FC = () => {
         if (result.success) {
             console.log(result.journal)
             setView(result.journal);
+            setSentiment(result.journal.sentiment)
             console.log(viewJournal)
             setIsLoad(true)
         } else {
@@ -136,6 +146,13 @@ export const JournalView: React.FC = () => {
         });
     }
 
+    const goBack = () => {
+        
+        history.replace({
+            pathname: '/tabs/journaloverview'
+        });
+    }
+
     useIonViewDidLeave(() => {
         console.log('ionViewWillEnter event fired');
 
@@ -143,82 +160,121 @@ export const JournalView: React.FC = () => {
         setJournalId("")
     });
 
+    const generateMood = () => {
+        //-1 to -0.6, -0.6 to -0.2, -0.2 to 0.2, 0.2 to 0.6, 0.6 to 1
+        if (sentiment >= -1 && sentiment < -0.6) {
+            return { name: 'Very Sad', src: verysad }
+        } else if (sentiment >= -0.6 && sentiment < -0.2) {
+            return { name: 'Sad', src: sad }
+        } else if (sentiment >= -0.2 && sentiment < 0.2) {
+            return { name: 'Neutral', src: neutral }
+        } else if (sentiment >= 0.2 && sentiment < 0.6) {
+            return { name: 'Happy', src: smiling }
+        } else if (sentiment >= 0.6 && sentiment <= 1) {
+            return { name: 'Elated', src: elated }
+        }
+    }
+
     return (
         <IonPage>
+
             <IonContent className="ioncontent">
-
                 {
-                    isLoad ? <IonGrid className="ionGrid">
-                        <IonRow>
-                            <IonGrid className="headingBackground">
+                    isLoad ?
+                        <IonGrid className="ionGrid">
+                            <IonRow class="ion-align-items-center">
+                                <IonCol size="1" >
+                                    <IonIcon onClick={()=>{goBack()}} icon={chevronBack} className="back-btn" size="large"/>
+                                </IonCol>
 
-                                <IonRow className="heading">
-                                    <IonCol size='2'>
-                                        <IonRow className="dayBackground" >
-                                            <IonCardSubtitle className="dayNo">{getJournalDay(viewJournal.createdTimestamp._seconds)}</IonCardSubtitle>
-                                        </IonRow>
-                                    </IonCol>
-                                    <IonCol size='8'>
-                                        <IonRow>
-                                            <IonCardSubtitle className="year">{getJournalYear(viewJournal.createdTimestamp._seconds)}</IonCardSubtitle>
-                                        </IonRow>
-                                        <IonRow>
-                                            <IonCardTitle className="month">{getJournalMonth(viewJournal.createdTimestamp._seconds)}</IonCardTitle>
-                                        </IonRow>
-                                    </IonCol>
+                                <IonCol size="8">
+                                    <div className="outer-div">
+                                        <div className="inner-div">
+                                            <span className="dayNo">{getJournalDay(viewJournal.createdTimestamp._seconds)}</span>
+                                        </div>
+                                        <div className="inner-div">
+                                            <span className="year">{getJournalYear(viewJournal.createdTimestamp._seconds)}</span>
+                                            <span className="month">{getJournalMonth(viewJournal.createdTimestamp._seconds)}</span>
+                                        </div>
+                                    </div>
+                                </IonCol>
 
-                                </IonRow>
-                            </IonGrid>
-                        </IonRow>
 
-                        <IonRow>
 
-                            <IonCol>
-                                <IonCard className='journalEditCard'>
-                                    <IonCardContent>
-                                        <IonGrid className="journalEntryGrid">
+                                {/* <IonGrid className="headingBackground">
+                                    <IonRow className="heading">
+
+                                        <IonCol size='2'>
+                                            <IonRow className="dayBackground" >
+                                                <IonCardSubtitle className="dayNo">{getJournalDay(viewJournal.createdTimestamp._seconds)}</IonCardSubtitle>
+                                            </IonRow>
+                                        </IonCol>
+                                        <IonCol size='6'>
                                             <IonRow>
-                                                <IonCol>
-                                                    <IonCardSubtitle className="editTimestamp">  {viewJournal.editTime ? getEditTimestamp(viewJournal.editTime?._seconds) : false}</IonCardSubtitle>
-                                                </IonCol>
+                                                <IonCardSubtitle className="year">{getJournalYear(viewJournal.createdTimestamp._seconds)}</IonCardSubtitle>
                                             </IonRow>
-                                            <IonRow className="nomargin">
-                                                <IonCol className="selectModeBackground">
-                                                    <IonSelect
-                                                        className="selectMode"
-                                                        interface="popover"
-                                                        placeholder="Select mode"
-                                                        value={val} onIonChange={e => handleChange(e)}>
-                                                        <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
-                                                        <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
-                                                    </IonSelect>
-                                                </IonCol>
+                                            <IonRow>
+                                                <IonCardTitle className="month">{getJournalMonth(viewJournal.createdTimestamp._seconds)}</IonCardTitle>
                                             </IonRow>
-                                            <IonRow className="titleInputBackground">
-                                                <IonCol>
-                                                    <IonCardSubtitle>
-                                                        {viewJournal.title}
-                                                    </IonCardSubtitle>
-                                                </IonCol>
-                                            </IonRow>
-                                            <IonRow className="bodyInputBackground" >
-                                                <IonCol>
-                                                    <p className='bodyInput'> {viewJournal.body} </p>
-                                                    <div className="imageDiv">
-                                                        {viewJournal.url ? <img className="uploadedImage" src={viewJournal.url}></img> : <div className="box"></div>}
-                                                    </div>
+                                        </IonCol>
 
-                                                </IonCol>
-                                            </IonRow>
+                                    </IonRow>
+                                </IonGrid> */}
+                            </IonRow>
 
-                                        </IonGrid>
-                                    </IonCardContent>
-                                </IonCard>
+                            <IonRow>
 
-                            </IonCol>
+                                <IonCol>
+                                    <IonCard className='journalEditCard'>
+                                        <IonCardContent>
+                                            <IonGrid className="journalEntryGrid">
+                                                <IonRow>
+                                                    <IonCol>
+                                                        <IonCardSubtitle className="editTimestamp">  {viewJournal.editTime ? getEditTimestamp(viewJournal.editTime?._seconds) : false}</IonCardSubtitle>
+                                                    </IonCol>
+                                                </IonRow>
+                                                <IonRow className="nomargin">
+                                                    <IonCol size="7">
+                                                        <div className="journal-emotion">
+                                                            Overall Journal Emotion: <IonImg src={generateMood()?.src} className="journal-emoji" />
+                                                        </div>
+                                                    </IonCol>
+                                                    <IonCol className="selectModeBackground">
+                                                        <IonSelect
+                                                            className="selectMode"
+                                                            interface="popover"
+                                                            placeholder="Select mode"
+                                                            value={val} onIonChange={e => handleChange(e)}>
+                                                            <IonSelectOption className="selectModes" value="view">VIEW MODE</IonSelectOption>
+                                                            <IonSelectOption className="selectModes" value="edit">EDIT MODE</IonSelectOption>
+                                                        </IonSelect>
+                                                    </IonCol>
+                                                </IonRow>
+                                                <IonRow className="titleInputBackground">
+                                                    <IonCol>
+                                                        <IonCardSubtitle>
+                                                            {viewJournal.title}
+                                                        </IonCardSubtitle>
+                                                    </IonCol>
+                                                </IonRow>
+                                                <IonRow className="bodyInputBackground" >
+                                                    <IonCol>
+                                                        <p className='bodyInput'> {viewJournal.body} </p>
+                                                        <div className="imageDiv">
+                                                            {viewJournal.url ? <img className="uploadedImage" src={viewJournal.url}></img> : <div className="box"></div>}
+                                                        </div>
 
-                        </IonRow>
-                    </IonGrid> :
+                                                    </IonCol>
+                                                </IonRow>
+
+                                            </IonGrid>
+                                        </IonCardContent>
+                                    </IonCard>
+
+                                </IonCol>
+
+                            </IonRow>
+                        </IonGrid> :
                         <div className="loader-container">
                             <div className="lds-dual-ring"></div>
                         </div>

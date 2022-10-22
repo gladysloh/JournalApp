@@ -35,12 +35,17 @@ export const SideMenu = () => {
     }, [displayName])
 
     const checkUser = async () => {
-        let result = await getUserName()
-        console.log(result)
-    
-        if(result.displayname){
-          setDisplayName(result.displayname) 
+        try{
+            let result = await getUserName()
+            console.log(result)
+        
+            if(result.displayname){
+              setDisplayName(result.displayname) 
+            }
+        }catch(err:any){
+            console.log(err)
         }
+        
     
     }
     const [cookies, setCookie, removeCookie] = useCookies();

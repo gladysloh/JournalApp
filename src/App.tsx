@@ -62,17 +62,22 @@ setupIonicReact();
 const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState(false);
 
-  const checkUser = async () => {
-    let result = await getUserName()
 
-    if(result.displayname){
-      setUserStatus(true)
-    }else{
-      setUserStatus(false)
+  const checkUser = async () => {
+    try {
+      let result = await getUserName()
+
+      if (result.displayname) {
+        setUserStatus(true)
+      } else {
+        setUserStatus(false)
+      }
+    } catch (err: any) {
+
+      console.log(err)
     }
 
   }
-
 
   useEffect(() => {
     checkUser()
@@ -104,16 +109,17 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main" when="(min-width: 20000px)">
           <SideMenu />
           <IonRouterOutlet id="main">
-              <Route path="/login" component={Login} exact={true} />
-              <Route path="/signup" component={SignUp} exact={true} />
-              <Route path="/welcome" component={WelcomeSlides
-              } exact={true} />
-              <Route path="/tabs" component={TabRoot} exact={true} />
-              <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
+            <Route path="/login" component={Login} exact={true} />
+            <Route path="/signup" component={SignUp} exact={true} />
+            <Route path="/welcome" component={WelcomeSlides} exact={true} />
+            <Route path="/tabs" component={TabRoot} exact={true} />
+            <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
+          
 
-              <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
-              <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
-   
+            <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
+            <Route path="/" render={() => { return userStatus ?  <TabRoot /> : <Login />}} exact={true} />
+            {/* <Route path="/login" render={()=>{return userStatus? <Redirect to="/tabs/journaloverview"/> : <Redirect to="/login"/>} }/> */}
+
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
