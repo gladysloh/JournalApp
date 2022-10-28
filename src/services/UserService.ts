@@ -1,14 +1,25 @@
 import axios from "axios";
-import { LoginDetails, SignUpDetails } from "../interfaces/UserInterface";
+import Cookies from "js-cookie"
+import { EditProfile, LoginDetails, SignUpDetails } from "../interfaces/UserInterface";
+
+let authToken = null;
 
 const instance = axios.create({
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+  },
     withCredentials: true,
-    baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+    baseURL: 'http://127.0.0.1:5001/onceaday-48fb7/us-central1/api'
   })
 
 
 async function loginUser(loginDetails: LoginDetails ){
   const response = await instance.post('/user/login', loginDetails)
+  authToken = response.data.idToken;
+  console.log(response)
+
+  Cookies.set('auth_token', authToken);
   return response.data
 }
 
@@ -24,8 +35,12 @@ async function getUserName(){
   }catch(e: any){
     console.error(e);
   }
-    
 }
 
-export {getUserName, loginUser, signUp}
+async function editProfile(editProfile: EditProfile){
+  const response = await instance.post('/user/editprofile', editProfile)
+  return response.data
+}
+
+export {getUserName, loginUser, signUp, editProfile}
   

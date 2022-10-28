@@ -84,8 +84,8 @@ const Login: React.FC = () => {
       setIsRedirect(true)
 
       toaster("Logged in successfully", checkmarkCircleOutline)
-      // history.push("/tabs/journaloverview");
-      history.go(0); //refresh
+      history.push("/tabs/journaloverview");
+      // history.go(0); //refresh
       setState(initialState);
     }).catch((err: any) => {
       console.log(err)
@@ -207,7 +207,7 @@ const Login: React.FC = () => {
 
                 </IonItem>
 
-                <IonFooter>Don't have an account? Sign up <NavLink to="/signup"> here </NavLink>
+                <IonFooter>Dont have an account? Sign up <NavLink to="/signup"> here </NavLink>
                 </IonFooter>
               </div>
             </form>

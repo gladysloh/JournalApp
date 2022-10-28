@@ -104,6 +104,7 @@ const JournalOverview: React.FC = () => {
      */
     useEffect(() => {
         console.log(currBody)
+        console.log("is journal written: ", isWritten)
         getJournalInfo()
         checkJournals(); 
     }, [currBody, isLoad])

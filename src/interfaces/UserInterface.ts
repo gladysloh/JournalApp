@@ -8,3 +8,7 @@ export interface SignUpDetails {
     displayName: string,
     password: string
 }
+
+export interface EditProfile {
+    new_displayname: string
+}

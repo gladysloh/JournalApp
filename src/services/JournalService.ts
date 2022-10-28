@@ -1,8 +1,12 @@
 import axios from "axios";
 const instance = axios.create({
-    withCredentials: true,
-    baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
-})
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+      withCredentials: true,
+      baseURL: 'http://127.0.0.1:5001/onceaday-48fb7/us-central1/api'
+    })
 
 async function getAllJournals(body: any){
     const response = await instance.post('/journal/getalljournals', body)
