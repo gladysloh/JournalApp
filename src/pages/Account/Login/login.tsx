@@ -85,7 +85,7 @@ const Login: React.FC = () => {
 
       toaster("Logged in successfully", checkmarkCircleOutline)
       history.push("/tabs/journaloverview");
-      // history.go(0); //refresh
+      history.go(0); //refresh
       setState(initialState);
     }).catch((err: any) => {
       console.log(err)

@@ -2,7 +2,7 @@ import {
     IonButton, IonCard, IonMenuToggle, IonCardContent, IonCardSubtitle, IonCol, IonContent, IonDatetime, IonDatetimeButton, IonGrid, IonHeader,
     IonIcon, IonImg, IonItem, IonLabel, IonList, IonMenu, IonModal, IonPage, IonRow, IonSegment, IonSegmentButton, IonTitle, IonToolbar, useIonLoading,
     useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton, useIonPicker, useIonViewDidLeave, useIonActionSheet,
-    useIonModal, useIonToast
+    useIonModal, useIonToast, IonToggle
 } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
@@ -50,6 +50,9 @@ const JournalOverview: React.FC = () => {
 
     const [isWritten, setIsWritten] = useState(false)
 
+    const [checked, setChecked] = useState(false);
+    const [style, setStyle] = useState('');
+
     const [presentToast] = useIonToast();
     const toaster = (msg: any, icon: any) => {
         presentToast({
@@ -68,6 +71,7 @@ const JournalOverview: React.FC = () => {
         console.log("getting all journals by month/year")
         setLoading(true); // Set loading before sending API request
         console.log(currBody)
+
         try {
             let result = await getAllJournals(currBody)
             console.log(result)
@@ -84,10 +88,15 @@ const JournalOverview: React.FC = () => {
         } catch (err: any) {
             console.log(err)
             toaster(err.message, closeCircleOutline)
-            getJournalInfo()
+            if (err.response.status == 500)
+                getJournalInfo()
+
             //when user is unauthorized
-            if(err.response.status === 401)
+            if (err.response.status === 401) {
+                setLoading(false); // Stop loading
                 history.replace("/login")
+            }
+
         }
     };
 
@@ -106,7 +115,7 @@ const JournalOverview: React.FC = () => {
         console.log(currBody)
         console.log("is journal written: ", isWritten)
         getJournalInfo()
-        checkJournals(); 
+        checkJournals();
     }, [currBody, isLoad])
 
     /**
@@ -122,6 +131,7 @@ const JournalOverview: React.FC = () => {
                 month: tempDate.getMonth(),
                 year: tempDate.getFullYear()
             }
+            // console.log(body)
             setCurrBody(body)
         } else if (data.choice === 'today' || data.choice === 'date') {
             getUserDate(data.value)
@@ -168,16 +178,27 @@ const JournalOverview: React.FC = () => {
 
     }
 
+    const showHideJournals = () => {
+        // console.log(val)
+        console.log(checked)
+        if (!checked) {
+            setStyle("hideBody")
+        } else if (checked) {
+            setStyle("showBody")
+            // return ( <LockScreen/> )
+        }
+    }
+
     /**
      * Check if user has written a journal entry for TODAY/current date
      */
     const checkJournals = () => {
         // console.log("check journals: ", journals)
         if (journals.length != 0) {
-            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)){ 
+            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) {
                 setIsWritten(true)
             }
-            else{ 
+            else {
                 setIsWritten(false)
             }
         }
@@ -297,17 +318,27 @@ const JournalOverview: React.FC = () => {
         })
 
         let avgRate = Math.round(count) / journals.length;
-        // console.log(avgRate)
+        console.log(avgRate)
 
-        if (avgRate >= -1 && avgRate < -0.6) {
+        if (avgRate >= -1 && avgRate < -0.8) {
             percentage = 0
-        } else if (avgRate >= -0.6 && avgRate < -0.2) {
+        } else if (avgRate >= -0.8 && avgRate < -0.6) {
+            percentage = 10
+        } else if (avgRate >= -0.6 && avgRate < -0.4) {
             percentage = 20
-        } else if (avgRate >= -0.2 && avgRate < 0.2) {
+        } else if (avgRate >= -0.4 && avgRate < -0.2) {
+            percentage = 30
+        } else if (avgRate >= -0.2 && avgRate <= 0) {
             percentage = 40
-        } else if (avgRate >= 0.2 && avgRate < 0.6) {
-            percentage = 60
-        } else if (avgRate >= 0.6 && avgRate <= 1) {
+        } else if (avgRate >= 0 && avgRate < 0.2) {
+            percentage = 50
+        } else if (avgRate >= 0.2 && avgRate < 0.4) {
+            percentage = 70
+        } else if (avgRate >= 0.4 && avgRate < 0.6) {
+            percentage = 65
+        } else if (avgRate >= 0.6 && avgRate <= 0.8) {
+            percentage = 85
+        } else if (avgRate >= 0.8 && avgRate <= 1) {
             percentage = 100
         }
 
@@ -385,8 +416,8 @@ const JournalOverview: React.FC = () => {
                         </IonCol>
                     </IonRow>
 
-                    <IonRow className='selectEntryBackground'>
-                        <IonCol className="selectEntryButtonBackground">
+                    <IonRow className='selectEntryBackground ion-align-items-center ion-justify-content-between'>
+                        <IonCol className="selectEntryButtonBackground" size="10">
                             <IonButton
                                 className="filterEntryBtn"
                                 shape="round"
@@ -395,12 +426,18 @@ const JournalOverview: React.FC = () => {
                             </IonButton>
                             <DateFilterModal selectChoice={selectDate} />
                         </IonCol>
+                        <IonCol size="2">
+                            <IonToggle onIonChange={(e) => { setChecked(e.detail.checked); showHideJournals() }}></IonToggle>
+                        </IonCol>
+
+
+
                     </IonRow>
 
 
                     {
                         !loading ?
-                            <IonRow className="entries">
+                            <IonRow className="entries ion-justify-content-center">
                                 <IonCol>
                                     {
                                         isWritten ?
@@ -435,12 +472,19 @@ const JournalOverview: React.FC = () => {
                                                             <IonCol className="entryList" size='10'>
                                                                 <IonCard className="entryListCard">
                                                                     <IonCardContent>
-                                                                        <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
-                                                                        <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
-                                                                        <p className="entryText">{item['body']}</p>
-                                                                        {item['url'] ?
-                                                                            <div > <img src={item['url']} /> </div> :
-                                                                            <div> </div>}
+                                                                        <div className="writtenEntry">
+                                                                            <div className={item['url'] ? 'textImg' : ''}>
+                                                                                <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
+                                                                                <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
+                                                                                <div  className={style}> 
+                                                                                    <p className="entryText" >{item['body']}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            {item['url'] ?
+                                                                                <div className="entryImg"> <img src={item['url']} /> </div> :
+                                                                                <div className="noEntryImg"> </div>}
+                                                                        </div>
+
 
                                                                     </IonCardContent>
                                                                 </IonCard>
@@ -453,7 +497,9 @@ const JournalOverview: React.FC = () => {
                                             /**
                                              * Add a description when there are no journals 
                                              */
-                                            <p> no journals </p>
+                                            <IonCol><p className="no-journals"> No Journals </p></IonCol>
+
+
                                     }
 
                                 </IonCol>

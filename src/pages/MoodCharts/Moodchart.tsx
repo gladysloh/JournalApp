@@ -45,13 +45,13 @@ const Moodchart: React.FC = () => {
   const [moods, setMoods] = useState([]);
   const [monthlyMoods, setMonthlyMoods] = useState(initialMonthlyMood)
   const [isLoad, setIsLoad] = useState(false)
-  
+
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
 
   const canvasPosRef = useRef<HTMLCanvasElement>(null);
   const canvasNegRef = useRef<HTMLCanvasElement>(null);
-  
+
   useIonViewWillEnter(() => {
     loadData(selectedMonth, selectedYear)
   });
@@ -69,10 +69,18 @@ const Moodchart: React.FC = () => {
       year: year
     }
 
-    let result = await getMonthlyMood(body)
-    console.log(result)
-    setMoods(result.moods)
-    setIsLoad(true)
+    try {
+      let result = await getMonthlyMood(body)
+      console.log(result)
+      setMoods(result.moods)
+      setIsLoad(true)
+    } catch (err: any) {
+      //when user is unauthorized
+      if (err.response.status === 401) {
+        setIsLoad(true)
+        history.replace("/login")
+      }
+    }
   }
 
   let sentimentarray: any = []
@@ -83,8 +91,8 @@ const Moodchart: React.FC = () => {
     moods.forEach((moodObj: any) => {
       sentimentarray.push(moodObj.sentiment)
     })
-  
-    newmoodarray = [0,0,0,0,0]
+
+    newmoodarray = [0, 0, 0, 0, 0]
     //map each sentiment value in the sentiment array to the correct index in the monthlyMoods and store in newmoodsarray
     sentimentarray.forEach((item: any) => {
       if (item >= -1 && item < -0.6) {
@@ -112,7 +120,7 @@ const Moodchart: React.FC = () => {
     dataSource.data = monthlyMoods
   }
 
-  
+
 
   function updateMood(val: number, i: any) {
     setMonthlyMoods((Mooo) => {

@@ -29,7 +29,7 @@ import {
     IonFabList,
     IonImg, useIonToast, useIonViewDidEnter, useIonViewWillEnter, useIonLoading, useIonViewWillLeave, useIonViewDidLeave, IonActionSheet, useIonAlert
 } from '@ionic/react';
-import { textSharp, imageSharp, help, closeCircleOutline, trash, close, chevronBack } from 'ionicons/icons';
+import { textSharp, imageSharp, help, closeCircleOutline, trash, close, chevronBack, checkmarkCircle } from 'ionicons/icons';
 
 import './JournalTextEdit.css';
 
@@ -89,9 +89,28 @@ export const JournalTextEdit: React.FC = () => {
         else if (e == "text") setShowHide(true)
     }
 
+    useIonViewWillEnter(() => {
+        setIsLoad(false)
+        setQns([])
+        let params = new URLSearchParams(history.location.search)
+        console.log("enter journal edit")
+        let jid = params.get("id") || ''
+        let modeType = params.get("mode") || ''
+        console.log(jid)
+    
+        setJournalId(jid)
+        if (modeType === "create") loadCreateData()
+        if (modeType === "edit") {
+            if(jid == '' || jid==undefined ||jid==null){
+                toaster("Journal does not exist", closeCircleOutline)
+                goToOverview()
+            }
+            loadEditData(jid)
+        }
+    }, [journalId]);
 
     const loadEditData = async (journalId: any) => {
-
+        console.log("loading edit")
         let result = await getJournal(journalId)
         console.log(journalId)
         console.log(result)
@@ -119,22 +138,6 @@ export const JournalTextEdit: React.FC = () => {
         setLoading(false)
         setIsLoad(true)
     }
-
-
-    useIonViewWillEnter(() => {
-        setIsLoad(false)
-        setQns([])
-        let params = new URLSearchParams(history.location.search)
-        console.log("enter journal edit")
-        let jid = params.get("id") || ''
-        let modeType = params.get("mode") || ''
-        console.log(jid)
-        setJournalId(jid)
-
-
-        if (modeType === "create") loadCreateData()
-        if (modeType === "edit") loadEditData(jid)
-    }, [journalId]);
 
     /*** ==================================================================
      * Initialization
@@ -319,15 +322,17 @@ export const JournalTextEdit: React.FC = () => {
             message: 'Deleting Journal'
         })
 
-        deleteJournal(journalId).then((res) => {
+        await deleteJournal(journalId).then((res) => {
             console.log(res);
             dismiss();
+            toaster("Journal deleted successfully", checkmarkCircle)
             goToOverview()
         }).catch((err) => {
             dismiss();
             setLoading(false);
             toaster("Error! Something went wrong", closeCircleOutline)
             console.error("ERROR: ", err);
+            
         })
     };
 

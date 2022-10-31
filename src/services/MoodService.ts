@@ -1,12 +1,9 @@
 import axios from "axios";
 const instance = axios.create({
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-      withCredentials: true,
-      baseURL: 'http://127.0.0.1:5001/onceaday-48fb7/us-central1/api'
-    })
+    withCredentials: true,
+    baseURL: 'http://localhost:5001/onceaday-48fb7/us-central1/api'
+})
+
 async function getMonthlyMood(body: any){
     const response = await instance.post('/sentiment/monthlymood', body)
     // console.log(response)

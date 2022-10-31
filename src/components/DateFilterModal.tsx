@@ -41,7 +41,9 @@ const DateFilterModal = ({ selectChoice }: any) => {
             selectChoice({ choice: 'date', value: userDate })
             modal.current?.dismiss();
         } else if (choice == "monthyear" && isUserDate) {
-            selectChoice({ choice: 'monthyear', value: userDate })
+            let temp = new Date(userDate)
+            temp.setUTCDate(temp.getUTCDate()-1);
+            selectChoice({ choice: 'monthyear', value: temp.toISOString() })
             modal.current?.dismiss();
         }
 

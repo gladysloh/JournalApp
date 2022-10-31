@@ -51,7 +51,7 @@ function Mood_Calendar() {
     getMood(selectedMonth, selectedYear)
   });
 
-  const getMood = async (month: any, year:any) =>{
+  const getMood = async (month: any, year: any) => {
     let body = {
       month: month,
       year: year
@@ -59,24 +59,32 @@ function Mood_Calendar() {
 
     console.log(body)
 
-    let result = await getMonthlyMood(body)
-    console.log(result)
-    setMood(result.moods)
-    setIsEvent(true)
+    try {
+      let result = await getMonthlyMood(body)
+      console.log(result)
+      setMood(result.moods)
+      setIsEvent(true)
+    } catch (err: any) {
+      //when user is unauthorized
+      if (err.response.status === 401) {
+        setIsEvent(true)
+        history.replace("/login")
+      }
+    }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     setEvents(initialState)
     moods.forEach((el, i) => {
       let title = getEmotion(el['sentiment']).emoji
       let start = getJournalDate(el['timestamp'])
       let end = getJournalDate(el['timestamp'])
-      console.log({title: title, start: start, end: end })
-      setEvents(events => [...events, {title: title, start: start, end: end }])
+      console.log({ title: title, start: start, end: end })
+      setEvents(events => [...events, { title: title, start: start, end: end }])
     })
 
     console.log(events)
-  }, [isEvent] )
+  }, [isEvent])
 
 
   const getEmotion = (sentiment: any) => {
@@ -101,7 +109,7 @@ function Mood_Calendar() {
     return date;
   }
 
-  const getSelected = (month: Date) =>{
+  const getSelected = (month: Date) => {
     let currDate = month.getMonth()
     let currYear = month.getFullYear()
 
@@ -131,7 +139,7 @@ function Mood_Calendar() {
             startAccessor="start"
             endAccessor="end" views={['month']}
             style={{ height: 350, width: 320, margin: "0px" }}
-            onNavigate={(month)=>getSelected(month)}
+            onNavigate={(month) => getSelected(month)}
 
             eventPropGetter={(event, start, end, isSelected) => ({
               event,

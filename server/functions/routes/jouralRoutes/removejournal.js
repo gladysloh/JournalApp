@@ -20,8 +20,7 @@ async function removejournal(req, res){
             error: 'journal not found'
         })
     } else {
-        const journal = snapshot.data().fields
-        console.log(journal.filename)
+        const journal = await snapshot.data()
         if (journal.url){
             try {
             await bucket.file(`post-images/${journal.filename}`).delete()
