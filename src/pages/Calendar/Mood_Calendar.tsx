@@ -52,6 +52,7 @@ function Mood_Calendar() {
   });
 
   const getMood = async (month: any, year: any) => {
+    
     let body = {
       month: month,
       year: year
@@ -79,7 +80,6 @@ function Mood_Calendar() {
       let title = getEmotion(el['sentiment']).emoji
       let start = getJournalDate(el['timestamp'])
       let end = getJournalDate(el['timestamp'])
-      console.log({ title: title, start: start, end: end })
       setEvents(events => [...events, { title: title, start: start, end: end }])
     })
 
@@ -115,8 +115,9 @@ function Mood_Calendar() {
 
     setMonth(currDate)
     setYear(currYear)
-    getMood(currDate, currYear)
     setIsEvent(false)
+    getMood(currDate, currYear)
+    
 
   }
 

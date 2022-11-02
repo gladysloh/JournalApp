@@ -70,7 +70,7 @@
 
     width: 200px;
     height: 200px;
-    margin: 10px 0px 10px 0px;
+    margin: 0 auto;
     padding: 0px;
 
     background: linear-gradient(166.68deg, #FFF4EB 1.06%, rgba(255, 255, 255, 0.5) 1.07%, #FFFFFF 39.99%, #FFFFFF 65.31%, #FFF4EB 95.98%, rgba(255, 255, 255, 0.2) 95.98%);
@@ -116,8 +116,8 @@
 }
 
 .checkEmojiCard {
-    height: 250px;
-    width: 355px;
+    /* height: 250px;
+    width: 355px; */
 
     background: linear-gradient(103.96deg, rgba(255, 255, 255, 0.6) 47.03%, rgba(255, 255, 255, 0.3) 108.98%);
     border-radius: 28px;
@@ -175,9 +175,9 @@
 
 .emojiCard {
     box-sizing: border-box;
-
+/* 
     width: 60px;
-    height: 60px;
+    height: 60px; */
     margin: 0px;
     padding: 0px;
 

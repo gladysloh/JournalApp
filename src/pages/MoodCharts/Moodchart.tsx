@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IonApp, IonButtons, IonCol, IonGrid, IonMenuButton, IonRow, useIonViewWillEnter } from "@ionic/react";
+import { IonApp, IonButtons, IonCol, IonDatetime, IonGrid, IonMenuButton, IonModal, IonRow, useIonViewWillEnter } from "@ionic/react";
 import FusionCharts from "fusioncharts";
 import Charts from "fusioncharts/fusioncharts.charts";
 import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
@@ -129,50 +129,25 @@ const Moodchart: React.FC = () => {
     })
   }
 
-
-  // const getMoodChart = () => {
-  //   moods.forEach((j: any) => {
-  //     let sentiment = j['sentiment']
-  //     if (sentiment >= -1 && sentiment < -0.6) {
-  //       updateMood(0)
-  //     } else if (sentiment >= -0.6 && sentiment < -0.2) {
-  //       updateMood(1)
-  //     } else if (sentiment >= -0.2 && sentiment < 0.2) {
-  //       updateMood(2)
-  //     } else if (sentiment >= 0.2 && sentiment < 0.6) {
-  //       updateMood(3)
-  //     } else if (sentiment >= 0.6 && sentiment <= 1) {
-  //       updateMood(4)
-  //     }
-  //   })
-  //   dataSource.chart.caption = getJournalMonth()
-  //   dataSource.data = monthlyMoods
-
-  //   console.log(monthlyMoods)
-  // }
-
-  // const updateMood = (id: any) => {
-  //   setMonthlyMoods(
-  //     monthlyMoods.map((item, i) => {
-  //       let value = item.value++;
-  //       if (i === id) {
-  //         return { ...item, value: value };
-  //       } else {
-  //         return item;
-  //       }
-  //     })
-  //   );
-  // };
+  const getUserDate = (value: any) => {
+  
+    let m =  new Date(value).getMonth()
+    let y = new Date(value).getFullYear()
+    setMonth(m)
+    setYear(y)
+    setIsLoad(false)
+    loadData(m, y)
+  }
 
   const getJournalMonth = () => {
-    let date = new Date().getMonth()
+    let date = selectedMonth
     return MONTH_NAMES[date];
   }
 
   const loadWordCloud = async () => {
     let body = {
-      month: new Date().getMonth(),
-      year: new Date().getFullYear()
+      month: selectedMonth,
+      year: selectedYear
     }
 
     let wordcloud = await getWordCloud(body)
@@ -211,6 +186,20 @@ const Moodchart: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <div className="chartButton">
+          <IonButton expand="block" className="dateTimeButton" color="original" id="open-monthyear"> Select Month and Year </IonButton>
+        </div>
+        
+        <IonModal keepContentsMounted={true} trigger="open-monthyear" class="filter-modal">
+          <IonDatetime
+            // value={currDate}
+            id="datetime"
+            presentation="month-year"
+            showDefaultButtons={true} color="original"
+            max={new Date().toISOString()}
+            onIonChange={(val) => getUserDate(val.detail.value)}
+            ></IonDatetime>
+        </IonModal>
         <IonCard className="chart-card">
           <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
           <ReactFC className="chart-chart" {...chartConfigs} />

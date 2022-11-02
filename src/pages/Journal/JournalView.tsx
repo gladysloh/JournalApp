@@ -59,6 +59,9 @@ export const JournalView: React.FC = () => {
         sentiment: 0,
         createdTimestamp: {
             _seconds: 0
+        },
+        editTimestamp: {
+            _seconds: 0
         }
     };
 
@@ -123,7 +126,6 @@ export const JournalView: React.FC = () => {
     }
 
     const getEditTimestamp = (seconds: any) => {
-
         return `Edited on the ${getJournalDay(seconds)} ${getJournalMonth(seconds)} ${getJournalYear(seconds)} ${getJournalTime(seconds)}`
     }
 
@@ -230,7 +232,7 @@ export const JournalView: React.FC = () => {
                                             <IonGrid className="journalEntryGrid">
                                                 <IonRow>
                                                     <IonCol>
-                                                        <IonCardSubtitle className="editTimestamp">  {viewJournal.editTime ? getEditTimestamp(viewJournal.editTime?._seconds) : false}</IonCardSubtitle>
+                                                        <IonCardSubtitle className="editTimestamp">  {viewJournal.editTimestamp ? getEditTimestamp(viewJournal.editTimestamp?._seconds) : false}</IonCardSubtitle>
                                                     </IonCol>
                                                 </IonRow>
                                                 <IonRow className="nomargin">

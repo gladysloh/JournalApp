@@ -48,7 +48,7 @@ const JournalOverview: React.FC = () => {
     let initialDate = new Date().toISOString()
     const [currDate, setCurrDate] = useState(initialDate)
 
-    const [isWritten, setIsWritten] = useState(false)
+    const [isWritten, setIsWritten] = useState(true)
 
     const [checked, setChecked] = useState(false);
     const [style, setStyle] = useState('');
@@ -79,18 +79,19 @@ const JournalOverview: React.FC = () => {
                 let j: [] = result.journals
                 j.sort((a, b) => b['createdTimestamp']['_seconds'] - a['createdTimestamp']['_seconds']);
                 setJournals(j);
-                checkJournals(); //check is user has written journal today
                 setLoading(false); // Stop loading
                 setIsLoad(true)
+                // checkJournals()
             } else if (result.status == 400) {
                 setLoading(false); // Stop loading
             }
         } catch (err: any) {
             console.log(err)
             toaster(err.message, closeCircleOutline)
-            if (err.response.status == 500)
+            if (err.response.status == 500) {
+                console.log(err.response)
                 getJournalInfo()
-
+            }
             //when user is unauthorized
             if (err.response.status === 401) {
                 setLoading(false); // Stop loading
@@ -104,8 +105,8 @@ const JournalOverview: React.FC = () => {
      * Load function when user enter page
      */
     useIonViewWillEnter(() => {
-        console.log("ion view enter ")
-        // getJournalInfo()
+        console.log("ion view enter")
+        getTodayJournal(new Date()) //check is user has written journal today
     }, []);
 
     /**
@@ -114,8 +115,7 @@ const JournalOverview: React.FC = () => {
     useEffect(() => {
         console.log(currBody)
         console.log("is journal written: ", isWritten)
-        getJournalInfo()
-        checkJournals();
+        getJournalInfo();
     }, [currBody, isLoad])
 
     /**
@@ -138,15 +138,7 @@ const JournalOverview: React.FC = () => {
         }
     }
 
-    /**
-     * 
-     * @param value 
-     * 
-     * When user selects a single date
-     */
-    const getUserDate = (value: any) => {
-        console.log(value)
-
+    const userDateFormat = (value: any) => {
         let singleDate = new Date(value);
         setCurrDate(value)
 
@@ -156,26 +148,53 @@ const JournalOverview: React.FC = () => {
             date: singleDate.getDate()
         }
 
+        return singleBody
+    }
+    /**
+     * 
+     * @param value 
+     * 
+     * When user selects a single date
+     */
+    const getUserDate = async (value: any) => {
+        console.log(value)
+        let formatDate = userDateFormat(value)
         setLoading(true);
-        getSingleDateJournal(singleBody).then((res) => {
-            // console.log(res);
+
+        try {
+            let res = await getSingleDateJournal(formatDate)
             let j = [];
             if (res.success) {
                 let temp = res.journal
                 temp.id = res.id
                 j.push(temp)
             }
-
             setJournals(j);
             setLoading(false); // Stop loading
 
-        }).catch((err) => {
+        } catch (err: any) {
             setLoading(false); // Stop loading
-
+            setIsWritten(false);
             console.error("ERROR: ", err);
             if (err.response.status == 401) history.replace("/login")
-        })
+        }
+    }
 
+    const getTodayJournal = async (value: any) => {
+        let formatDate = userDateFormat(value)
+
+        try {
+            let res = await getSingleDateJournal(formatDate)
+            if (res.success) {
+                setIsWritten(true);
+            } else {
+                setIsWritten(false);
+            }
+        } catch (err: any) {
+            setIsWritten(false);
+            console.error("ERROR: ", err);
+            if (err.response.status == 401) history.replace("/login")
+        }
     }
 
     const showHideJournals = () => {
@@ -192,17 +211,17 @@ const JournalOverview: React.FC = () => {
     /**
      * Check if user has written a journal entry for TODAY/current date
      */
-    const checkJournals = () => {
-        // console.log("check journals: ", journals)
-        if (journals.length != 0) {
-            if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) {
-                setIsWritten(true)
-            }
-            else {
-                setIsWritten(false)
-            }
-        }
-    }
+    // const checkJournals = async () => {
+
+    //     if (isWritten) {
+    //         if (new Date(journals[0]['createdTimestamp']['_seconds'] * 1000).setHours(0, 0, 0, 0) == current.setHours(0, 0, 0, 0)) {
+    //             setIsWritten(true)
+    //         }
+    //         else {
+    //             setIsWritten(false)
+    //         }
+    //     }
+    // }
 
     /**
      * 
@@ -245,8 +264,6 @@ const JournalOverview: React.FC = () => {
      */
     const handleViewJournal = (journal: any) => {
         console.log("view")
-        console.log(journal)
-
         history.replace({
             pathname: '/tabs/journalview',
             search: '?mode=view&id=' + journal.id,
@@ -318,7 +335,6 @@ const JournalOverview: React.FC = () => {
         })
 
         let avgRate = Math.round(count) / journals.length;
-        console.log(avgRate)
 
         if (avgRate >= -1 && avgRate < -0.8) {
             percentage = 0
@@ -441,7 +457,7 @@ const JournalOverview: React.FC = () => {
                                 <IonCol>
                                     {
                                         isWritten ?
-                                            <IonRow></IonRow> :
+                                            <IonRow> </IonRow> :
                                             <IonRow onClick={() => handleCreateJournal()}>
                                                 <IonCol className="entryDateDay" size='2'>
                                                     <p className="entryDate">{current.getDate()} {MONTH_NAMES[current.getMonth()]}</p>
@@ -476,7 +492,7 @@ const JournalOverview: React.FC = () => {
                                                                             <div className={item['url'] ? 'textImg' : ''}>
                                                                                 <IonCardSubtitle className="entryTitle"> {item['title']} </IonCardSubtitle>
                                                                                 <p className="entryTime">{getJournalTime(item['createdTimestamp'])} </p>
-                                                                                <div  className={style}> 
+                                                                                <div className={style}>
                                                                                     <p className="entryText" >{item['body']}</p>
                                                                                 </div>
                                                                             </div>

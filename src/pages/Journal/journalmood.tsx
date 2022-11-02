@@ -1,7 +1,6 @@
 import { IonButton, IonCard, IonCardContent, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonImg, IonPage, IonRow, IonTitle, IonToolbar, useIonLoading, useIonToast, useIonViewDidEnter, IonLabel } from '@ionic/react';
 // import ExploreContainer from '../../components/ExploreContainer';
 import './journalmood.css';
-
 import elated from '../../theme/icons/elated.png';
 import smiling from '../../theme/icons/smiling.png';
 import neutral from '../../theme/icons/neutral.png';
@@ -10,7 +9,7 @@ import verysad from '../../theme/icons/verysad.png';
 import questionmark from '../../theme/icons/questionmark.png';
 import { MONTH_NAMES } from '../../SharedVariables';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { checkmarkCircleOutline, closeCircleOutline } from 'ionicons/icons';
 import { updateSentiment } from '../../services/MoodService';
@@ -118,8 +117,8 @@ const JournalMood: React.FC = () => {
           <IonRow className="subtitleBackground">
             <p className="subtitle">Predicted mood is...</p>
           </IonRow>
-          <IonRow>
-            <IonCol>
+          <IonRow className="ion-justify-content-center">
+            <IonCol size="12">
               <IonCard className="generatedEmojiCard">
                 <IonImg className="generatedEmojiImage" src={generateMood()?.src} />
                 <IonLabel className="generatedEmojiLabel">{generateMood()?.name} </IonLabel>
@@ -138,24 +137,24 @@ const JournalMood: React.FC = () => {
                       <p className="checkEmojiSubtitle">No, my mood for today is...</p>
                     </IonRow>
                     <IonRow className="emojiCardsBackground">
-                      <IonCol>
+                      <IonCol size="3">
                         <IonCard className="emojiCard" onClick={() => updateMood(1)}>
                           <IonImg className="emojiImage" src={smiling} />
                         </IonCard>
                       </IonCol>
 
-                      <IonCol>
+                      <IonCol size="3">
                         <IonCard className="emojiCard" onClick={() => updateMood(0)}>
                           <IonImg className="emojiImage" src={neutral} />
                         </IonCard>
                       </IonCol>
-                      <IonCol>
+                      <IonCol size="3">
                         <IonCard className="emojiCard" onClick={() => updateMood(-0.5)}>
                           <IonImg className="emojiImage" src={sad} />
                         </IonCard>
                       </IonCol>
 
-                      <IonCol>
+                      <IonCol size="3">
                         <IonCard className="emojiCard" onClick={() => updateMood(-1)}>
                           <IonImg className="emojiImage" src={verysad} />
                         </IonCard>

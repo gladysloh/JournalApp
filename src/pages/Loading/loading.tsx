@@ -1,6 +1,7 @@
 import { IonContent, IonHeader, IonImg, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 // import ExploreContainer from '../../components/ExploreContainer';
 import './loading.css';
+import React from "react";
 
 import logo from '../../theme/logo.png';
 

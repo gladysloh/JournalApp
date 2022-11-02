@@ -9,7 +9,7 @@ export interface UserJournal {
     createdTimestamp: {
         _seconds: number
     }
-    editTime?:{
+    editTimestamp?:{
         _seconds: number
     }
 }

@@ -56,3 +56,10 @@
     align-items: center;
     justify-content: center;
 }
+
+.chartButton{
+    /* width:80%; */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}

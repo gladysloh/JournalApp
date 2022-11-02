@@ -97,11 +97,11 @@ export const JournalTextEdit: React.FC = () => {
         let jid = params.get("id") || ''
         let modeType = params.get("mode") || ''
         console.log(jid)
-    
+
         setJournalId(jid)
         if (modeType === "create") loadCreateData()
         if (modeType === "edit") {
-            if(jid == '' || jid==undefined ||jid==null){
+            if (jid == '' || jid == undefined || jid == null) {
                 toaster("Journal does not exist", closeCircleOutline)
                 goToOverview()
             }
@@ -306,6 +306,7 @@ export const JournalTextEdit: React.FC = () => {
                     goToOverview()
                 } else {
                     toaster("Error! Something went wrong", closeCircleOutline)
+                    goToOverview()
                 }
                 console.error("ERROR: ", err);
             })
@@ -332,7 +333,7 @@ export const JournalTextEdit: React.FC = () => {
             setLoading(false);
             toaster("Error! Something went wrong", closeCircleOutline)
             console.error("ERROR: ", err);
-            
+
         })
     };
 
@@ -374,7 +375,7 @@ export const JournalTextEdit: React.FC = () => {
                                 <IonGrid className="headingBackground">
                                     <IonRow class="ion-align-items-center">
                                         <IonCol size="1" >
-                                            <IonIcon onClick={()=>handleViewJournal()} icon={chevronBack} className="back-btn" size="large" />
+                                            <IonIcon onClick={() => handleViewJournal()} icon={chevronBack} className="back-btn" size="large" />
                                         </IonCol>
 
                                         <IonCol size="8">
@@ -466,24 +467,35 @@ export const JournalTextEdit: React.FC = () => {
                                     </IonRow>
                                     :
                                     <IonRow className="imageBackground">
-                                        <IonCol size="6">
+                                        
+                                        <IonCol size="12">
 
                                             {
-                                                // getJournalImg()
-
-                                                // journalImg != '' ? <IonImg src={journalImg}/> : <span></span>
                                                 photos ?
-                                                    <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)} /> :
-                                                    editBody.url ? <IonImg src={editBody ? editBody.url : ''} /> : <span></span>
+                                                    <div className="displayPhoto">
+                                                        <IonImg src={photos.webviewPath ? photos.webviewPath : ''} onClick={() => setPhotoToDelete(photos)} />
+                                                    </div>
+                                                    :
+                                                    editBody.url ?
+                                                        <div className="displayPhoto">
+                                                            <IonImg src={editBody ? editBody.url : ''} onClick={() => setPhotoToDelete(undefined)} />
+                                                        </div>
+                                                        : <span></span>
                                             }
                                         </IonCol>
+
                                         <IonCol size='12'>
-                                            <IonCard className="journalImageCard">
+                                            <IonButton onClick={() => takePhoto()} expand="block" color="dark">
+                                                Upload an Image
+                                            </IonButton>
+                                            {/* <IonCard className="journalImageCard">
                                                 <IonCardContent>
                                                     <IonImg className="uploadImageIcon" src={uploadImage} onClick={() => takePhoto()}></IonImg>
                                                 </IonCardContent>
-                                            </IonCard>
+                                            </IonCard> */}
                                         </IonCol>
+
+
                                     </IonRow>
                                 }
 
@@ -561,6 +573,13 @@ export const JournalTextEdit: React.FC = () => {
                             if (photoToDelete) {
                                 deletePhoto(photoToDelete);
                                 setPhotoToDelete(undefined);
+                            }
+                            else if(editBody.filename){
+                                presentAlert({
+                                    header: 'Unable to delete photo',
+                                    message: 'Remove journal or upload new image',
+                                    buttons: ['OK'],
+                                })
                             }
                         }
                     }, {
