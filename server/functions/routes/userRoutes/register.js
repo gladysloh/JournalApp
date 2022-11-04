@@ -32,7 +32,7 @@ async function register(req, res) {
         console.log(auth)
         try {
             await admin.auth().updateUser(credential.user.uid, {
-                displayName: displayName
+                displayname: displayName
             })
         } catch(err){
             return res.status(400).json({
