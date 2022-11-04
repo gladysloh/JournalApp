@@ -1,3 +1,38 @@
 /* ion-item{
     back
 } */
+
+ion-item.display-btn {
+    --background: #fff;
+    --color: #000;
+
+    --border-color: var(--ion-color-original);
+    --border-style: solid;
+    --border-width: 2px;
+
+    --border-radius: 20px;
+    
+
+    /* --ripple-color: purple; */
+
+    --detail-icon-color: black;
+    --detail-icon-opacity: 1;
+    --detail-icon-font-size: 20px;
+    width: 100%;
+
+    font-family: 'Convergence';
+
+    
+
+}
+
+div.setting-list {
+    background-color: transparent;
+    padding:10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+
+}

@@ -84,9 +84,9 @@ const Login: React.FC = () => {
       setIsRedirect(true)
 
       toaster("Logged in successfully", checkmarkCircleOutline)
-      history.push("/tabs/journaloverview");
-      history.go(0); //refresh
-      setState(initialState);
+      history.replace("/tabs/journaloverview");
+      // history.go(0); //refresh
+     
     }).catch((err: any) => {
       console.log(err)
       if (err.response.status != 404 && err.response.data) {
@@ -97,31 +97,6 @@ const Login: React.FC = () => {
       setLoading(false);
       console.error("ERROR: ", err.response);
     })
-
-    // try {
-    //   let result = await loginUser(userDetails).
-
-
-    //   console.log(result);
-    //   dismiss();
-    //   setLoading(false);
-    //   setIsRedirect(true)
-
-    //   toaster("Logged in successfully", checkmarkCircleOutline)
-    //   history.push("/tabs/journaloverview");
-    //   // history.go(0); //refresh
-    //   setState(initialState);
-    // } catch (err: any) {
-    //   console.log(err)
-    //   if (err.response.status!=404 && err.response.data) {
-    //     getErrorCode(err.response.data.error.code)
-    //   }
-    //   toaster("Error! Something went wrong", closeCircleOutline)
-    //   dismiss();
-    //   setLoading(false);
-    //   console.error("ERROR: ", err.response);
-    // }
-
   };
 
   const getErrorCode = (err: any) => {
@@ -144,12 +119,12 @@ const Login: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log(isRedirect)
-    if (isRedirect) {
-      history.replace("/tabs/journaloverview");
-    }
-
-  }, [isRedirect])
+    // console.log(isRedirect)
+    // if (isRedirect) {
+    //   setState(initialState);
+    //   history.replace("/tabs/journaloverview");
+    // }
+  }, [])
 
   return (
     <IonPage>

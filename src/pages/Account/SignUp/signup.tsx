@@ -87,7 +87,7 @@ const SignUp: React.FC = () => {
       setLoading(false);
       setIsRedirect(true)
       toaster("Signed up successfully", checkmarkCircleOutline)
-      history.replace("/tabs/login");
+      history.replace("/welcome");
     } catch (err: any) {
       if (err.response.data) {
         getErrorCode(err.response.data.error.code)

@@ -32,7 +32,7 @@ async function register(req, res) {
         //console.log(auth)
         try {
             await admin.auth().updateUser(credential.user.uid, {
-                displayname: displayName
+                displayName: displayName
             })
             await firestore.collection('users').doc(credential.user.uid).set({
                 displayName: displayName
@@ -47,7 +47,7 @@ async function register(req, res) {
         await credential.user.getIdToken().then((token) => {
             res.cookie('auth_token', token).status(201).json({
                 success: true,
-                displayname: displayName,
+                displayName: displayName,
                 uid: credential.user.uid
             })
         })

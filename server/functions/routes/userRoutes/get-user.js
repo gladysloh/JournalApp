@@ -23,7 +23,7 @@ async function getUser(req, res){
     }
     console.log(snapshot)
      const user = snapshot.data();
-     return res.status(200).json({ displayname: user.displayname })
+     return res.status(200).json({ displayName: user.displayName })
 
 }
 

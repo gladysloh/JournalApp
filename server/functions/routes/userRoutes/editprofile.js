@@ -18,7 +18,7 @@ async function editprofile(req, res){
             .collection('users')
             .doc(uid)
             .update({
-                displayname: new_displayname
+                displayName: new_displayname
             })
             res.status(200).json({
                 success: true,

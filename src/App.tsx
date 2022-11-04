@@ -20,6 +20,7 @@ import {
 } from '@ionic/react';
 
 import React, { useEffect, useContext } from "react";
+import Cookies from 'js-cookie'
 
 // import { AuthContext } from './context/auth.context.js';
 
@@ -61,50 +62,36 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const [userStatus, setUserStatus] = useState(false);
+  const getAuthToken = () => Cookies.get('auth_token')
+  const isAuthenticated = () => !!getAuthToken()
+  console.log(isAuthenticated())
 
+  // const checkUser = async () => {
 
-  const checkUser = async () => {
-    try {
-      let result = await getUserName()
+  //   try {
+  //     let result = await getUserName()
 
-      if (result.displayname) {
-        setUserStatus(true)
-      } else {
-        setUserStatus(false)
-      }
-    } catch (err: any) {
+  //     if (result.displayName) {
+  //       setUserStatus(true)
 
-      console.log(err)
-    }
+  //     } else {
+  //       setUserStatus(false)
+  //     }
+  //   } catch (err: any) {
 
-  }
+  //     console.log(err)
+  //   }
 
-  useEffect(() => {
-    checkUser()
-  }, [userStatus])
+  // }
+
+  // useEffect(() => {
+  //   checkUser()
+  // }, [userStatus])
 
 
   return (
-    // <IonApp>
-    //   <IonReactRouter >
-    //     <SideMenu />
-    //     <IonRouterOutlet>
-    //       <Route path="/login" component={Login} exact={true} />
-    //       <Route path="/signup" component={SignUp} exact={true} />
-    //       <Route path="/tabs" component={TabRoot} exact={true} />
-    //       <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
-
-    //       <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
-    //       <Route path="/" render={() => { return userStatus ? <TabRoot /> : <Login /> }} exact={true} />
-    //       {userStatus ? <TabRoot /> : <Redirect to="/login" />}
-
-    //       <Route path="/lockscreen" component={Example} />
-
-    //     </IonRouterOutlet>
-    //   </IonReactRouter>
-    // </IonApp>
-
     <IonApp>
+
       <IonReactRouter>
         <IonSplitPane contentId="main" when="(min-width: 20000px)">
           <SideMenu />
@@ -114,10 +101,10 @@ const App: React.FC = () => {
             <Route path="/welcome" component={WelcomeSlides} exact={true} />
             <Route path="/tabs" component={TabRoot} exact={true} />
             <Route path="/tabs/journaloverview" component={JournalOverview} exact={true} />
-          
 
-            <Route path="/tabs" render={() => { return userStatus ? <TabRoot /> : <Login /> }} />
-            <Route path="/" render={() => { return userStatus ?  <TabRoot /> : <Login />}} exact={true} />
+
+            <Route path="/tabs" render={() => { return isAuthenticated() ? <TabRoot /> : <Login /> }} />
+            <Route path="/" render={() => { return isAuthenticated() ? <TabRoot /> : <Login /> }} exact={true} />
             {/* <Route path="/login" render={()=>{return userStatus? <Redirect to="/tabs/journaloverview"/> : <Redirect to="/login"/>} }/> */}
 
           </IonRouterOutlet>

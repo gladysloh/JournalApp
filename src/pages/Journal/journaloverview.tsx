@@ -88,7 +88,7 @@ const JournalOverview: React.FC = () => {
         } catch (err: any) {
             console.log(err)
             toaster(err.message, closeCircleOutline)
-            if (err.response.status == 500) {
+            if (err.response.status == 500 || err.response.status == 0) {
                 console.log(err.response)
                 getJournalInfo()
             }

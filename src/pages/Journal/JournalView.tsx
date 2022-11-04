@@ -86,7 +86,8 @@ export const JournalView: React.FC = () => {
         setLoading(true)
         console.log(journalId)
 
-        getJournalEntry(jid)
+        if(jid=='' || jid == undefined || jid == null) goBack()
+        else getJournalEntry(jid)
 
         if (params.get("mode") == "view") {
             setVal('view')

@@ -17,7 +17,8 @@ import {
     IonSplitPane, 
     IonTitle, 
     IonToolbar, 
-    useIonViewDidEnter
+    useIonViewDidEnter,
+    useIonViewWillEnter
 } from '@ionic/react'
 import { settingsOutline, logOutOutline } from 'ionicons/icons'
 import Settings from "../Settings/settings";
@@ -32,16 +33,18 @@ export const SideMenu = () => {
 
     useEffect(()=>{
         checkUser()
-    }, [displayName])
+    }, [])
 
     const checkUser = async () => {
+
         try{
             let result = await getUserName()
             console.log(result)
         
-            if(result.displayname){
-              setDisplayName(result.displayname) 
+            if(result.displayName){
+              setDisplayName(result.displayName) 
             }
+
         }catch(err:any){
             console.log(err)
         }
@@ -57,7 +60,7 @@ export const SideMenu = () => {
     }
 
     return (
-        <IonMenu side='start' contentId='main'>
+        <IonMenu side='start' contentId='main' onIonWillOpen={()=>checkUser()}>
             <IonContent className="menuIonContent">
                 <div className="menuHeaderBackground">
                     <IonItem color="none" lines="none" className="titleHeader">
@@ -69,12 +72,12 @@ export const SideMenu = () => {
                 </div>
                 <IonCard className="menuCard">
                     <IonList className="backgroundTransparent">
-                        {/* <IonMenuToggle auto-hide='true'>
+                        <IonMenuToggle auto-hide='true'>
                             <IonItem className="menuItem" color="none" lines="none" button routerLink={"/tabs/settings"} routerDirection="none">
                                 <IonIcon className="menuIcon" icon={settingsOutline}></IonIcon>
                                 <IonLabel className="menuLabel">Settings</IonLabel>
                             </IonItem>
-                        </IonMenuToggle> */}
+                        </IonMenuToggle>
                         <IonMenuToggle auto-hide='true'>
                             <IonItem className="menuItem" color="none" lines="none" button onClick={()=>logout()} routerDirection="none">
                                 <IonIcon className="menuIcon" icon={logOutOutline}></IonIcon>
