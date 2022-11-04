@@ -29,19 +29,22 @@ async function register(req, res) {
             password,
             displayName
         );
-        console.log(auth)
+        //console.log(auth)
         try {
             await admin.auth().updateUser(credential.user.uid, {
                 displayname: displayName
             })
+            await firestore.collection('users').doc(credential.user.uid).set({
+                displayName: displayName
+            })
         } catch(err){
+            console.log(err)
             return res.status(400).json({
                 success: false,
-                error: err
+                error: err.message
             })
         }
         await credential.user.getIdToken().then((token) => {
-            console.log(token)
             res.cookie('auth_token', token).status(201).json({
                 success: true,
                 displayname: displayName,
