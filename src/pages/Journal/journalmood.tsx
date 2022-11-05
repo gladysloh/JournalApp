@@ -29,7 +29,9 @@ const JournalMood: React.FC = () => {
   const history = useHistory();
   const params = new URLSearchParams(location.search)
 
-
+/**
+ * Navigate back to journal overview
+ */
   const goToOverview = () => {
     history.replace({
       pathname: '/tabs/journaloverview'
@@ -52,6 +54,9 @@ const JournalMood: React.FC = () => {
 
   }, [])
 
+  /**
+   * Get today's date and format it
+   */
   const getTodayDate = () => {
     let today = new Date()
     return `${today.getDate()} ${MONTH_NAMES[today.getMonth()]} ${today.getFullYear()} `
@@ -68,6 +73,9 @@ const JournalMood: React.FC = () => {
     });
   };
 
+  /**
+   * Display emotions based on sentiment value
+   */
   const generateMood = () => {
     //-1 to -0.6, -0.6 to -0.2, -0.2 to 0.2, 0.2 to 0.6, 0.6 to 1
 
@@ -84,6 +92,10 @@ const JournalMood: React.FC = () => {
     }
   }
 
+  /**
+   * Update user's selected mood
+   * @param s 
+   */
   const updateMood = (s: number) => {
 
     let body = {
@@ -92,18 +104,19 @@ const JournalMood: React.FC = () => {
     }
 
     updateSentiment(body).then((res) => {
+      //success
       console.log(res);
       dismiss();
       setLoading(false);
       history.replace("/tabs/journaloverview")
+
     }).catch((err) => {
+      //fail 
       toaster("Error! Something went wrong", closeCircleOutline)
       dismiss();
       setLoading(false);
       console.error("ERROR: ", err.response);
     })
-
-
   }
 
 

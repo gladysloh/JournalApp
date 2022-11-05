@@ -63,6 +63,10 @@ const Login: React.FC = () => {
 
   const [uid, setUserID] = useState([]);
 
+  /**
+   * Submit login details for verification
+   * @param e 
+   */
   const onSubmit = async (e: any) => {
 
     const userDetails: LoginDetails = {
@@ -99,6 +103,10 @@ const Login: React.FC = () => {
     })
   };
 
+  /**
+   * Get the error message 
+   * @param err 
+   */
   const getErrorCode = (err: any) => {
     console.log(err)
     if (err == 'auth/user-not-found') {
@@ -108,6 +116,10 @@ const Login: React.FC = () => {
     }
   }
 
+  /**
+   * Display error message to user via alert prompt
+   * @param msg 
+   */
   const errorAlert = (msg: string) => {
     presentAlert({
       header: 'Error!',

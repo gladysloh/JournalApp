@@ -82,6 +82,10 @@ export const JournalTextEdit: React.FC = () => {
 
     const [presentAlert] = useIonAlert();
 
+    /**
+     * Setting states when toggling between segments image and text
+     * @param e 
+     */
     const handleSegment = (e: any) => {
         console.log(e)
         setSegment(e)
@@ -109,6 +113,11 @@ export const JournalTextEdit: React.FC = () => {
         }
     }, [journalId]);
 
+    /**
+     * Load journal data
+     * 
+     * @param journalId 
+     */
     const loadEditData = async (journalId: any) => {
         console.log("loading edit")
         let result = await getJournal(journalId)
@@ -128,8 +137,10 @@ export const JournalTextEdit: React.FC = () => {
         setIsLoad(true)
     }
 
+    /**
+     * Display empty journal
+     */
     const loadCreateData = async () => {
-
         console.log(initialJournal)
         setEdit(initialJournal)
         setVal('edit')
@@ -141,6 +152,10 @@ export const JournalTextEdit: React.FC = () => {
 
     /*** ==================================================================
      * Initialization
+     */
+
+    /**
+     * Display image if exists
      */
     const getJournalImg = () => {
         if (photos || editBody.url) {
@@ -157,6 +172,9 @@ export const JournalTextEdit: React.FC = () => {
         }
     }
 
+    /**
+     * Get date of journal
+     */
     const getJournalDay = () => {
         if (mode == 'edit')
             return new Date(editBody.createdTimestamp._seconds * 1000).getDate()
@@ -164,6 +182,9 @@ export const JournalTextEdit: React.FC = () => {
             return new Date().getDate();
     }
 
+    /**
+     * Get the month from timestamp / date
+     */
     const getJournalMonth = () => {
         if (mode == 'edit')
             return MONTH_NAMES[new Date(editBody.createdTimestamp._seconds * 1000).getMonth()]
@@ -171,6 +192,9 @@ export const JournalTextEdit: React.FC = () => {
             return MONTH_NAMES[new Date().getMonth()];
     }
 
+    /**
+     * get the year from timestamp/date
+     */
     const getJournalYear = () => {
         if (mode == 'edit')
             return new Date(editBody.createdTimestamp._seconds * 1000).getFullYear()
@@ -224,8 +248,9 @@ export const JournalTextEdit: React.FC = () => {
             [event.target.name]: event.target.value
         });
     }
+
     /**
-   *
+   * Submit journal entries
    * @param data
    */
     const handleSubmit = async (event: any) => {
@@ -298,12 +323,14 @@ export const JournalTextEdit: React.FC = () => {
                 dismiss();
                 setLoading(false);
                 goToSentiment(createBody.sentiment, res.id)
+
             }).catch((err: any) => {
                 dismiss();
                 setLoading(false);
                 if (err.response.status == 400 && err.response.data.message == "journal already exists today") {
                     toaster("Journal already exists today", closeCircleOutline)
                     goToOverview()
+
                 } else {
                     toaster("Error! Something went wrong", closeCircleOutline)
                     goToOverview()
@@ -316,6 +343,9 @@ export const JournalTextEdit: React.FC = () => {
 
     };
 
+    /**
+     * delete current journal
+     */
     const deleteCurrJournal = async () => {
         setLoading(true);
 
@@ -357,7 +387,6 @@ export const JournalTextEdit: React.FC = () => {
     }
 
     const goToSentiment = (sentiment: number, journalId: any) => {
-
         history.replace({
             pathname: '/tabs/journalmood',
             search: `?sentiment=${sentiment}&journalid=${journalId}`,
@@ -467,7 +496,7 @@ export const JournalTextEdit: React.FC = () => {
                                     </IonRow>
                                     :
                                     <IonRow className="imageBackground">
-                                        
+
                                         <IonCol size="12">
 
                                             {
@@ -574,7 +603,7 @@ export const JournalTextEdit: React.FC = () => {
                                 deletePhoto(photoToDelete);
                                 setPhotoToDelete(undefined);
                             }
-                            else if(editBody.filename){
+                            else if (editBody.filename) {
                                 presentAlert({
                                     header: 'Unable to delete photo',
                                     message: 'Remove journal or upload new image',

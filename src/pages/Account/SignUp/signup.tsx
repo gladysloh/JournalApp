@@ -65,6 +65,10 @@ const SignUp: React.FC = () => {
 
   const [uid, setUserID] = useState();
 
+  /**
+   * Submit sign up details
+   * @param e 
+   */
   const onSubmit = async (e: any) => {
 
     const userDetails: SignUpDetails = {
@@ -100,6 +104,10 @@ const SignUp: React.FC = () => {
 
   };
 
+  /**
+     * Get the error message 
+     * @param err 
+     */
   const getErrorCode = (err: any) => {
     console.log(err)
     if (err == 'auth/email-already-in-use') {
@@ -107,6 +115,10 @@ const SignUp: React.FC = () => {
     }
   }
 
+  /**
+   * Display error message to user via alert prompt
+   * @param msg 
+   */
   const errorAlert = (msg: string) => {
     presentAlert({
       header: 'Error!',

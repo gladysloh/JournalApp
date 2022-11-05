@@ -42,9 +42,10 @@ const Moodchart: React.FC = () => {
   ]
 
   const history = useHistory();
-  const [moods, setMoods] = useState<any>([]);
-  const [monthlyMoods, setMonthlyMoods] = useState(initialMonthlyMood)
   const [isLoad, setIsLoad] = useState(false)
+
+  // const [moods, setMoods] = useState<any>([]);
+  const [monthlyMoods, setMonthlyMoods] = useState(initialMonthlyMood)
 
   const [selectedMonth, setMonth] = useState(new Date().getMonth())
   const [selectedYear, setYear] = useState(new Date().getFullYear())
@@ -52,22 +53,37 @@ const Moodchart: React.FC = () => {
   const canvasPosRef = useRef<HTMLCanvasElement>(null);
   const canvasNegRef = useRef<HTMLCanvasElement>(null);
 
-
   const [arrMoods, setArrMoods] = useState<any>([]);
-  const [curBtn, setCurBtn] = useState(1)
+
+  const [curBtn, setCurBtn] = useState(1);
+
+  const [active, setActive] = useState();
+  const handleBtnClick = (event: any) => {
+    event.preventDefault();
+    setActive(event.target.id);
+  }
 
   useIonViewWillEnter(() => {
     getLastMonths(1)
+    loadWordCloud(selectedMonth, selectedYear)
+
   });
 
   useEffect(() => {
     getMoodChart()
     loadWordCloud(selectedMonth, selectedYear)
     console.log('i fire once');
+
+    console.log(arrMoods)
+    // console.log(wordArr)
   }, [isLoad, canvasNegRef, canvasPosRef])
 
 
-
+  /**
+   * Get moods for the month and year
+   * @param month 
+   * @param year 
+   */
   const getMonthlyMoods = async (month: any, year: any) => {
     let body = {
       month: month,
@@ -81,6 +97,8 @@ const Moodchart: React.FC = () => {
       return result.moods
 
     } catch (err: any) {
+      console.log(err)
+
       //when user is unauthorized
       if (err.response.status === 401) {
         setIsLoad(true)
@@ -93,6 +111,9 @@ const Moodchart: React.FC = () => {
   let sentimentarray: any = []
   let newmoodarray: any = []
 
+  /**
+   * Format sentiment data to fit chart
+   */
   const getMoodChart = () => {
     sentimentarray = []
     arrMoods.forEach((moodObj: any) => {
@@ -127,6 +148,11 @@ const Moodchart: React.FC = () => {
     dataSource.data = monthlyMoods
   }
 
+  /**
+   * Set the mood values
+   * @param val 
+   * @param i 
+   */
   function updateMood(val: number, i: any) {
     setMonthlyMoods((Mooo) => {
       Mooo[i].value = val
@@ -134,6 +160,11 @@ const Moodchart: React.FC = () => {
     })
   }
 
+  /**
+   * Format date to month and year object
+   * Returning mood data
+   * @param value 
+   */
   const getUserDate = (value: any) => {
     let m = new Date(value).getMonth()
     let y = new Date(value).getFullYear()
@@ -144,11 +175,17 @@ const Moodchart: React.FC = () => {
     return getMonthlyMoods(m, y)
   }
 
+  /**
+   * Get name of Month
+   */
   const getJournalMonth = () => {
     let date = selectedMonth
     return MONTH_NAMES[date];
   }
 
+  /**
+   * Get title of chart
+   */
   const getTitle = () => {
     if (curBtn == 3) {
       return "Last 3 Months"
@@ -158,19 +195,35 @@ const Moodchart: React.FC = () => {
     return getJournalMonth()
   }
 
+  /**
+   * Get word cloud by month and year
+   * @param month 
+   * @param year 
+   */
   const loadWordCloud = async (month: any, year: any) => {
     let body = {
       month: month,
       year: year
     }
 
-    let wordcloud = await getWordCloud(body)
-
-    return wordcloud
+    try {
+      let wordcloud = await getWordCloud(body)
+      return wordcloud
+    } catch (err: any) {
+      console.log(err)
+      if (err.response.status === 401) {
+        setIsLoad(true)
+        history.replace("/login")
+      }
+    }
     // console.log(wordcloud)
   }
 
-  const setWordCloud = (wc: any) =>{
+  /**
+   * Set data for wordcloud 
+   * @param wc 
+   */
+  const setWordCloud = (wc: any) => {
     let positiveWC = canvasPosRef.current as HTMLCanvasElement
     let negativeWC = canvasNegRef.current as HTMLCanvasElement
 
@@ -193,12 +246,16 @@ const Moodchart: React.FC = () => {
     });
   }
 
+  /**
+   * Get data for duration
+   * @param count 
+   */
   const getLastMonths = async (count: number) => {
     console.log(count)
     setCurBtn(count)
 
-    let moodArr : any = []
-    let wordArr : any = {
+    let moodArr: any = []
+    let wordArr: any = {
       positive: [],
       negative: []
     }
@@ -218,8 +275,6 @@ const Moodchart: React.FC = () => {
     setArrMoods(moodArr)
     setWordCloud(wordArr)
     setIsLoad(true)
-    console.log(arrMoods)
-    console.log(wordArr)
   }
 
   return (
@@ -234,9 +289,11 @@ const Moodchart: React.FC = () => {
 
       <IonContent>
         <div className="chartButton">
-          <IonButton expand="block" className="dateTimeButton" color="original" onClick={() => getLastMonths(6)}> Last 6 months </IonButton>
-          <IonButton expand="block" className="dateTimeButton" color="original" onClick={() => { getLastMonths(3) }}> Last 3 months </IonButton>
-          <IonButton expand="block" className="dateTimeButton" color="original" onClick={() => { getLastMonths(1) }}> This Month </IonButton>
+          <IonButton expand="block"
+            onClick={(e) => { getLastMonths(6)}}
+            className={curBtn === 6 ? "chartHistoryBtn chartHistoryBtnActive" : "chartHistoryBtn "}> Last 6 months </IonButton>
+          <IonButton expand="block" className={curBtn === 3 ? " chartHistoryBtn chartHistoryBtnActive" : "chartHistoryBtn "} onClick={() => { getLastMonths(3)}}> Last 3 months </IonButton>
+          <IonButton expand="block" className={curBtn === 1 ? "chartHistoryBtn chartHistoryBtnActive" : "chartHistoryBtn "} onClick={() => { getLastMonths(1)}}> This Month </IonButton>
           {/* <IonButton expand="block" className="dateTimeButton" color="original" id="open-monthyear"> Select month/year </IonButton> */}
         </div>
 
@@ -245,6 +302,7 @@ const Moodchart: React.FC = () => {
             <IonCard className="chart-card">
               <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
               <ReactFC className="chart-chart" {...chartConfigs} />
+
               <IonCardTitle className="chart-header">MOOD CHART </IonCardTitle>
             </IonCard>
             :

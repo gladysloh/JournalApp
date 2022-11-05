@@ -26,6 +26,10 @@ const DateFilterModal = ({ selectChoice }: any) => {
     const [userDate, setUserDate] = useState('')
     const [isUserDate, setIsUserDate] = useState(false)
 
+    /**
+     * Get user selected date
+     * @param date 
+     */
     const getUserDate = (date: any) => {
         console.log(date)
         setUserDate(date)
@@ -49,6 +53,10 @@ const DateFilterModal = ({ selectChoice }: any) => {
 
     }, [userDate, choice])
 
+    /**
+     * Get user's choice
+     * @param choice 
+     */
     const getUserChoice = (choice: any) => {
         console.log(choice)
         setChoice(choice)

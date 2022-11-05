@@ -7,31 +7,14 @@ import {
     IonTabButton,
     IonTabs,
 } from '@ionic/react';
-/** Pages */
-// import CardExamples from './tutorial/CardExamples';
-// import InputExamples from './tutorial/InputExamples';
-// import SegmentExamples from './tutorial/SegmentExamples';
-// import TextAreaExamples from './tutorial/TextAreaExamples';
-// import { SlideExample } from './tutorial/Slides';
 
-// import JournalTextView from '../components/JournalTextView'
 import JournalView from './Journal/JournalView';
-// import JournalImageView from '../components/JournalImageView'
-
 import JournalOverview from './Journal/journaloverview';
-import JournalGenerateMood from './Journal/journalgeneratemood';
 import JournalMood from './Journal/journalmood';
 
 import Loading from './Loading/loading';
-
-// import Tab1 from './Journal/Tab1';
 import Mood_Calendar from './Calendar/Mood_Calendar';
 import MoodChart from './MoodCharts/Moodchart';
-
-import Login from './Account/Login/login';
-import SignUp from './Account/SignUp/signup';
-import WelcomeSlides from '../components/WelcomeSlides';
-import { IonReactRouter } from '@ionic/react-router';
 
 /** Tab bar icons */
 import calendar from '../theme/icons/calendar.svg'
@@ -71,9 +54,6 @@ const TabRoot: React.FC = () => (
             </Route>
             <Route exact path="/tabs/journalview">
                 <JournalView />
-            </Route>
-            <Route exact path="/tabs/journalgeneratemood">
-                <JournalGenerateMood />
             </Route>
             <Route exact path="/tabs/journalmood">
                 <JournalMood />

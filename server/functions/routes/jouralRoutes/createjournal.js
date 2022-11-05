@@ -18,11 +18,11 @@ async function createjournal(req, res) {
     //check if a journal already exists TODAY
     try {
         const snapshot = (await firestore.collection('users').doc(uid).collection('journal').orderBy('createdTimestamp', 'desc').limit(1).get()).docs[0]
-        if (snapshot.exists){
+        if (snapshot.exists) {
             const date = new Date(snapshot.data().createdTimestamp._seconds * 1000 + 8 * 60 * 60 * 1000)
             const currentDate = new Date()
             currentDate.setTime(currentDate.getTime() + 8 * 60 * 60 * 1000)
-            if (date.getDate() == currentDate.getDate()){
+            if (date.getDate() == currentDate.getDate()) {
                 return res.status(400).json({
                     success: false,
                     message: 'journal already exists today'
@@ -51,23 +51,25 @@ async function createjournal(req, res) {
             const filename = temp.fileName
             fields.filename = filename
             fields.url = signedUrl
-        } 
-        else{
-            await firestore.doc(`users/${uid}`).collection('journal').add(
-                fields
-            ).then(function (docRef) {
-                return res.status(200).json({
-                    success: true,
-                    fields,
-                    id: docRef.id
-                })
-            }).catch(function (err) {
-                return res.status(400).json({
-                    success: false,
-                    error: err
-                })
-            })
         }
+
+        console.log("server: ", fields)
+
+        await firestore.doc(`users/${uid}`).collection('journal').add(
+            fields
+        ).then(function (docRef) {
+            return res.status(200).json({
+                success: true,
+                fields,
+                id: docRef.id
+            })
+        }).catch(function (err) {
+            return res.status(400).json({
+                success: false,
+                error: err
+            })
+        })
+
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -77,7 +79,7 @@ async function createjournal(req, res) {
     // const entries = JSON.stringify(fields)
 
 
-    
+
 }
 
 

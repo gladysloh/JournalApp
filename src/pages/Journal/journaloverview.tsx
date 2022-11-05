@@ -138,6 +138,12 @@ const JournalOverview: React.FC = () => {
         }
     }
 
+    /**
+     * 
+     * @param value 
+     * 
+     * Format date into day, month, year
+     */
     const userDateFormat = (value: any) => {
         let singleDate = new Date(value);
         setCurrDate(value)
@@ -180,6 +186,12 @@ const JournalOverview: React.FC = () => {
         }
     }
 
+    /**
+     * 
+     * @param value 
+     * 
+     * Check if user has written journal today
+     */
     const getTodayJournal = async (value: any) => {
         let formatDate = userDateFormat(value)
 
@@ -193,10 +205,15 @@ const JournalOverview: React.FC = () => {
         } catch (err: any) {
             setIsWritten(false);
             console.error("ERROR: ", err);
+            // setTimeout(getJournalInfo, 3000)
             if (err.response.status == 401) history.replace("/login")
+            if (err.response.status == 500) getJournalInfo()
         }
     }
 
+    /**
+     * Show/Hide Journals CSS
+     */
     const showHideJournals = () => {
         // console.log(val)
         console.log(checked)

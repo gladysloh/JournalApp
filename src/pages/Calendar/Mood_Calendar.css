@@ -1,21 +1,36 @@
 .calendar-card {
-    background-color:#efc9fb;
-    margin-top: 150px;
-    height:60%;
-    justify-content:center;
-    align-items:center;
-    display:flex;
-    flex-direction:column-reverse
-    
+    background-color: transparent;
+    box-shadow: none !important;
+    /* height: 70%; */
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column-reverse;
 
+    border-radius: 25px;
+
+
+}
+
+div.calendar-box {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 80%;
 }
 
 .calendar-class {
-    background-color:white;
+    background-color: white;
 }
 
-.chart-header{
-    opacity: 30%;
-    font-weight:900;
-    font-family:Arial, Helvetica, sans-serif;
+.chart-header {
+    font-family: "Raleway-Bold";
+    font-weight: bold;
+    font-size: 30px;
+    background: linear-gradient(90deg, #d53369 40%, #daae51 100%);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: animate 10s linear infinite;
+    margin: 15px;
 }

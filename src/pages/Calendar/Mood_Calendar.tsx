@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { IonRow, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonInput, IonFooter, useIonViewDidEnter, useIonViewWillEnter, IonButtons, IonMenuButton } from '@ionic/react';
 import format from "date-fns/format";
@@ -18,7 +20,6 @@ import { getMonthlyMood } from '../../services/MoodService';
 
 
 function Mood_Calendar() {
-
   const locales = {
     'en-us': require("date-fns/locale/en-us"),
   }
@@ -51,6 +52,11 @@ function Mood_Calendar() {
     getMood(selectedMonth, selectedYear)
   });
 
+/**
+ * Get the moods for the month
+ * @param month 
+ * @param year 
+ */
   const getMood = async (month: any, year: any) => {
     
     let body = {
@@ -86,7 +92,11 @@ function Mood_Calendar() {
     console.log(events)
   }, [isEvent])
 
-
+ /**
+  * Return emotion based on sentiment value
+  * 
+  * @param sentiment 
+  */
   const getEmotion = (sentiment: any) => {
     if (sentiment >= -1 && sentiment < -0.6) {
       return { name: 'Very Sad', emoji: '😭' }
@@ -103,12 +113,20 @@ function Mood_Calendar() {
     return { name: 'Elated', emoji: '😄' }
   }
 
+  /**
+   * Convert firebase timestamp to date
+   * @param timestamp 
+   */
   const getJournalDate = (timestamp: any) => {
     let seconds = timestamp._seconds;
     const date = new Date(seconds * 1000)
     return date;
   }
 
+  /**
+   * Set selected month
+   * @param month 
+   */
   const getSelected = (month: Date) => {
     let currDate = month.getMonth()
     let currYear = month.getFullYear()
@@ -117,8 +135,6 @@ function Mood_Calendar() {
     setYear(currYear)
     setIsEvent(false)
     getMood(currDate, currYear)
-    
-
   }
 
 
@@ -132,6 +148,8 @@ function Mood_Calendar() {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        {/* <div className="calendar-box"> */}
+       
         <IonCard className="calendar-card">
           <IonCardTitle className="chart-header">MOOD TRACKER</IonCardTitle>
           <Calendar className="calendar-class"
@@ -139,9 +157,8 @@ function Mood_Calendar() {
             events={events}
             startAccessor="start"
             endAccessor="end" views={['month']}
-            style={{ height: 350, width: 320, margin: "0px" }}
+            style={{ height: 500, width: 350, margin: "0px" }}
             onNavigate={(month) => getSelected(month)}
-
             eventPropGetter={(event, start, end, isSelected) => ({
               event,
               start,
@@ -152,6 +169,7 @@ function Mood_Calendar() {
           />
           <IonCardTitle className="chart-header">MONTHLY</IonCardTitle>
         </IonCard>
+        {/* </div> */}
       </IonContent>
 
     </IonPage>
