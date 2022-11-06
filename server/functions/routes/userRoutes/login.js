@@ -33,7 +33,7 @@ async function login(req, res) {
 
         await credential.user.getIdToken().then((token) => {
             console.log(token)
-            res.cookie('auth_token', token).status(201).json({
+            res.cookie('auth_token', token,{ maxAge: 1 * 60 * 60 * 1000}).status(201).json({
                 success: true,
                 displayName: credential.user.displayName,
                 uid: credential.user.uid

@@ -29,20 +29,20 @@ admin.initializeApp({
 initializeApp(firebaseConfig)
 
 const app = express()
-app.use(session({
-    store: new FirestoreStore({
-        dataset: new Firestore(),
-        kind: 'express-sessions'
-    }),
-    saveUninitialized: true,
-    resave: false,
-    secret: 'ilovecat',
-    cookie: { 
-        secure: false,            //setting this false for http connections
-        maxAge: 3600000,
-        expires: new Date(Date.now() + 3600000) 
-    }
-}))
+// app.use(session({
+//     store: new FirestoreStore({
+//         dataset: new Firestore(),
+//         kind: 'express-sessions'
+//     }),
+//     saveUninitialized: true,
+//     resave: false,
+//     secret: 'ilovecat',
+//     cookie: { 
+//         secure: false,            //setting this false for http connections
+//         maxAge: 3600000,
+//         expires: new Date(Date.now() + 3600000) 
+//     }
+// }))
 app.use(cors({
     // origin: true,
     credentials: true,

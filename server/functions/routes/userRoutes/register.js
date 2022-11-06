@@ -45,7 +45,7 @@ async function register(req, res) {
             })
         }
         await credential.user.getIdToken().then((token) => {
-            res.cookie('auth_token', token).status(201).json({
+            res.cookie('auth_token', token,{ maxAge: 1 * 60 * 60 * 1000}).status(201).json({
                 success: true,
                 displayName: displayName,
                 uid: credential.user.uid

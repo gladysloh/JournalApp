@@ -21,6 +21,7 @@ import {
 
 import React, { useEffect, useContext } from "react";
 import Cookies from 'js-cookie'
+import { useCookies } from "react-cookie";
 
 // import { AuthContext } from './context/auth.context.js';
 
@@ -61,33 +62,14 @@ import { getUserName } from './services/UserService';
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [userStatus, setUserStatus] = useState(false);
+  // const [userStatus, setUserStatus] = useState(false);
+
   const getAuthToken = () => Cookies.get('auth_token')
-  const isAuthenticated = () => !!getAuthToken()
+  let isAuthenticated = () => !!getAuthToken()
+
+  // console.log(getAuthToken())
   console.log(isAuthenticated())
-
-  // const checkUser = async () => {
-
-  //   try {
-  //     let result = await getUserName()
-
-  //     if (result.displayName) {
-  //       setUserStatus(true)
-
-  //     } else {
-  //       setUserStatus(false)
-  //     }
-  //   } catch (err: any) {
-
-  //     console.log(err)
-  //   }
-
-  // }
-
-  // useEffect(() => {
-  //   checkUser()
-  // }, [userStatus])
-
+  
 
   return (
     <IonApp>

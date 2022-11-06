@@ -322,6 +322,7 @@ export const JournalTextEdit: React.FC = () => {
                 console.log(res);
                 dismiss();
                 setLoading(false);
+                
                 goToSentiment(createBody.sentiment, res.id)
 
             }).catch((err: any) => {
